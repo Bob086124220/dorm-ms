@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
@@ -38,21 +39,17 @@
                 <!-- 被访学生查询区域 -->
                 <div class="form-container mb-4">
                     <h5 class="mb-3">查询被访学生</h5>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="input-group">
+                    <div class="input-group">
                                 <input type="text" class="form-control" id="searchUsername" placeholder="请输入被访学生学号查询">
-                                <button class="btn btn-primary" type="button" onclick="searchStudent()">
+                                <button class="btn btn-secondary" type="button" onclick="searchStudent()">
                                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                     查询
                                 </button>
                             </div>
-                        </div>
-                    </div>
                     <!-- 查询结果 -->
                     <div id="studentResult" class="mt-3" style="display: none;">
-                        <div class="table-responsive">
-                            <table class="table table-sm">
+                        <div class="data-panel">
+                            <table>
                                 <thead>
                                     <tr>
                                         <th>学号</th>
@@ -86,35 +83,27 @@
                 <div class="form-container" id="visitorForm" style="display: none;">
                     <h5 class="mb-3">访客信息</h5>
                     <form id="formData">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="visitorName" class="form-label">访客姓名 <span class="required">*</span></label>
-                                    <input type="text" class="form-control" id="visitorName" name="visitorName" placeholder="请输入访客姓名" maxlength="50">
-                                    <div class="invalid-feedback" id="visitorNameError"></div>
-                                </div>
+                                                <div class="form-grid">
+                            <div class="form-field">
+                                <label for="visitorName">访客姓名 <span class="required">*</span></label>
+                                                                    <input type="text" class="form-control" id="visitorName" name="visitorName" placeholder="请输入访客姓名" maxlength="50">
+                                                                    <div class="invalid-feedback" id="visitorNameError"></div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="idCard" class="form-label">身份证号 <span class="required">*</span></label>
-                                    <input type="text" class="form-control" id="idCard" name="idCard" placeholder="请输入18位身份证号" maxlength="18">
-                                    <div class="invalid-feedback" id="idCardError"></div>
-                                </div>
+                            <div class="form-field">
+                                <label for="idCard">身份证号 <span class="required">*</span></label>
+                                                                    <input type="text" class="form-control" id="idCard" name="idCard" placeholder="请输入18位身份证号" maxlength="18">
+                                                                    <div class="invalid-feedback" id="idCardError"></div>
                             </div>
                         </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="visitTime" class="form-label">来访时间 <span class="required">*</span></label>
-                                    <input type="datetime-local" class="form-control" id="visitTime" name="visitTime">
-                                    <div class="invalid-feedback" id="visitTimeError"></div>
-                                </div>
+                                                <div class="form-grid">
+                            <div class="form-field">
+                                <label for="visitTime">来访时间 <span class="required">*</span></label>
+                                                                    <input type="datetime-local" class="form-control" id="visitTime" name="visitTime">
+                                                                    <div class="invalid-feedback" id="visitTimeError"></div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="visitReason" class="form-label">来访事由</label>
-                                    <input type="text" class="form-control" id="visitReason" name="visitReason" placeholder="请输入来访事由（可选）" maxlength="255">
-                                </div>
+                            <div class="form-field">
+                                <label for="visitReason">来访事由</label>
+                                                                    <input type="text" class="form-control" id="visitReason" name="visitReason" placeholder="请输入来访事由（可选）" maxlength="255">
                             </div>
                         </div>
                         <button type="button" class="btn btn-primary" id="btnSubmit" onclick="submitVisitor()">
@@ -157,11 +146,15 @@
                 pageSize: 10
             }, function(result) {
                 if (result.data && result.data.list && result.data.list.length > 0) {
-                    renderStudentTable(result.data.list);
-                    $('#studentResult').show();
+                    if (result.data.list.length === 1) {
+                        selectStudent(result.data.list[0].userId, result.data.list[0].username, result.data.list[0].realName);
+                    } else {
+                        renderStudentTable(result.data.list);
+                        $('#studentResult').show();
+                    }
                 } else {
-                    $('#studentResult').hide();
-                    $.toast('warning', '未找到该学号对应的学生');
+                    $('#studentResult').show();
+                    $('#studentResult').html('<div class="alert alert-warning">未找到学号包含 "' + username + '" 的学生</div>');
                 }
             }, function() {
                 $.toast('error', '查询学生失败');
@@ -184,7 +177,7 @@
                 row += '<td>' + genderText + '</td>';
                 row += '<td>' + (student.grade || '-') + '</td>';
                 row += '<td>' + (student.major || '-') + '</td>';
-                row += '<td><button class="btn btn-sm btn-primary" onclick="selectStudent(' + student.userId + ', \'' + student.username + '\', \'' + student.realName + '\')">选择</button></td>';
+                row += '<td><button class="btn btn-ghost btn-sm" onclick="selectStudent(' + student.userId + ', \'' + student.username.replace(/'/g, "\\'") + '\', \'' + student.realName.replace(/'/g, "\\'") + '\')">选择</button></td>';
                 row += '</tr>';
                 $tbody.append(row);
             });
@@ -272,7 +265,7 @@
             }
 
             // 禁用提交按钮
-            $('#btnSubmit').prop('disabled', true).text('保存中...');
+            $('#btnSubmit').prop('disabled', true).text('提交中...');
 
             // 格式化visitTime：将 "yyyy-MM-ddTHH:mm" 转换为 "yyyy-MM-dd HH:mm:ss"
             var formattedVisitTime = visitTime ? visitTime.replace('T', ' ') + ':00' : null;

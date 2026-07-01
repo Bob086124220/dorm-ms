@@ -3,6 +3,7 @@ package com.huuc.dormitory.common.aop;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.huuc.dormitory.common.utils.SessionUtil;
 import com.huuc.dormitory.dao.SysOperLogMapper;
+import com.huuc.dormitory.dto.LoginDTO;
 import com.huuc.dormitory.entity.SysOperLog;
 import com.huuc.dormitory.entity.SysUser;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -90,10 +91,19 @@ public class OperLogAspect {
             }
             throw e;
         } finally {
+            // 方法执行后，如果operatorId为空，重新从Session获取（处理登录场景）
+            if (operatorId == null && session != null) {
+                SysUser userAfterMethod = SessionUtil.getCurrentUser(session);
+                if (userAfterMethod != null) {
+                    operatorId = userAfterMethod.getUserId();
+                }
+            }
+
             // 记录操作日志（成功或失败都记录）
             try {
                 SysOperLog log = new SysOperLog();
-                log.setOperatorId(operatorId);
+                // 如果仍为空（如登录失败场景），设为系统默认ID 0L，保证日志能入库
+                log.setOperatorId(operatorId==null ? 0L : operatorId);
                 log.setModuleName(operLog.module());
                 log.setOperType(operLog.type().getCode());
                 log.setOperDesc(success ? operLog.desc() : operLog.desc() + "（失败：" + errorMsg + "）");

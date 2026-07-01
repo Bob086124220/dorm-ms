@@ -4,6 +4,8 @@
 <html>
 <head>
     <title>404 - 高校公寓管理系统</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/error.css">
 </head>
 <body>

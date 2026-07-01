@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>宿管首页 - 高校公寓管理系统</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
@@ -93,12 +94,12 @@
                 <!-- 系统信息 -->
                 <section class="data-panel mb-4">
                     <div class="info-section">
-                        <h2 style="font-family: var(--font-display); font-size: var(--fs-h2); font-weight: 700; margin: 0;">系统信息</h2>
+                        <h2 class="info-title">系统信息</h2>
                     </div>
-                    <div style="padding: var(--gap-md) var(--gap-lg);">
+                    <div class="info-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="info-row" style="border-bottom: 1px solid var(--border);">
+                                <div class="info-row info-row--bordered">
                                     <span class="info-label">当前时间</span>
                                     <span class="info-value num" id="currentTime"></span>
                                 </div>
@@ -108,7 +109,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="info-row" style="border-bottom: 1px solid var(--border);">
+                                <div class="info-row info-row--bordered">
                                     <span class="info-label">角色权限</span>
                                     <span class="pill pill-manager">宿管</span>
                                 </div>

@@ -7,7 +7,6 @@ import com.huuc.dormitory.common.enums.OperTypeEnum;
 import com.huuc.dormitory.common.result.Result;
 import com.huuc.dormitory.common.utils.SessionUtil;
 import com.huuc.dormitory.dto.RepairHandleDTO;
-import com.huuc.dormitory.entity.SysUser;
 import com.huuc.dormitory.service.BuildingService;
 import com.huuc.dormitory.service.RepairService;
 import com.huuc.dormitory.vo.BuildingVO;
@@ -69,7 +68,7 @@ public class DormRepairController {
         Long buildingId = buildings.get(0).getBuildingId();
 
         PageHelper.startPage(pageNum, pageSize);
-        PageInfo<RepairVO> pageInfo = repairService.getRepairsByBuildingId(buildingId, pageNum, pageSize);
+        PageInfo<RepairVO> pageInfo = repairService.getRepairsByBuildingId(buildingId, repairStatus, pageNum, pageSize);
 
         return Result.success(pageInfo);
     }

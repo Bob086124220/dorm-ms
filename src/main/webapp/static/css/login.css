@@ -42,7 +42,7 @@ body {
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .form-group label {
@@ -57,7 +57,7 @@ body {
 
 .form-group input {
     width: 100%;
-    padding: 11px 14px;
+    padding: 9px 12px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     font-size: var(--fs-body);
@@ -76,7 +76,7 @@ body {
 
 .form-group button {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     background: var(--accent);
     border: none;
     border-radius: var(--radius);

@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
@@ -38,6 +39,7 @@
                 <!-- 报修信息 -->
                 <div class="form-container mb-4" id="repairInfo">
                     <div class="text-center py-4">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         加载中...
                     </div>
                 </div>
@@ -118,20 +120,20 @@
             // 左侧：基本信息
             html += '<div class="col-md-6">';
             html += '<h6 class="mb-3">基本信息</h6>';
-            html += '<table class="table">';
+            html += '<table class="detail-table">';
             html += '<tr><td class="detail-label">报修ID</td><td class="num">' + repair.repairId + '</td></tr>';
             html += '<tr><td class="detail-label">学生姓名</td><td>' + (repair.studentName || '-') + '</td></tr>';
             html += '<tr><td class="detail-label">学号</td><td class="num">' + (repair.studentNo || '-') + '</td></tr>';
             html += '<tr><td class="detail-label">楼栋</td><td>' + (repair.buildingName || '-') + '</td></tr>';
             html += '<tr><td class="detail-label">房间</td><td>' + (repair.roomNo || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">联系电话</td><td class="num">' + (repair.contactPhone || '-') + '</td></tr>';
+            html += '<tr><td class="detail-label">联系电话</td><td class="num">' + (repair.contactPhone ? repair.contactPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '-') + '</td></tr>';
             html += '</table>';
             html += '</div>';
 
             // 右侧：报修信息
             html += '<div class="col-md-6">';
             html += '<h6 class="mb-3">报修信息</h6>';
-            html += '<table class="table">';
+            html += '<table class="detail-table">';
             html += '<tr><td class="detail-label">报修类型</td><td>' + typeText + '</td></tr>';
             html += '<tr><td class="detail-label">报修内容</td><td>' + (repair.repairContent || '-') + '</td></tr>';
             html += '<tr><td class="detail-label">提交时间</td><td class="num">' + $.formatDate(repair.submitTime) + '</td></tr>';

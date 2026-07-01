@@ -8,6 +8,8 @@
     <title>操作日志 - 高校公寓管理系统</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
@@ -98,7 +100,8 @@
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            <tr><td colspan="7" class="text-center" style="padding: 40px 0; color: var(--muted);">加载中...</td></tr>
+                            <tr><td colspan="7" class="text-center" style="padding: 40px 0; color: var(--muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                        加载中...</td></tr>
                         </tbody>
                     </table>
                     <div id="paginationContainer"></div>
@@ -138,8 +141,10 @@
             };
 
             var operatorId = $('#searchOperatorId').val().trim();
-            var moduleName = document.querySelector('#searchModuleNameCselect').dataset.value;
-            var operType = document.querySelector('#searchOperTypeCselect').dataset.value;
+            var csEl1 = document.querySelector('#searchModuleNameCselect');
+            var moduleName = csEl1 ? csEl1.dataset.value : undefined;
+            var csEl2 = document.querySelector('#searchOperTypeCselect');
+            var operType = csEl2 ? csEl2.dataset.value : undefined;
 
             if (operatorId) {
                 queryParams.operatorId = operatorId;
@@ -175,7 +180,7 @@
             $tbody.empty();
 
             if (!list || list.length === 0) {
-                $tbody.html('<tr><td colspan="7" class="text-center" style="padding: 40px 0; color: var(--muted);">暂无数据</td></tr>');
+                $tbody.html('<tr><td colspan="7" class="text-center" style="padding: 40px 0; color: var(--muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>暂无数据</td></tr>');
                 return;
             }
 

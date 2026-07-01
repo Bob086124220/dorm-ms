@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
@@ -38,21 +39,17 @@
                 <!-- 步骤1：选择学生 -->
                 <div class="form-container mb-4">
                     <h6 class="mb-3">第一步：选择学生</h6>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="input-group">
+                    <div class="input-group">
                                 <input type="text" class="form-control" id="studentNo" placeholder="请输入学号" maxlength="20">
-                                <button type="button" class="btn btn-primary" onclick="searchStudent()">
+                                <button type="button" class="btn btn-secondary" onclick="searchStudent()">
                                     <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                     查询
                                 </button>
                             </div>
-                        </div>
-                    </div>
                     <!-- 查询结果列表 -->
                     <div id="studentResult" style="display: none;" class="mt-3">
-                        <div class="table-responsive">
-                            <table class="table table-sm">
+                        <div class="data-panel">
+                            <table>
                                 <thead>
                                     <tr>
                                         <th>学号</th>
@@ -90,42 +87,42 @@
                 <!-- 步骤2：选择床位 -->
                 <div class="form-container mb-4" id="bedSection" style="display: none;">
                     <h6 class="mb-3">第二步：选择床位</h6>
-                    <div class="row g-3">
-                        <div class="col-md-4">
-                            <label class="form-label">楼栋</label>
-                            <div class="cselect" id="buildingIdCselect">
-                                <div class="cselect-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
-                                    <span class="cselect-val cselect-placeholder">请选择楼栋</span>
-                                    <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                                </div>
-                                <div class="cselect-panel" role="listbox">
-                                    <div class="cselect-option" data-value="">请选择楼栋</div>
-                                </div>
-                            </div>
+                                        <div class="form-grid-3">
+                        <div class="form-field">
+                            <label>楼栋</label>
+                                                        <div class="cselect" id="buildingIdCselect">
+                                                            <div class="cselect-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                                                                <span class="cselect-val cselect-placeholder">请选择楼栋</span>
+                                                                <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                                            </div>
+                                                            <div class="cselect-panel" role="listbox">
+                                                                <div class="cselect-option" data-value="">请选择楼栋</div>
+                                                            </div>
+                                                        </div>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">房间</label>
-                            <div class="cselect" id="roomIdCselect">
-                                <div class="cselect-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
-                                    <span class="cselect-val cselect-placeholder">请先选择楼栋</span>
-                                    <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                                </div>
-                                <div class="cselect-panel" role="listbox">
-                                    <div class="cselect-option" data-value="">请先选择楼栋</div>
-                                </div>
-                            </div>
+                        <div class="form-field">
+                            <label>房间</label>
+                                                        <div class="cselect" id="roomIdCselect">
+                                                            <div class="cselect-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                                                                <span class="cselect-val cselect-placeholder">请先选择楼栋</span>
+                                                                <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                                            </div>
+                                                            <div class="cselect-panel" role="listbox">
+                                                                <div class="cselect-option" data-value="">请先选择楼栋</div>
+                                                            </div>
+                                                        </div>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">床位</label>
-                            <div class="cselect" id="bedIdCselect">
-                                <div class="cselect-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
-                                    <span class="cselect-val cselect-placeholder">请先选择房间</span>
-                                    <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                                </div>
-                                <div class="cselect-panel" role="listbox">
-                                    <div class="cselect-option" data-value="">请先选择房间</div>
-                                </div>
-                            </div>
+                        <div class="form-field">
+                            <label>床位</label>
+                                                        <div class="cselect" id="bedIdCselect">
+                                                            <div class="cselect-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                                                                <span class="cselect-val cselect-placeholder">请先选择房间</span>
+                                                                <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                                            </div>
+                                                            <div class="cselect-panel" role="listbox">
+                                                                <div class="cselect-option" data-value="">请先选择房间</div>
+                                                            </div>
+                                                        </div>
                         </div>
                     </div>
                 </div>
@@ -254,7 +251,7 @@
                 row += '<td>' + (student.realName || '-') + '</td>';
                 row += '<td>' + (student.grade || '-') + '</td>';
                 row += '<td>' + (student.major || '-') + '</td>';
-                row += '<td><button class="btn btn-sm btn-primary" onclick="selectStudent(' + student.userId + ', \'' + student.username + '\', \'' + student.realName + '\', \'' + grade + '\', \'' + major + '\')">选择</button></td>';
+                row += '<td><button class="btn btn-ghost btn-sm" onclick="selectStudent(' + student.userId + ', \'' + student.username.replace(/'/g, "\\'") + '\', \'' + student.realName.replace(/'/g, "\\'") + '\', \'' + grade + '\', \'' + major + '\')">选择</button></td>';
                 row += '</tr>';
                 $tbody.append(row);
             });

@@ -8,6 +8,8 @@
     <title>用户管理 - 高校公寓管理系统</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
@@ -112,7 +114,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">批量导入用户</h5>
+                    <h2 class="modal-title">批量导入用户</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -186,7 +188,7 @@
             $tbody.empty();
 
             if (!userList || userList.length === 0) {
-                $tbody.html('<tr><td colspan="9" class="text-center" style="padding: 40px 0; color: var(--muted);">暂无数据</td></tr>');
+                $tbody.html('<tr><td colspan="9" class="text-center" style="padding: 40px 0; color: var(--muted);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>暂无数据</td></tr>');
                 return;
             }
 

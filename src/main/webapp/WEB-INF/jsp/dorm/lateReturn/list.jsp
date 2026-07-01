@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
@@ -45,20 +46,18 @@
                 </div>
 
                 <!-- 查询区域 -->
-                <div class="form-container mb-4" id="searchContainer">
-                    <form id="searchForm" class="row g-3">
-                        <div class="col-md-3 d-flex align-items-end gap-2">
-                            <button type="button" class="btn btn-secondary" onclick="resetSearch()">
-                                刷新
-                            </button>
-                        </div>
-                    </form>
+                                <div class="filter-bar" id="searchContainer">
+                    <div class="filter-actions">
+                        <button type="button" class="btn btn-ghost btn-sm" onclick="resetSearch()">
+                                                        刷新
+                                                    </button>
+                    </div>
                 </div>
 
                 <!-- 晚归记录列表 -->
                 <div class="form-container" id="tableContainer">
                     <div class="data-panel">
-                        <table class="table">
+                        <table>
                             <thead>
                                 <tr>
                                     <th>学生姓名</th>
@@ -73,6 +72,7 @@
                             <tbody id="tableBody">
                                 <tr>
                                     <td colspan="7" class="text-center py-4">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                                         加载中...
                                     </td>
                                 </tr>
@@ -123,7 +123,14 @@
 
                 if (result.data) {
                     renderTable(result.data.list);
-                    renderPagination(result.data);
+                    if (result.data && result.data.pages > 1) {
+                    $.renderPagination(result.data, 'paginationContainer',
+                        function(page) { pageQueryParams.pageNum = page; loadData(pageQueryParams); },
+                        pageQueryParams.pageSize,
+                        function(ps) { pageQueryParams.pageNum = 1; pageQueryParams.pageSize = ps; loadData(pageQueryParams); }
+                    );
+                } else { $('#paginationContainer').empty(); }
+                    
                     pageQueryParams.pageNum = result.data.pageNum;
                     pageQueryParams.pageSize = result.data.pageSize;
                 }
@@ -148,7 +155,7 @@
             $tbody.empty();
 
             if (!list || list.length === 0) {
-                $tbody.html('<tr><td colspan="7" class="text-center py-4 text-muted">暂无数据</td></tr>');
+                $tbody.html('<tr><td colspan="7" class="text-center py-4 text-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>暂无数据</td></tr>');
                 return;
             }
 
@@ -170,56 +177,7 @@
          * 渲染分页
          * @param {object} pageInfo - 分页信息
          */
-        function renderPagination(pageInfo) {
-            var $container = $('#paginationContainer');
-            $container.empty();
-
-            if (!pageInfo || pageInfo.pages <= 1) {
-                return;
-            }
-
-            var html = '<div class="pagination-container">';
-            html += '<div class="pagination-info">共 <span>' + pageInfo.total + '</span> 条记录，第 <span>' + pageInfo.pageNum + '</span>/<span>' + pageInfo.pages + '</span> 页</div>';
-            html += '<div class="d-flex align-items-center gap-3">';
-            html += $.renderPageSizeCselect(pageInfo.pageSize);
-            html += '<nav><ul class="pagination mb-0">';
-
-            html += '<li class="page-item' + (pageInfo.pageNum === 1 ? ' disabled' : '') + '">';
-            html += '<a class="page-link" href="javascript:void(0)" onclick="goToPage(1)">&laquo;</a></li>';
-
-            html += '<li class="page-item' + (!pageInfo.hasPreviousPage ? ' disabled' : '') + '">';
-            html += '<a class="page-link" href="javascript:void(0)" onclick="goToPage(' + (pageInfo.pageNum - 1) + ')">&lsaquo;</a></li>';
-
-            var startPage = Math.max(1, pageInfo.pageNum - 2);
-            var endPage = Math.min(pageInfo.pages, pageInfo.pageNum + 2);
-            for (var i = startPage; i <= endPage; i++) {
-                html += '<li class="page-item' + (pageInfo.pageNum === i ? ' active' : '') + '">';
-                html += '<a class="page-link" href="javascript:void(0)" onclick="goToPage(' + i + ')">' + i + '</a></li>';
-            }
-
-            html += '<li class="page-item' + (!pageInfo.hasNextPage ? ' disabled' : '') + '">';
-            html += '<a class="page-link" href="javascript:void(0)" onclick="goToPage(' + (pageInfo.pageNum + 1) + ')">&rsaquo;</a></li>';
-
-            html += '<li class="page-item' + (pageInfo.pageNum === pageInfo.pages ? ' disabled' : '') + '">';
-            html += '<a class="page-link" href="javascript:void(0)" onclick="goToPage(' + pageInfo.pages + ')">&raquo;</a></li>';
-
-            html += '</ul></nav></div></div>';
-            $container.html(html);
-            $.initCustomSelect();
-        }
-
-        function goToPage(pageNum) {
-            pageQueryParams.pageNum = pageNum;
-            loadData(pageQueryParams);
-        }
-
-        function changePageSize(pageSize) {
-            pageQueryParams.pageNum = 1;
-            pageQueryParams.pageSize = parseInt(pageSize);
-            loadData(pageQueryParams);
-        }
-
-        function resetSearch() {
+                                function resetSearch() {
             pageQueryParams.pageNum = 1;
             loadData(pageQueryParams);
         }

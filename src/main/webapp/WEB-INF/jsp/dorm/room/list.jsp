@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
@@ -32,27 +33,25 @@
                 </div>
 
                 <!-- 楼栋选择 -->
-                <div class="form-container mb-4">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">选择楼栋</label>
-                            <div class="cselect" id="buildingIdCselect">
-                                <div class="cselect-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
-                                    <span class="cselect-val cselect-placeholder">请选择楼栋</span>
-                                    <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                                </div>
-                                <div class="cselect-panel" role="listbox">
-                                    <div class="cselect-option" data-value="">请选择楼栋</div>
-                                </div>
-                            </div>
-                        </div>
+                                <div class="filter-bar">
+                    <div class="filter-field">
+                        <label>选择楼栋</label>
+                                                    <div class="cselect" id="buildingIdCselect">
+                                                        <div class="cselect-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                                                            <span class="cselect-val cselect-placeholder">请选择楼栋</span>
+                                                            <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                                        </div>
+                                                        <div class="cselect-panel" role="listbox">
+                                                            <div class="cselect-option" data-value="">请选择楼栋</div>
+                                                        </div>
+                                                    </div>
                     </div>
                 </div>
 
                 <!-- 房间列表 -->
                 <div class="form-container">
                     <div class="data-panel">
-                        <table class="table">
+                        <table>
                             <thead>
                                 <tr>
                                     <th>房间编号</th>
@@ -145,7 +144,7 @@
                 if (result.data && result.data.length > 0) {
                     renderTable(result.data);
                 } else {
-                    $tbody.html('<tr><td colspan="6" class="text-center py-4 text-muted">暂无房间数据</td></tr>');
+                    $tbody.html('<tr><td colspan="6" class="text-center py-4 text-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>暂无房间数据</td></tr>');
                 }
             }, function() {
                 $tbody.html('<tr><td colspan="6" class="text-center py-4"><a href="javascript:void(0)" onclick="loadRoomList(' + buildingId + ')" style="color: var(--accent);">加载失败，点击重试</a></td></tr>');

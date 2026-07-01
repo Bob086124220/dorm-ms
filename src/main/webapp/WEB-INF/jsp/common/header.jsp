@@ -64,7 +64,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">修改密码</h5>
+                <h2 class="modal-title">修改密码</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" id="btnClosePasswordModal"></button>
             </div>
             <div class="modal-body">

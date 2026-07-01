@@ -1,0 +1,76 @@
+/*
+ * 高校公寓管理系统 - 设计令牌（Design Tokens）
+ * 杂志风亮色主题：暖白 × 锗红 × 暖橙
+ * 从 common.css 独立拆分，供所有页面优先加载
+ */
+
+/* ============================================= */
+/* 一、设计令牌（Design Tokens）                   */
+/* ============================================= */
+:root {
+    /* 自定义变量（主体系） */
+    --bg: rgb(250, 249, 245);
+    --surface: rgba(255, 255, 255, 0.92);
+    --fg: rgb(45, 36, 28);
+    --muted: rgb(122, 112, 103);
+    --border: rgb(235, 230, 223);
+    --accent: rgb(196, 69, 58);
+    --accent-2: rgb(212, 132, 90);
+    --hover-bg: rgb(245, 244, 237);
+    --stripe: rgba(0, 0, 0, 0.025);
+    --col-line: rgb(240, 238, 230);
+    --status-ok: rgb(46, 125, 111);
+    --surface-opaque: rgb(255, 255, 255);
+    --timeout-bg: rgb(255, 243, 205);
+
+    --font-display: Georgia, 'Noto Serif SC', 'Source Han Serif SC', SimSun, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', PingFang SC, 'Microsoft YaHei', system-ui, sans-serif;
+    --font-mono: 'SF Mono', 'JetBrains Mono', Consolas, ui-monospace, monospace;
+
+    --fs-h1: 32px;
+    --fs-h2: 22px;
+    --fs-h3: 16px;
+    --fs-body: 14px;
+    --fs-meta: 12px;
+    --fs-sm: 11px;
+
+    --gap-xs: 6px;
+    --gap-sm: 10px;
+    --gap-md: 16px;
+    --gap-lg: 24px;
+    --gap-xl: 40px;
+
+    --radius: 8px;
+    --radius-lg: 12px;
+
+    --sidebar-w: 240px;
+    --sidebar-w-admin: 240px;
+    --sidebar-w-dorm: 220px;
+    --header-h: 56px;
+
+    --pill-pending-color: rgb(154, 93, 46);
+    --accent-soft: color-mix(in oklch, var(--accent) 10%, transparent);
+    --accent-2-soft: color-mix(in oklch, var(--accent-2) 12%, transparent);
+    --fg-soft: color-mix(in oklch, var(--fg) 6%, transparent);
+
+    /* Bootstrap 变量覆盖 */
+    --bs-primary: rgb(196, 69, 58);
+    --bs-secondary: rgb(122, 112, 103);
+    --bs-success: rgb(196, 69, 58);
+    --bs-danger: rgb(196, 69, 58);
+    --bs-warning: rgb(212, 132, 90);
+    --bs-info: rgb(122, 112, 103);
+    --bs-light: rgb(245, 244, 237);
+    --bs-dark: rgb(45, 36, 28);
+    --bs-body-bg: rgb(250, 249, 245);
+    --bs-body-color: rgb(45, 36, 28);
+    --bs-body-font-family: var(--font-body);
+    --bs-border-color: rgb(235, 230, 223);
+    --bs-border-radius: 0.5rem;
+    --bs-border-radius-lg: 0.75rem;
+    --bs-link-color: rgb(196, 69, 58);
+}
+
+/* 角色侧栏宽度 */
+.role-admin { --sidebar-w: var(--sidebar-w-admin); }
+.role-dorm { --sidebar-w: var(--sidebar-w-dorm); }

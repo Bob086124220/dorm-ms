@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * DormRepairMapper单元测试
@@ -63,7 +64,7 @@ class DormRepairMapperTest extends BaseMapperTest {
     @Test
     @DisplayName("selectByBuildingId_按楼栋查询_返回该楼栋报修")
     void selectByBuildingId_按楼栋查询_返回该楼栋报修() {
-        List<DormRepair> repairs = repairMapper.selectByBuildingId(1L);
+        List<DormRepair> repairs = repairMapper.selectByBuildingId(1L, 1);
 
         assertNotNull(repairs);
     }

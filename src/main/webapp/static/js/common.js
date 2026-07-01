@@ -290,17 +290,24 @@
      * @param {string} containerId - 容器ID
      * @param {function} onPageChange - 页码变更回调
      */
-    $.renderPagination = function(pageInfo, containerId, onPageChange) {
+    $.renderPagination = function(pageInfo, containerId, onPageChange, pageSize, onPageSizeChange) {
         var container = document.getElementById(containerId);
         if (!container || !pageInfo) return;
 
         var totalPages = pageInfo.pages || 1;
         var currentPage = pageInfo.pageNum || 1;
         var total = pageInfo.total || 0;
+        var hasPageSize = (pageSize != null && typeof onPageSizeChange === 'function');
 
         // 信息文字
         var html = '<div class="pagination-container">';
         html += '<span class="pagination-info">共 <strong>' + total + '</strong> 条记录，第 <strong>' + currentPage + '</strong> / <strong>' + totalPages + '</strong> 页</span>';
+
+        // 右侧区域：页面大小选择器 + 页码按钮
+        html += '<div class="d-flex align-items-center gap-3">';
+        if (hasPageSize) {
+            html += $.renderPageSizeCselect(pageSize);
+        }
         html += '<div class="pagination-pages">';
 
         // 首页
@@ -328,16 +335,28 @@
         // 末页
         html += '<button class="page-btn" ' + (currentPage === totalPages ? 'disabled' : '') + ' data-page="' + totalPages + '">&raquo;</button>';
 
-        html += '</div></div>';
+        html += '</div></div></div>';
         container.innerHTML = html;
 
-        // 绑定事件
+        // 绑定页码按钮事件
         $(container).find('.page-btn').on('click', function() {
             var page = parseInt($(this).data('page'));
             if (page && page !== currentPage && typeof onPageChange === 'function') {
                 onPageChange(page);
             }
         });
+
+        // 初始化页面大小选择器
+        if (hasPageSize) {
+            $.initCustomSelect();
+            // 绑定页面大小变更事件
+            $(container).find('.cselect-option').on('click', function() {
+                var newSize = parseInt($(this).attr('data-value'));
+                if (newSize && newSize !== pageSize) {
+                    onPageSizeChange(newSize);
+                }
+            });
+        }
     };
 
     /**

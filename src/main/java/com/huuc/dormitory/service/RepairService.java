@@ -34,7 +34,7 @@ public interface RepairService {
     /**
      * 分页查询楼栋报修
      */
-    PageInfo<RepairVO> getRepairsByBuildingId(Long buildingId, Integer pageNum, Integer pageSize);
+    PageInfo<RepairVO> getRepairsByBuildingId(Long buildingId, Integer repairStatus, Integer pageNum, Integer pageSize);
 
     /**
      * 提交报修

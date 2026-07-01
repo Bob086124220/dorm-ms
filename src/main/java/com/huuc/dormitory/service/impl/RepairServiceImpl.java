@@ -89,8 +89,8 @@ public class RepairServiceImpl implements RepairService {
     }
 
     @Override
-    public PageInfo<RepairVO> getRepairsByBuildingId(Long buildingId, Integer pageNum, Integer pageSize) {
-        List<DormRepair> repairs = repairMapper.selectByBuildingId(buildingId);
+    public PageInfo<RepairVO> getRepairsByBuildingId(Long buildingId, Integer repairStatus, Integer pageNum, Integer pageSize) {
+        List<DormRepair> repairs = repairMapper.selectByBuildingId(buildingId, repairStatus);
         PageInfo<DormRepair> pageInfo = new PageInfo<>(repairs);
 
         PageInfo<RepairVO> voPageInfo = new PageInfo<>();

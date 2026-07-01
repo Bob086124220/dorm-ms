@@ -9,6 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body class="student-layout">
@@ -39,6 +40,7 @@
                             <h6 class="mb-3">当前住宿信息</h6>
                             <div id="checkinInfo">
                                 <div class="text-center py-4">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                                     加载中...
                                 </div>
                             </div>
@@ -148,7 +150,7 @@
         function loadRoommateInfo() {
             $.ajaxRequest('/student/checkin/roommates', 'GET', {}, function(result) {
                 if (result.data && result.data.length > 0) {
-                    var html = '<div class="data-panel"><table class="table">';
+                    var html = '<div class="data-panel"><table >';
                     html += '<thead><tr>';
                     html += '<th>姓名</th>';
                     html += '<th>学号</th>';
@@ -161,7 +163,7 @@
                         html += '<td>' + (roommate.studentName || '-') + '</td>';
                         html += '<td>' + (roommate.studentNo || '-') + '</td>';
                         html += '<td>' + (roommate.bedNo || '-') + '</td>';
-                        html += '<td>' + (roommate.phone || '-') + '</td>';
+                        html += '<td>' + (roommate.phone ? roommate.phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '-') + '</td>';
                         html += '</tr>';
                     });
                     html += '</tbody></table></div>';

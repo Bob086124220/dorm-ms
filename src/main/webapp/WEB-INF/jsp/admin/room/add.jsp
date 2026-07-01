@@ -8,6 +8,8 @@
     <title>新增房间 - 高校公寓管理系统</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>

@@ -28,7 +28,7 @@ public interface DormRepairMapper {
     /**
      * 根据楼栋ID查询报修列表
      */
-    List<DormRepair> selectByBuildingId(Long buildingId);
+    List<DormRepair> selectByBuildingId(@Param("buildingId") Long buildingId, @Param("repairStatus") Integer repairStatus);
 
     /**
      * 插入报修

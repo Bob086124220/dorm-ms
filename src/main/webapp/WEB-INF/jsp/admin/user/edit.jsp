@@ -8,6 +8,8 @@
     <title>编辑用户 - 高校公寓管理系统</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
 
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
@@ -96,9 +98,8 @@
                         </div>
 
                         <!-- 学生专属字段 -->
-                        <div id="studentFields" style="display: none; margin-top: var(--gap-md);">
-                            <div style="border-top: 1px solid var(--border); padding-top: var(--gap-md); margin-bottom: var(--gap-md);">
-                                <span style="font-family: var(--font-mono); font-size: var(--fs-sm); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted);">学生信息</span>
+                        <div id="studentFields" class="student-fields">
+                            <div class="student-fields-header">学生信息
                             </div>
                             <div class="form-grid">
                                 <div class="form-field">
@@ -116,7 +117,7 @@
                             </div>
                         </div>
 
-                        <div style="margin-top: var(--gap-lg); display: flex; gap: var(--gap-sm);">
+                        <div class="form-actions">
                             <button type="submit" class="btn btn-primary" id="btnSubmit">保存</button>
                             <a href="${pageContext.request.contextPath}/admin/user/list" class="btn btn-secondary">取消</a>
                         </div>
