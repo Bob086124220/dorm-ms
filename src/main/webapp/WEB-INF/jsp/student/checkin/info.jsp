@@ -36,8 +36,8 @@
                 <div class="row">
                     <!-- 住宿信息卡片 -->
                     <div class="col-md-8">
-                        <div class="form-container mb-4">
-                            <h6 class="mb-3">当前住宿信息</h6>
+                        <div class="detail-panel">
+                            <h3 class="detail-section-title">当前住宿信息</h3>
                             <div id="checkinInfo">
                                 <div class="text-center py-4">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -51,6 +51,7 @@
                             <h6 class="mb-3">舍友信息</h6>
                             <div id="roommateInfo">
                                 <div class="text-center py-4">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                                     加载中...
                                 </div>
                             </div>
@@ -59,8 +60,8 @@
 
                     <!-- 提示信息 -->
                     <div class="col-md-4">
-                        <div class="form-container">
-                            <h6 class="mb-3">操作提示</h6>
+                        <div class="detail-panel">
+                            <h3 class="detail-section-title">操作提示</h3>
                             <ul style="color: var(--muted); font-size: var(--fs-meta); line-height: 1.8;">
                                 <li>住宿信息由管理员/宿管办理</li>
                                 <li>如需调宿，请到"调宿申请"页面提交申请</li>
@@ -101,40 +102,17 @@
             $.ajaxRequest('/student/checkin/info', 'GET', {}, function(result) {
                 if (result.data) {
                     var info = result.data;
-                    var html = '<div class="row">';
-                    html += '<div class="col-md-6">';
-                    html += '<div class="form-group"><label>楼栋</label>';
-                    html += '<input type="text" class="form-control" value="' + (info.buildingName || '-') + '" readonly></div>';
-                    html += '</div>';
-                    html += '<div class="col-md-6">';
-                    html += '<div class="form-group"><label>房间号</label>';
-                    html += '<input type="text" class="form-control" value="' + (info.roomNo || '-') + '" readonly></div>';
-                    html += '</div>';
-                    html += '</div>';
-                    html += '<div class="row">';
-                    html += '<div class="col-md-6">';
-                    html += '<div class="form-group"><label>床位号</label>';
-                    html += '<input type="text" class="form-control" value="' + (info.bedNo || '-') + '" readonly></div>';
-                    html += '</div>';
-                    html += '<div class="col-md-6">';
-                    html += '<div class="form-group"><label>入住状态</label>';
-                    html += '<input type="text" class="form-control" value="' + (info.checkinStatusText || '-') + '" readonly></div>';
-                    html += '</div>';
-                    html += '</div>';
-                    html += '<div class="row">';
-                    html += '<div class="col-md-6">';
-                    html += '<div class="form-group"><label>入住时间</label>';
-                    html += '<input type="text" class="form-control" value="' + $.formatDate(info.checkinTime) + '" readonly></div>';
-                    html += '</div>';
-                    html += '<div class="col-md-6">';
-                    html += '<div class="form-group"><label>办理人</label>';
-                    html += '<input type="text" class="form-control" value="' + (info.operatorName || '-') + '" readonly></div>';
-                    html += '</div>';
-                    html += '</div>';
+                    var html = '<table>';
+                    html += '<tr><td>楼栋</td><td>' + (info.buildingName || '-') + '</td></tr>';
+                    html += '<tr><td>房间号</td><td>' + (info.roomNo || '-') + '</td></tr>';
+                    html += '<tr><td>床位号</td><td>' + (info.bedNo || '-') + '</td></tr>';
+                    html += '<tr><td>入住状态</td><td>' + (info.checkinStatusText || '-') + '</td></tr>';
+                    html += '<tr><td>入住时间</td><td class="num">' + $.formatDate(info.checkinTime) + '</td></tr>';
+                    html += '<tr><td>办理人</td><td>' + (info.operatorName || '-') + '</td></tr>';
                     if (info.remark) {
-                        html += '<div class="form-group"><label>备注</label>';
-                        html += '<input type="text" class="form-control" value="' + info.remark + '" readonly></div>';
+                        html += '<tr><td>备注</td><td>' + info.remark + '</td></tr>';
                     }
+                    html += '</table>';
                     $('#checkinInfo').html(html);
                 } else {
                     $('#checkinInfo').html('<div class="text-center py-4 text-muted">暂无住宿信息</div>');

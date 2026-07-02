@@ -95,27 +95,27 @@
                 </div>
                 <div class="modal-body">
                     <!-- 申请详情 -->
-                    <div class="mb-3">
-                        <h6>申请信息</h6>
+                    <div class="detail-panel">
+                        <h3 class="detail-section-title">申请信息</h3>
                         <table>
                             <tr>
-                                <td class="bg-light" style="width: 120px;">申请人</td>
+                                <td>申请人</td>
                                 <td id="auditStudentName"></td>
                             </tr>
                             <tr>
-                                <td class="bg-light">原床位</td>
+                                <td>原床位</td>
                                 <td id="auditOriginalBed"></td>
                             </tr>
                             <tr>
-                                <td class="bg-light">目标床位</td>
+                                <td>目标床位</td>
                                 <td id="auditTargetBed"></td>
                             </tr>
                             <tr>
-                                <td class="bg-light">申请原因</td>
+                                <td>申请原因</td>
                                 <td id="auditReason"></td>
                             </tr>
                             <tr>
-                                <td class="bg-light">申请时间</td>
+                                <td>申请时间</td>
                                 <td id="auditTime"></td>
                             </tr>
                         </table>

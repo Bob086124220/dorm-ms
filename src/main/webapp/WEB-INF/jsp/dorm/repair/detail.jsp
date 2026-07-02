@@ -37,7 +37,7 @@
                 </div>
 
                 <!-- 报修信息 -->
-                <div class="form-container mb-4" id="repairInfo">
+                <div class="detail-panel" id="repairInfo">
                     <div class="text-center py-4">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         加载中...
@@ -46,7 +46,7 @@
 
                 <!-- 完结报修表单（处理中状态显示） -->
                 <div class="form-container" id="completeFormContainer" style="display: none;">
-                    <h5 class="mb-3">完结报修</h5>
+                    <h3 class="detail-section-title">完结报修</h3>
                     <form id="completeForm">
                         <div class="mb-3">
                             <label for="handleResult" class="form-label">处理结果 <span class="required">*</span></label>
@@ -119,28 +119,28 @@
             var html = '<div class="row">';
             // 左侧：基本信息
             html += '<div class="col-md-6">';
-            html += '<h6 class="mb-3">基本信息</h6>';
-            html += '<table class="detail-table">';
-            html += '<tr><td class="detail-label">报修ID</td><td class="num">' + repair.repairId + '</td></tr>';
-            html += '<tr><td class="detail-label">学生姓名</td><td>' + (repair.studentName || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">学号</td><td class="num">' + (repair.studentNo || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">楼栋</td><td>' + (repair.buildingName || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">房间</td><td>' + (repair.roomNo || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">联系电话</td><td class="num">' + (repair.contactPhone ? repair.contactPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '-') + '</td></tr>';
+            html += '<h3 class="detail-section-title">基本信息</h3>';
+            html += '<table>';
+            html += '<tr><td>报修ID</td><td class="num">' + repair.repairId + '</td></tr>';
+            html += '<tr><td>学生姓名</td><td>' + (repair.studentName || '-') + '</td></tr>';
+            html += '<tr><td>学号</td><td class="num">' + (repair.studentNo || '-') + '</td></tr>';
+            html += '<tr><td>楼栋</td><td>' + (repair.buildingName || '-') + '</td></tr>';
+            html += '<tr><td>房间</td><td>' + (repair.roomNo || '-') + '</td></tr>';
+            html += '<tr><td>联系电话</td><td class="num">' + (repair.contactPhone ? repair.contactPhone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2') : '-') + '</td></tr>';
             html += '</table>';
             html += '</div>';
 
             // 右侧：报修信息
             html += '<div class="col-md-6">';
-            html += '<h6 class="mb-3">报修信息</h6>';
-            html += '<table class="detail-table">';
-            html += '<tr><td class="detail-label">报修类型</td><td>' + typeText + '</td></tr>';
-            html += '<tr><td class="detail-label">报修内容</td><td>' + (repair.repairContent || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">提交时间</td><td class="num">' + $.formatDate(repair.submitTime) + '</td></tr>';
-            html += '<tr><td class="detail-label">状态</td><td>' + statusBadge + timeoutBadge + '</td></tr>';
-            html += '<tr><td class="detail-label">处理人</td><td>' + (repair.handlerName || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">处理结果</td><td>' + (repair.handleResult || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">完成时间</td><td class="num">' + (repair.finishTime ? $.formatDate(repair.finishTime) : '-') + '</td></tr>';
+            html += '<h3 class="detail-section-title">报修信息</h3>';
+            html += '<table>';
+            html += '<tr><td>报修类型</td><td>' + typeText + '</td></tr>';
+            html += '<tr><td>报修内容</td><td>' + (repair.repairContent || '-') + '</td></tr>';
+            html += '<tr><td>提交时间</td><td class="num">' + $.formatDate(repair.submitTime) + '</td></tr>';
+            html += '<tr><td>状态</td><td>' + statusBadge + timeoutBadge + '</td></tr>';
+            html += '<tr><td>处理人</td><td>' + (repair.handlerName || '-') + '</td></tr>';
+            html += '<tr><td>处理结果</td><td>' + (repair.handleResult || '-') + '</td></tr>';
+            html += '<tr><td>完成时间</td><td class="num">' + (repair.finishTime ? $.formatDate(repair.finishTime) : '-') + '</td></tr>';
             html += '</table>';
             html += '</div>';
             html += '</div>';

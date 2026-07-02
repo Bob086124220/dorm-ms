@@ -38,7 +38,7 @@
 
                 <!-- 步骤1：选择学生 -->
                 <div class="form-container mb-4">
-                    <h6 class="mb-3">第一步：选择学生</h6>
+                    <h3 class="detail-section-title">第一步：选择学生</h3>
                     <div class="input-group">
                                 <input type="text" class="form-control" id="studentNo" placeholder="请输入学号" maxlength="20">
                                 <button type="button" class="btn btn-secondary" onclick="searchStudent()">
@@ -86,7 +86,7 @@
 
                 <!-- 步骤2：选择床位 -->
                 <div class="form-container mb-4" id="bedSection" style="display: none;">
-                    <h6 class="mb-3">第二步：选择床位</h6>
+                    <h3 class="detail-section-title">第二步：选择床位</h3>
                                         <div class="form-grid">
                         <div class="form-field">
                             <label>房间</label>
@@ -117,7 +117,7 @@
 
                 <!-- 步骤3：确认提交 -->
                 <div class="form-container mb-4" id="submitSection" style="display: none;">
-                    <h6 class="mb-3">第三步：确认提交</h6>
+                    <h3 class="detail-section-title">第三步：确认提交</h3>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">

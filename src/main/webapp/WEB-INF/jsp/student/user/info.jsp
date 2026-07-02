@@ -33,87 +33,27 @@
                     </div>
                 </div>
 
-                <!-- 个人信息卡片 -->
+                <!-- 个人信息 -->
                 <div class="row">
                     <div class="col-md-8">
-                        <div class="form-container">
-                            <form id="userInfoForm">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>学号</label>
-                                            <input type="text" class="form-control" id="username" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>姓名</label>
-                                            <input type="text" class="form-control" id="realName" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>性别</label>
-                                            <input type="text" class="form-control" id="gender" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>年级</label>
-                                            <input type="text" class="form-control" id="grade" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>专业</label>
-                                            <input type="text" class="form-control" id="major" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>班级</label>
-                                            <input type="text" class="form-control" id="className" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>联系电话</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="phone" readonly>
-                                                <button type="button" class="btn btn-secondary" onclick="showEditPhoneModal()">
-                                                    修改
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>账号状态</label>
-                                            <input type="text" class="form-control" id="status" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>注册时间</label>
-                                            <input type="text" class="form-control" id="createTime" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                        <div class="detail-panel">
+                            <table>
+                                <tr><td>学号</td><td id="username"></td></tr>
+                                <tr><td>姓名</td><td id="realName"></td></tr>
+                                <tr><td>性别</td><td id="gender"></td></tr>
+                                <tr><td>年级</td><td id="grade"></td></tr>
+                                <tr><td>专业</td><td id="major"></td></tr>
+                                <tr><td>班级</td><td id="className"></td></tr>
+                                <tr><td>联系电话</td><td><span id="phone"></span> <button type="button" class="btn btn-ghost btn-sm" onclick="showEditPhoneModal()">修改</button></td></tr>
+                                <tr><td>账号状态</td><td id="status"></td></tr>
+                                <tr><td>注册时间</td><td id="createTime"></td></tr>
+                            </table>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-container">
-                            <h6 class="mb-3">操作提示</h6>
-                            <ul style="color: var(--muted); font-size: 13px; line-height: 1.8;">
+                        <div class="detail-panel">
+                            <h3 class="detail-section-title">操作提示</h3>
+                            <ul style="color: var(--muted); font-size: var(--fs-meta); line-height: 1.8;">
                                 <li>学号、姓名等基本信息由管理员维护</li>
                                 <li>联系电话可自行修改</li>
                                 <li>如需修改其他信息，请联系管理员</li>
@@ -194,7 +134,7 @@
                     $.toast('success', '联系电话修改成功');
                     $('#editPhoneModal').modal('hide');
                     // 更新显示（input元素用val()）
-                    $('#phone').val(phone);
+                    $('#phone').text(phone);
                     $('#btnSavePhone').prop('disabled', false).text('保存');
                 }, function(result) {
                     $.toast('error', result.msg || '修改失败');
@@ -210,15 +150,15 @@
             $.ajaxRequest('/student/user/getInfo', 'GET', {}, function(result) {
                 if (result.data) {
                     var user = result.data;
-                    $('#username').val(user.username || '');
-                    $('#realName').val(user.realName || '');
-                    $('#gender').val(user.gender === 1 ? '男' : '女');
-                    $('#grade').val(user.grade || '');
-                    $('#major').val(user.major || '');
-                    $('#className').val(user.className || '');
-                    $('#phone').val(user.phone || '');
-                    $('#status').val(user.status === 1 ? '正常' : '禁用');
-                    $('#createTime').val($.formatDate(user.createTime));
+                    $('#username').text(user.username || '-');
+                    $('#realName').text(user.realName || '-');
+                    $('#gender').text(user.gender === 1 ? '男' : '女');
+                    $('#grade').text(user.grade || '-');
+                    $('#major').text(user.major || '-');
+                    $('#className').text(user.className || '-');
+                    $('#phone').text(user.phone || '-');
+                    $('#status').html(user.status === 1 ? '<span class="pill pill-active">正常</span>' : '<span class="pill pill-disabled">禁用</span>');
+                    $('#createTime').text($.formatDate(user.createTime));
                 }
             }, function() {
                 $.toast('error', '加载个人信息失败');
@@ -229,7 +169,7 @@
          * 显示修改联系电话模态框
          */
         function showEditPhoneModal() {
-            var currentPhone = $('#phone').val();
+            var currentPhone = $('#phone').text().trim();
             $('#newPhone').val(currentPhone).removeClass('is-invalid');
             $('#newPhoneError').text('');
             $('#editPhoneModal').modal('show');

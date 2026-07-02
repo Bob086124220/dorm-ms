@@ -42,7 +42,7 @@
                 </div>
 
                 <!-- 访客信息 -->
-                <div class="form-container" id="visitorInfo">
+                <div class="detail-panel" id="visitorInfo">
                     <div class="text-center py-4">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         加载中...
@@ -115,25 +115,25 @@
             var html = '<div class="row">';
             // 左侧：访客信息
             html += '<div class="col-md-6">';
-            html += '<h6 class="mb-3">访客信息</h6>';
-            html += '<table class="detail-table">';
-            html += '<tr><td class="detail-label">访客ID</td><td class="num">' + visitor.visitorId + '</td></tr>';
-            html += '<tr><td class="detail-label">访客姓名</td><td>' + (visitor.visitorName || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">身份证号</td><td class="num">' + (visitor.idCard ? visitor.idCard.replace(/(\d{6})\d{8}(\d{4})/, '$1********$2') : '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">来访时间</td><td class="num">' + $.formatDate(visitor.visitTime) + '</td></tr>';
-            html += '<tr><td class="detail-label">离开时间</td><td class="num">' + (visitor.leaveTime ? $.formatDate(visitor.leaveTime) : '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">来访事由</td><td>' + (visitor.visitReason || '-') + '</td></tr>';
+            html += '<h3 class="detail-section-title">访客信息</h3>';
+            html += '<table>';
+            html += '<tr><td>访客ID</td><td class="num">' + visitor.visitorId + '</td></tr>';
+            html += '<tr><td>访客姓名</td><td>' + (visitor.visitorName || '-') + '</td></tr>';
+            html += '<tr><td>身份证号</td><td class="num">' + (visitor.idCard ? visitor.idCard.replace(/(\d{6})\d{8}(\d{4})/, '$1********$2') : '-') + '</td></tr>';
+            html += '<tr><td>来访时间</td><td class="num">' + $.formatDate(visitor.visitTime) + '</td></tr>';
+            html += '<tr><td>离开时间</td><td class="num">' + (visitor.leaveTime ? $.formatDate(visitor.leaveTime) : '-') + '</td></tr>';
+            html += '<tr><td>来访事由</td><td>' + (visitor.visitReason || '-') + '</td></tr>';
             html += '</table>';
             html += '</div>';
 
             // 右侧：被访学生和状态
             html += '<div class="col-md-6">';
-            html += '<h6 class="mb-3">其他信息</h6>';
-            html += '<table class="detail-table">';
-            html += '<tr><td class="detail-label">状态</td><td>' + statusBadge + '</td></tr>';
-            html += '<tr><td class="detail-label">被访学生</td><td>' + (visitor.studentName || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">楼栋</td><td>' + (visitor.buildingName || '-') + '</td></tr>';
-            html += '<tr><td class="detail-label">登记人</td><td>' + (visitor.registrarName || '-') + '</td></tr>';
+            html += '<h3 class="detail-section-title">其他信息</h3>';
+            html += '<table>';
+            html += '<tr><td>状态</td><td>' + statusBadge + '</td></tr>';
+            html += '<tr><td>被访学生</td><td>' + (visitor.studentName || '-') + '</td></tr>';
+            html += '<tr><td>楼栋</td><td>' + (visitor.buildingName || '-') + '</td></tr>';
+            html += '<tr><td>登记人</td><td>' + (visitor.registrarName || '-') + '</td></tr>';
             html += '</table>';
             html += '</div>';
             html += '</div>';

@@ -55,7 +55,6 @@ img { max-width: 100%; height: auto; }
 .content-body {
     flex: 1;
     padding: var(--gap-xl);
-    background: var(--bg);
 }
 
 /* ============================================= */
@@ -391,6 +390,20 @@ img { max-width: 100%; height: auto; }
     color: var(--surface);
 }
 
+/*
+ * 覆盖 Bootstrap 5.3 默认 :active / :focus-visible 蓝色
+ * Bootstrap 通过 CSS 变量 --bs-btn-active-bg 设置 active 态，
+ * 普通选择器优先级不足以覆盖，必须使用 !important。
+ * 这是框架级覆盖，属于 !important 的正当使用场景。
+ */
+.btn-primary:active,
+.btn-primary.active,
+.btn-primary:focus-visible {
+    /* 不改变背景色，仅通过缩放表达按压反馈，与原型 login.html 一致 */
+    transform: scale(0.98) !important;
+    color: var(--surface) !important;
+}
+
 /* 浅色/边框按钮 — 次要操作 */
 .btn-secondary {
     background: transparent;
@@ -533,7 +546,6 @@ img { max-width: 100%; height: auto; }
 }
 
 .cselect-trigger:hover { border-color: var(--accent); }
-.cselect.has-value .cselect-trigger { border-color: var(--accent); }
 
 .cselect-val {
     font-size: var(--fs-body);
@@ -644,11 +656,6 @@ img { max-width: 100%; height: auto; }
     outline: none;
     box-shadow: 0 0 0 3px var(--accent-soft);
 }
-.form-control.has-value:not([readonly]),
-.form-control:not(:placeholder-shown):not([readonly]) {
-    border-color: var(--accent);
-}
-
 .form-control.error { border-color: var(--accent); }
 .form-control.error:focus { box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 8%, transparent); }
 
@@ -1137,25 +1144,68 @@ img { max-width: 100%; height: auto; }
 }
 
 /* ============================================= */
-/* ========== 详情页标签列 ========== */
-.detail-label,
-.detail-table td:first-child {
+/* 详情面板（低耦合，独立于 data-panel/form-container） */
+/* ============================================= */
+.detail-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--gap-lg);
+    margin-bottom: var(--gap-lg);
+}
+
+.detail-section-title {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
+    margin: 0 0 var(--gap-md) 0;
+}
+.detail-panel .detail-section-title {
+    padding-bottom: var(--gap-sm);
+    border-bottom: 1px solid var(--border);
+}
+
+/* 详情表格：斑马条纹 + 标签列自动匹配 */
+.detail-panel table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+.detail-panel td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    font-size: var(--fs-body);
+}
+
+/* 标签列：等宽字体、小号、弱化色、固定宽度 */
+.detail-panel td:first-child {
     width: 120px;
     color: var(--muted);
     font-family: var(--font-mono);
     font-size: var(--fs-sm);
     letter-spacing: 0.04em;
+    white-space: nowrap;
 }
 
-.detail-table {
-    width: 100%;
-    border-collapse: collapse;
+/* 斑马条纹 */
+.detail-panel tbody tr:nth-child(odd),
+.detail-panel tr:nth-child(odd) {
+    background: var(--stripe);
 }
-.detail-table td {
-    padding: 8px 12px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: middle;
+
+.detail-panel tbody tr:hover,
+.detail-panel tr:hover {
+    background: var(--hover-bg);
 }
+
+.detail-panel tr:last-child td {
+    border-bottom: none;
+}
+
 
 /* ========== 系统信息区域 ========== */
 .info-section {

@@ -123,7 +123,10 @@
                         <input type="file" class="form-control" id="importFile" accept=".csv">
                         <div class="form-text">
                             仅支持CSV格式文件，最大1MB。
-                            <a href="${pageContext.request.contextPath}/static/template/用户导入模板.csv" download>下载模板</a>
+                            <a href="${pageContext.request.contextPath}/static/template/用户导入模板.csv" class="btn btn-secondary btn-sm" download>
+                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                下载模板
+                            </a>
                         </div>
                     </div>
                     <div id="importResult" style="display: none;">

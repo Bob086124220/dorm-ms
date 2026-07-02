@@ -38,7 +38,7 @@
                 </div>
 
                 <!-- 报修信息 -->
-                <div class="form-container" id="repairInfo">
+                <div class="detail-panel" id="repairInfo">
                     <div class="text-center py-4">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                         加载中...
@@ -110,7 +110,7 @@
             var currentStepIndex = steps.findIndex(function(s) { return s.status === repair.repairStatus; });
 
             var html = '<div class="mb-4">';
-            html += '<h6 class="mb-3">处理进度</h6>';
+            html += '<h3 class="detail-section-title">处理进度</h3>';
             html += '<div class="d-flex align-items-center">';
             steps.forEach(function(step, index) {
                 var isActive = index <= currentStepIndex;
@@ -120,7 +120,7 @@
                 html += '<div class="d-flex align-items-center">';
                 html += '<div class="step-circle ' + stepClass + '">';
                 if (index < currentStepIndex) {
-                    html += '&#10003;';
+                    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>';
                 } else {
                     html += (index + 1);
                 }
@@ -139,9 +139,9 @@
             html += '<div class="row">';
             // 左侧：基本信息
             html += '<div class="col-md-6">';
-            html += '<h6 class="mb-3">基本信息</h6>';
-            html += '<table class="detail-table">';
-            html += '<tr><td class="detail-label">楼栋</td><td>' + (repair.buildingName || '-') + '</td></tr>';
+            html += '<h3 class="detail-section-title">基本信息</h3>';
+            html += '<table>';
+            html += '<tr><td>楼栋</td><td>' + (repair.buildingName || '-') + '</td></tr>';
             html += '<tr><td >房间</td><td>' + (repair.roomNo || '-') + '</td></tr>';
             html += '<tr><td >报修类型</td><td>' + typeText + '</td></tr>';
             html += '<tr><td >报修内容</td><td>' + (repair.repairContent || '-') + '</td></tr>';
@@ -152,9 +152,9 @@
 
             // 右侧：处理信息
             html += '<div class="col-md-6">';
-            html += '<h6 class="mb-3">处理信息</h6>';
-            html += '<table class="detail-table">';
-            html += '<tr><td class="detail-label">状态</td><td>' + statusBadge + timeoutBadge + '</td></tr>';
+            html += '<h3 class="detail-section-title">处理信息</h3>';
+            html += '<table>';
+            html += '<tr><td>状态</td><td>' + statusBadge + timeoutBadge + '</td></tr>';
             html += '<tr><td >处理人</td><td>' + (repair.handlerName || '-') + '</td></tr>';
             html += '<tr><td >处理结果</td><td>' + (repair.handleResult || '-') + '</td></tr>';
             html += '<tr><td >完成时间</td><td class="num">' + (repair.finishTime ? $.formatDate(repair.finishTime) : '-') + '</td></tr>';

@@ -109,14 +109,14 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="mb-3">
-                    <h6>申请信息</h6>
-                    <table class="detail-table">
-                        <tr><td class="detail-label">申请人</td><td id="auditStudentName"></td></tr>
-                        <tr><td class="detail-label">原床位</td><td id="auditOriginalBed"></td></tr>
-                        <tr><td class="detail-label">目标床位</td><td id="auditTargetBed"></td></tr>
-                        <tr><td class="detail-label">申请原因</td><td id="auditReason"></td></tr>
-                        <tr><td class="detail-label">申请时间</td><td id="auditTime"></td></tr>
+                <div class="detail-panel">
+                    <h3 class="detail-section-title">申请信息</h3>
+                    <table>
+                        <tr><td>申请人</td><td id="auditStudentName"></td></tr>
+                        <tr><td>原床位</td><td id="auditOriginalBed"></td></tr>
+                        <tr><td>目标床位</td><td id="auditTargetBed"></td></tr>
+                        <tr><td>申请原因</td><td id="auditReason"></td></tr>
+                        <tr><td>申请时间</td><td id="auditTime"></td></tr>
                     </table>
                 </div>
                 <form id="auditForm">

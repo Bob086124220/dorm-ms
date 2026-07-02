@@ -30,7 +30,16 @@ function showChangePasswordModal(forceChange) {
     }
 
     // 显示模态框
-    $('#changePasswordModal').modal('show');
+    // 使用 Bootstrap 原生 API——jQuery 的 .modal('dispose') 在 Edge 中
+    // 对未初始化实例调用 getInstance() 返回 null 后访问 .dispose() 抛出 TypeError
+    var modalEl = document.getElementById('changePasswordModal');
+    var existing = bootstrap.Modal.getInstance(modalEl);
+    if (existing) { existing.dispose(); }
+    var modal = new bootstrap.Modal(modalEl, {
+        backdrop: forceChange ? 'static' : true,
+        keyboard: !forceChange
+    });
+    modal.show();
 }
 
 $(function() {

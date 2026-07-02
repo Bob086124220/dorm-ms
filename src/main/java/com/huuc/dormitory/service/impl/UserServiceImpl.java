@@ -203,10 +203,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean needChangePassword(SysUser user) {
-        if (user == null || user.getPassword() == null) {
+        if (user == null) {
             return false;
         }
-        // 查询完整用户信息（包含密码）
+        // 查询完整用户信息（包含密码，不依赖传入 user 的 password 字段）
         SysUser fullUser = sysUserMapper.selectById(user.getUserId());
         if (fullUser == null) {
             return false;
