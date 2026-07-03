@@ -13,7 +13,6 @@
 <body class="student-layout">
 <div class="main-container">
     <%@ include file="/WEB-INF/jsp/common/sidebar.jsp" %>
-
     <div class="content-wrapper">
         <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
         <%@ include file="/WEB-INF/jsp/common/student_tabs.jsp" %>
@@ -22,64 +21,46 @@
             <!-- 轮播公告 -->
             <%@ include file="/WEB-INF/jsp/common/carousel.jsp" %>
 
-            <!-- 欢迎区 + 住宿信息 -->
-            <section class="data-panel" style="margin-bottom: var(--gap-lg);">
-                <div class="info-section">
-                    <span class="page-eyebrow">STUDENT HOME</span>
-                    <h2 class="info-title">欢迎回来，${sessionScope.loginUser.realName}同学！</h2>
+            <!-- 欢迎区 — 参照原型：左文字 + 右芯片 -->
+            <section class="data-panel" style="display:flex;align-items:center;justify-content:space-between;padding:var(--gap-lg);margin-bottom:var(--gap-xl);opacity:0;animation:fadeUp .5s .2s cubic-bezier(.22,1,.36,1) both;">
+                <div>
+                    <h1 style="font-family:var(--font-display);font-size:var(--fs-h1);font-weight:700;line-height:1.2;letter-spacing:-0.01em;margin:0;">
+                        欢迎回来，<span style="color:var(--accent);">${sessionScope.loginUser.realName}</span>同学！
+                    </h1>
+                    <p style="font-family:var(--font-mono);font-size:var(--fs-meta);color:var(--muted);margin:var(--gap-xs) 0 0 0;">
+                        学号 <span class="num">${sessionScope.loginUser.username}</span>
+                    </p>
                 </div>
-                <div class="info-body">
-                    <div class="info-row info-row--bordered">
-                        <span class="info-label">学号</span>
-                        <span class="info-value num">${sessionScope.loginUser.username}</span>
-                    </div>
-                    <div class="info-row info-row--bordered">
-                        <span class="info-label">当前住宿</span>
-                        <span class="info-value" id="dormInfo">加载中...</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">舍友</span>
-                        <span class="info-value" id="roommateInfo">--</span>
-                    </div>
+                <div style="display:flex;flex-direction:column;gap:var(--gap-xs);align-items:flex-end;">
+                    <span class="info-chip">当前住宿：<strong id="dormInfo">加载中...</strong></span>
+                    <span class="info-chip">已入住 <strong class="num" id="stayDaysChip">--</strong> 天</span>
                 </div>
             </section>
 
             <!-- 快捷操作 -->
-            <section class="row" style="margin-bottom: var(--gap-lg);">
-                <div class="col-md-4 mb-3">
-                    <a href="${pageContext.request.contextPath}/student/repair/submit" class="module-card" id="btnRepair">
-                        <span class="module-card-num">01</span>
-                        <div class="module-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                        </div>
-                        <h3>提交报修</h3>
-                        <p>提交宿舍维修申请</p>
-                    </a>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <a href="${pageContext.request.contextPath}/student/move/applyPage" class="module-card">
-                        <span class="module-card-num">02</span>
-                        <div class="module-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                        </div>
-                        <h3>申请调宿</h3>
-                        <p>提交调宿申请</p>
-                    </a>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <a href="${pageContext.request.contextPath}/student/user/info" class="module-card">
-                        <span class="module-card-num">03</span>
-                        <div class="module-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        </div>
-                        <h3>个人信息</h3>
-                        <p>查看与修改个人资料</p>
-                    </a>
-                </div>
+            <section class="quick-actions" style="opacity:0;animation:fadeUp .5s .3s cubic-bezier(.22,1,.36,1) both;">
+                <a href="${pageContext.request.contextPath}/student/repair/submit" class="quick-action" id="btnRepair">
+                    <div class="quick-action-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    </div>
+                    <div class="quick-action-text"><h3>提交报修</h3><p>报告宿舍设施问题</p></div>
+                </a>
+                <a href="${pageContext.request.contextPath}/student/move/applyPage" class="quick-action">
+                    <div class="quick-action-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                    </div>
+                    <div class="quick-action-text"><h3>申请调宿</h3><p>申请更换宿舍房间</p></div>
+                </a>
+                <a href="${pageContext.request.contextPath}/student/user/info" class="quick-action">
+                    <div class="quick-action-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="quick-action-text"><h3>个人信息</h3><p>查看和修改个人资料</p></div>
+                </a>
             </section>
 
-            <!-- 统计卡片 ×3 -->
-            <section class="stats-row" style="grid-template-columns: repeat(3, 1fr);">
+            <!-- 数据卡片 ×3 -->
+            <section class="stats-row" style="grid-template-columns: repeat(3, 1fr);opacity:0;animation:fadeUp .5s .4s cubic-bezier(.22,1,.36,1) both;">
                 <div class="stat-card" data-decorative-num="01">
                     <div class="stat-card-label">本月报修</div>
                     <div class="stat-card-value accent" id="monthRepair">--</div>
@@ -93,20 +74,16 @@
                 <div class="stat-card" data-decorative-num="03">
                     <div class="stat-card-label">已入住</div>
                     <div class="stat-card-value" id="stayDays">--</div>
-                    <div class="stat-card-sub">温馨宿舍</div>
+                    <div class="stat-card-sub">天 · 温馨宿舍</div>
                 </div>
             </section>
 
             <!-- 最近报修 + 最近晚归 -->
-            <section class="charts-row">
-                <!-- 最近报修 -->
+            <section class="charts-row" style="opacity:0;animation:fadeUp .5s .55s cubic-bezier(.22,1,.36,1) both;">
                 <div class="content-panel">
                     <div class="content-panel-header">
                         <h3>最近报修</h3>
-                        <a href="${pageContext.request.contextPath}/student/repair/list" class="panel-link">
-                            查看全部
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                        </a>
+                        <a href="${pageContext.request.contextPath}/student/repair/list" class="panel-link">全部 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
                     </div>
                     <div class="activity-log" id="recentRepairs"></div>
                     <div class="empty-state" id="repairEmpty" style="display:none;">
@@ -114,14 +91,10 @@
                         <div class="empty-state-title">暂无报修记录</div>
                     </div>
                 </div>
-                <!-- 最近晚归 -->
                 <div class="content-panel">
                     <div class="content-panel-header">
                         <h3>最近晚归</h3>
-                        <a href="${pageContext.request.contextPath}/student/late-return/list" class="panel-link">
-                            查看全部
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                        </a>
+                        <a href="${pageContext.request.contextPath}/student/late-return/list" class="panel-link">全部 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
                     </div>
                     <div class="activity-log" id="recentLateReturns"></div>
                     <div class="empty-state" id="lateEmpty" style="display:none;">
@@ -132,13 +105,10 @@
             </section>
 
             <!-- 最新公告 -->
-            <section class="content-panel" style="margin-bottom: var(--gap-xl);">
+            <section class="content-panel" style="margin-bottom:var(--gap-xl);opacity:0;animation:fadeUp .5s .65s cubic-bezier(.22,1,.36,1) both;">
                 <div class="content-panel-header">
                     <h3>最新公告</h3>
-                    <a href="${pageContext.request.contextPath}/common/notice/listPage" class="panel-link">
-                        查看全部
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-                    </a>
+                    <a href="${pageContext.request.contextPath}/common/notice/listPage" class="panel-link">全部公告 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
                 </div>
                 <div class="activity-log" id="recentNotices"></div>
                 <div class="empty-state" id="noticeEmpty" style="display:none;">
@@ -147,7 +117,6 @@
                 </div>
             </section>
         </div>
-
         <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>
     </div>
 </div>
@@ -164,153 +133,81 @@
 
     function countUp(elementId, target, suffix) {
         var el = document.getElementById(elementId);
-        if (!el) return;
-        suffix = suffix || '';
+        if (!el) return; suffix = suffix || '';
         var duration = 800;
-        if (target <= 0) {
-            el.textContent = '0' + suffix;
-            return;
-        }
+        if (target <= 0) { el.textContent = '0' + suffix; return; }
         var startTime = null;
-        function step(timestamp) {
-            if (!startTime) startTime = timestamp;
-            var elapsed = timestamp - startTime;
-            var progress = Math.min(elapsed / duration, 1);
-            var ease = 1 - Math.pow(1 - progress, 3);
-            el.textContent = Math.round(target * ease) + suffix;
-            if (progress < 1) requestAnimationFrame(step);
-        }
+        function step(ts) { if (!startTime) startTime = ts;
+            var p = Math.min((ts - startTime) / duration, 1);
+            el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
+            if (p < 1) requestAnimationFrame(step); }
         requestAnimationFrame(step);
     }
 
-    // ==================== 数据加载 ====================
+    function getRepairStatusText(s) { if (s === 2) return '已完成'; if (s === 1) return '处理中'; return '待处理'; }
+    function getRepairStatusClass(s) { if (s === 2) return 'pill-done'; if (s === 1) return 'pill-processing'; return 'pill-pending'; }
 
     $(function() {
-        // 轻量聚合：统计数据
-        $.ajaxRequest('/student/dashboard', 'GET', null, function(result) {
-            var d = result.data;
-            countUp('monthRepair', d.monthRepairCount || 0, ' 条');
+        // 统计数据
+        $.ajaxRequest('/student/dashboard', 'GET', null, function(r) {
+            var d = r.data; countUp('monthRepair', d.monthRepairCount || 0, ' 条');
             countUp('monthLate', d.monthLateReturnCount || 0, ' 次');
             countUp('stayDays', d.stayDays || 0, ' 天');
+            if (d.stayDays) $('#stayDaysChip').text(d.stayDays);
         });
-
         // 住宿信息
-        $.ajaxRequest('/student/checkin/info', 'GET', null, function(result) {
-            var info = result.data;
+        $.ajaxRequest('/student/checkin/info', 'GET', null, function(r) {
+            var info = r.data;
             if (info && info.buildingName) {
-                $('#dormInfo').text(info.buildingName + ' ' + info.roomNo + '室 ' + info.bedNo + '号床');
-                // 加载舍友
+                $('#dormInfo').html(info.buildingName + ' ' + info.roomNo + '室 ' + info.bedNo + '号床');
                 $.ajaxRequest('/student/checkin/roommates', 'GET', null, function(r2) {
-                    var mates = r2.data || [];
-                    if (mates.length > 0) {
-                        var names = [];
-                        for (var i = 0; i < mates.length; i++) {
-                            names.push(mates[i].studentName || mates[i].realName || '同学');
-                        }
-                        var roommateHtml = names.join('、');
-                        roommateHtml += ' <a href="${pageContext.request.contextPath}/student/checkin/infoPage" class="btn-ghost btn-sm" style="margin-left:var(--gap-sm);">';
-                        roommateHtml += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;margin-right:4px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
-                        roommateHtml += '查看舍友</a>';
-                        $('#roommateInfo').html(roommateHtml);
-                    } else {
-                        $('#roommateInfo').text('暂无舍友');
+                    var mates = r2.data || []; var names = [];
+                    for (var i = 0; i < mates.length; i++) names.push(mates[i].studentName || mates[i].realName || '同学');
+                    if (names.length > 0) {
+                        var btnHtml = ' <a href="${pageContext.request.contextPath}/student/checkin/infoPage" class="btn-ghost btn-sm" style="margin-left:6px;font-size:11px;">';
+                        btnHtml += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;margin-right:3px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>舍友</a>';
+                        $('#dormInfo').after(' <span class="info-chip">'+names.join('、')+btnHtml+'</span>');
                     }
                 });
-            } else {
-                $('#dormInfo').text('暂未入住');
-                $('#roommateInfo').text('--');
-                $('#btnRepair').closest('.col-md-4').hide();
-            }
+            } else { $('#dormInfo').text('暂未入住'); $('#btnRepair').hide(); }
         });
-
         // 最近报修
-        $.ajaxRequest('/student/repair/page', 'GET', { pageNum: 1, pageSize: 3 }, function(result) {
-            renderRecentRepairs(result.data.list || []);
+        $.ajaxRequest('/student/repair/page', 'GET', { pageNum: 1, pageSize: 3 }, function(r) {
+            var items = (r.data && r.data.list) || [];
+            var a = $('#recentRepairs'), e = $('#repairEmpty');
+            if (!items.length) { a.empty(); e.show(); return; } e.hide();
+            var h = '';
+            for (var i = 0; i < items.length; i++) {
+                var it = items[i], t = (it.repairContent || '').substring(0, 28), tm = (it.submitTime || '').substring(5, 16);
+                h += '<div class="log-entry"><span class="log-time">' + tm + '</span><span class="log-text">' + $('<span>').text(t).html() + '</span><span class="pill ' + getRepairStatusClass(it.repairStatus) + '" style="font-size:11px;">' + getRepairStatusText(it.repairStatus) + '</span></div>';
+            }
+            a.html(h);
         });
-
         // 最近晚归
-        $.ajaxRequest('/student/late-return/page', 'GET', { pageNum: 1, pageSize: 3 }, function(result) {
-            renderRecentLateReturns(result.data.list || []);
+        $.ajaxRequest('/student/late-return/page', 'GET', { pageNum: 1, pageSize: 3 }, function(r) {
+            var items = (r.data && r.data.list) || [];
+            var a = $('#recentLateReturns'), e = $('#lateEmpty');
+            if (!items.length) { a.empty(); e.show(); return; } e.hide();
+            var h = '';
+            for (var i = 0; i < items.length; i++) {
+                var it = items[i], rs = (it.lateReason || '未填写原因').substring(0, 24), tm = (it.lateTime || '').substring(5, 16);
+                h += '<div class="log-entry"><span class="log-time">' + tm + '</span><span class="log-text">' + $('<span>').text(rs).html() + '</span></div>';
+            }
+            a.html(h);
         });
-
         // 最新公告
-        $.ajaxRequest('/common/notice/visible', 'GET', { pageNum: 1, pageSize: 3 }, function(result) {
-            renderNotices(result.data.list || []);
+        $.ajaxRequest('/common/notice/visible', 'GET', { pageNum: 1, pageSize: 3 }, function(r) {
+            var items = (r.data && r.data.list) || [];
+            var a = $('#recentNotices'), e = $('#noticeEmpty');
+            if (!items.length) { a.empty(); e.show(); return; } e.hide();
+            var h = '', ctx = '${pageContext.request.contextPath}';
+            for (var i = 0; i < items.length; i++) {
+                var n = items[i], t = (n.title || '').substring(0, 36), tm = (n.publishTime || '').substring(5, 10);
+                h += '<div class="log-entry"><span class="log-time">' + tm + '</span><a href="' + ctx + '/common/notice/detailPage?noticeId=' + n.noticeId + '" class="log-text" style="text-decoration:none;">' + $('<span>').text(t).html() + '</a></div>';
+            }
+            a.html(h);
         });
     });
-
-    // ==================== 渲染函数 ====================
-
-    function getRepairStatusText(status) {
-        if (status === 2) return '已完成';
-        if (status === 1) return '处理中';
-        return '待处理';
-    }
-
-    function getRepairStatusClass(status) {
-        if (status === 2) return 'pill-done';
-        if (status === 1) return 'pill-processing';
-        return 'pill-pending';
-    }
-
-    function renderRecentRepairs(items) {
-        var $area = $('#recentRepairs');
-        var $empty = $('#repairEmpty');
-        if (!items || items.length === 0) { $area.empty(); $empty.show(); return; }
-        $empty.hide();
-
-        var html = '';
-        for (var i = 0; i < items.length; i++) {
-            var r = items[i];
-            var title = (r.repairContent || '').substring(0, 30);
-            var time = (r.submitTime || '').substring(5, 16);
-            html += '<div class="log-entry">'
-                + '<span class="log-time">' + time + '</span>'
-                + '<span class="log-text">' + $('<span>').text(title).html() + '</span>'
-                + '<span class="pill ' + getRepairStatusClass(r.repairStatus) + '" style="font-size:11px;">' + getRepairStatusText(r.repairStatus) + '</span>'
-                + '</div>';
-        }
-        $area.html(html);
-    }
-
-    function renderRecentLateReturns(items) {
-        var $area = $('#recentLateReturns');
-        var $empty = $('#lateEmpty');
-        if (!items || items.length === 0) { $area.empty(); $empty.show(); return; }
-        $empty.hide();
-
-        var html = '';
-        for (var i = 0; i < items.length; i++) {
-            var lr = items[i];
-            var reason = (lr.lateReason || '未填写原因').substring(0, 24);
-            var time = (lr.lateTime || '').substring(5, 16);
-            html += '<div class="log-entry">'
-                + '<span class="log-time">' + time + '</span>'
-                + '<span class="log-text">' + $('<span>').text(reason).html() + '</span>'
-                + '</div>';
-        }
-        $area.html(html);
-    }
-
-    function renderNotices(items) {
-        var $area = $('#recentNotices');
-        var $empty = $('#noticeEmpty');
-        if (!items || items.length === 0) { $area.empty(); $empty.show(); return; }
-        $empty.hide();
-
-        var html = '';
-        for (var i = 0; i < items.length; i++) {
-            var n = items[i];
-            var title = (n.title || '').substring(0, 36);
-            var time = (n.publishTime || '').substring(5, 10);
-            html += '<div class="log-entry">'
-                + '<span class="log-time">' + time + '</span>'
-                + '<a href="${pageContext.request.contextPath}/common/notice/detailPage?noticeId=' + n.noticeId + '" class="log-text" style="text-decoration:none;">' + $('<span>').text(title).html() + '</a>'
-                + '</div>';
-        }
-        $area.html(html);
-    }
-
 })();
 </script>
 </body>

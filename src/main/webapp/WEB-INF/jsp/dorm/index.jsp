@@ -54,6 +54,20 @@
                 </div>
             </section>
 
+            <!-- 链接跳转卡片（调宿/在访） -->
+            <section class="stats-row" style="margin-bottom: var(--gap-xl);">
+                <div class="stat-card" data-decorative-num="05">
+                    <div class="stat-card-label">待审批调宿</div>
+                    <div class="stat-card-value accent" id="pendingMoveCount">--</div>
+                    <div class="stat-card-sub">需审核的调宿申请</div>
+                </div>
+                <div class="stat-card" data-decorative-num="06">
+                    <div class="stat-card-label">在访未离校</div>
+                    <div class="stat-card-value accent2" id="activeVisitorCount">--</div>
+                    <div class="stat-card-sub">尚未登记离开的访客</div>
+                </div>
+            </section>
+
             <!-- 图表双栏 -->
             <section class="charts-row">
                 <div class="chart-panel">
@@ -70,8 +84,8 @@
                 </div>
             </section>
 
-            <!-- 待处理报修 -->
-            <section class="content-panel" style="margin-bottom: var(--gap-lg);">
+            <!-- 待处理报修表格 -->
+            <section class="content-panel" style="margin-bottom: var(--gap-xl);">
                 <div class="content-panel-header">
                     <h3>待处理报修</h3>
                     <a href="${pageContext.request.contextPath}/dorm/repair/list" class="panel-link">
@@ -89,20 +103,6 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     <div class="empty-state-title">暂无待处理报修</div>
                     <div class="empty-state-desc">所有报修已处理完毕</div>
-                </div>
-            </section>
-
-            <!-- 其他待办 -->
-            <section class="stats-row" style="margin-bottom: var(--gap-xl);">
-                <div class="stat-card" data-decorative-num="05">
-                    <div class="stat-card-label">待审批调宿</div>
-                    <div class="stat-card-value accent" id="pendingMoveCount">--</div>
-                    <div class="stat-card-sub">需审核的调宿申请</div>
-                </div>
-                <div class="stat-card" data-decorative-num="06">
-                    <div class="stat-card-label">在访未离校</div>
-                    <div class="stat-card-value accent2" id="activeVisitorCount">--</div>
-                    <div class="stat-card-sub">尚未登记离开的访客</div>
                 </div>
             </section>
         </div>
@@ -228,7 +228,7 @@
 
         chart.setOption({
             tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
-            grid: { left: '20%', right: '10%', top: '6%', bottom: '6%' },
+            grid: { left: '20%', right: '10%', top: '6%', bottom: '14%' },
             xAxis: { type: 'value', max: 100, axisLabel: { formatter: '{value}%' } },
             yAxis: { type: 'category', data: floors },
             series: [{

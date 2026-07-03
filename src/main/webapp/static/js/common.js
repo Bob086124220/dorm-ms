@@ -766,14 +766,14 @@ var MAGAZINE_THEME = {
                 var item = banners[i];
                 var isActive = i === 0 ? ' active' : '';
                 if (item.bannerImage) {
-                    html += '<div class="carousel-item' + isActive + '">'
+                    html += '<div class="carousel-item' + isActive + '" data-notice-id="' + item.noticeId + '">'
                         + '<img src="' + $.buildUrl(item.bannerImage) + '" alt="' + escapeHtml(item.title) + '" class="carousel-banner-img">'
                         + '<div class="carousel-caption">' + escapeHtml(item.title) + '</div>'
                         + '</div>';
                 } else {
                     var summary = getMarkdownSummary(item.content, 100);
                     var dateText = (item.publishTime || '').substring(0, 10);
-                    html += '<div class="carousel-item no-image' + isActive + '">'
+                    html += '<div class="carousel-item no-image' + isActive + '" data-notice-id="' + item.noticeId + '">'
                         + '<div class="type-stripe" data-type="' + item.noticeType + '"></div>'
                         + '<div class="overlay">'
                         + '<h2>' + escapeHtml(item.title) + '</h2>'
@@ -801,6 +801,14 @@ var MAGAZINE_THEME = {
 
             $container.html(html);
             $container.show();
+
+            // 点击轮播跳转详情
+            $container.find('.carousel-item').on('click', function() {
+                var id = $(this).attr('data-notice-id');
+                if (id) {
+                    window.location.href = $.buildUrl('/common/notice/detailPage?noticeId=' + id);
+                }
+            }).css('cursor', 'pointer');
 
             if (banners.length >= 2) {
                 initCarouselPlay($container, banners.length);

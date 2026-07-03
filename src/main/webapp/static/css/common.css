@@ -598,7 +598,16 @@ img { max-width: 100%; height: auto; }
     user-select: none;
 }
 
-.cselect-trigger:hover { border-color: var(--accent); }
+.cselect-trigger:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--accent) 15%, transparent);
+}
+
+.cselect-trigger:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
 
 .cselect-val {
     font-size: var(--fs-body);
@@ -706,10 +715,21 @@ img { max-width: 100%; height: auto; }
     transition: border-color 0.15s;
 }
 
+.form-control:hover:not(:focus):not(:disabled) {
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--accent) 15%, transparent);
+}
+
 .form-control:focus {
     border-color: var(--accent);
     outline: none;
     box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+input[type="text"]:hover:not(:focus):not(:disabled),
+input[type="number"]:hover:not(:focus):not(:disabled),
+input[type="search"]:hover:not(:focus):not(:disabled),
+textarea:hover:not(:focus):not(:disabled) {
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--accent) 15%, transparent);
 }
 .form-control.error { border-color: var(--accent); }
 .form-control.error:focus { box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent) 8%, transparent); }
@@ -1852,6 +1872,84 @@ img { max-width: 100%; height: auto; }
 
 .content-panel-header .panel-link:hover {
     gap: 8px;
+}
+
+/* 快捷操作卡片（学生首页） */
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap-md);
+    margin-bottom: var(--gap-xl);
+}
+
+.quick-action {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--gap-lg);
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.2s, transform 0.2s;
+    text-decoration: none;
+    color: inherit;
+}
+
+.quick-action:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+    color: inherit;
+}
+
+.quick-action-icon {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.quick-action-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.quick-action-text h3 {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    margin: 0 0 2px 0;
+}
+
+.quick-action-text p {
+    font-size: var(--fs-meta);
+    color: var(--muted);
+    margin: 0;
+}
+
+/* 信息标签芯片（学生首页欢迎区） */
+.info-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--fg-soft);
+    border-radius: var(--radius);
+    font-size: var(--fs-meta);
+    color: var(--muted);
+}
+
+.info-chip strong {
+    color: var(--fg);
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .quick-actions { grid-template-columns: 1fr; }
 }
 
 .content-panel-header .panel-link svg {

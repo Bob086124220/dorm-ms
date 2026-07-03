@@ -10,7 +10,7 @@
     <!-- Spring容器配置 -->
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:spring/spring-dao.xml,classpath:spring/spring-service.xml</param-value>
+        <param-value>classpath:spring/spring-service.xml</param-value>
     </context-param>
 
     <!-- Spring容器监听器 -->
