@@ -492,11 +492,8 @@
         rowLimit = rowLimit || 20;
         $tbody.find('tr').each(function(i) {
             if (i >= rowLimit) return;
-            var $row = $(this);
-            $row.css({ opacity: 0, transform: 'translateY(6px)' });
-            setTimeout(function() {
-                $row.css({ transition: 'opacity 0.3s ease, transform 0.3s ease', opacity: 1, transform: 'translateY(0)' });
-            }, i * 30);
+            $(this).css('animation-delay', (0.95 + i * 0.05) + 's')
+                   .addClass('stagger-row');
         });
     };
 

@@ -146,24 +146,22 @@
          * @param {number} duration - 动画时长（毫秒），默认 600
          */
         function countUp(elementId, target, duration) {
-            duration = duration || 600;
+            duration = duration || 800;
             var el = document.getElementById(elementId);
             if (!el || target <= 0) {
                 if (el) el.textContent = target;
                 return;
             }
-            var start = 0;
             var startTime = null;
             function step(timestamp) {
                 if (!startTime) startTime = timestamp;
-                var progress = Math.min((timestamp - startTime) / duration, 1);
-                var current = Math.floor(progress * target);
+                var elapsed = timestamp - startTime;
+                var progress = Math.min(elapsed / duration, 1);
+                /* ease-out-cubic: 1 - (1-t)^3 */
+                var ease = 1 - Math.pow(1 - progress, 3);
+                var current = Math.round(target * ease);
                 el.textContent = current;
-                if (progress < 1) {
-                    requestAnimationFrame(step);
-                } else {
-                    el.textContent = target;
-                }
+                if (progress < 1) requestAnimationFrame(step);
             }
             requestAnimationFrame(step);
         }

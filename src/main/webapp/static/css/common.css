@@ -55,11 +55,32 @@ img { max-width: 100%; height: auto; }
 .content-body {
     flex: 1;
     padding: var(--gap-xl) var(--gap-xl) 48px;
-    animation: contentFadeIn 0.3s ease both;
 }
-@keyframes contentFadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
+
+/* ═══ 核心 @keyframes（参考设计 v2） ═══ */
+
+/* 主入场：从下方淡入上移 — 卡片、section、page-header */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 纯淡入 — 表格行、日志条目、footer */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* 侧栏菜单项从左侧滑入 */
+@keyframes slideRight {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* 顶部栏从上方滑入 */
+@keyframes headerReveal {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ============================================= */
@@ -76,6 +97,7 @@ img { max-width: 100%; height: auto; }
     justify-content: space-between;
     padding: 0 var(--gap-lg);
     z-index: 100;
+    animation: headerReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .navbar-brand {
@@ -235,11 +257,29 @@ img { max-width: 100%; height: auto; }
     margin-bottom: var(--gap-xs);
     margin-top: var(--gap-lg);
     border-bottom: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeIn 0.3s 0.15s ease both;
 }
 
 .sidebar-section:first-child { margin-top: 0; }
 
+/* 侧栏菜单项 — 从左侧逐项滑入 */
 .menu-item { margin: 0; }
+.menu-item:nth-child(1) .menu-link { animation-delay: 0.18s; }
+.menu-item:nth-child(2) .menu-link { animation-delay: 0.21s; }
+.menu-item:nth-child(3) .menu-link { animation-delay: 0.24s; }
+.menu-item:nth-child(4) .menu-link { animation-delay: 0.27s; }
+.menu-item:nth-child(5) .menu-link { animation-delay: 0.30s; }
+.menu-item:nth-child(6) .menu-link { animation-delay: 0.33s; }
+.menu-item:nth-child(7) .menu-link { animation-delay: 0.36s; }
+.menu-item:nth-child(8) .menu-link { animation-delay: 0.39s; }
+.menu-item:nth-child(9) .menu-link { animation-delay: 0.42s; }
+.menu-item:nth-child(10) .menu-link { animation-delay: 0.45s; }
+.menu-item:nth-child(11) .menu-link { animation-delay: 0.48s; }
+.menu-item:nth-child(12) .menu-link { animation-delay: 0.51s; }
+.menu-item:nth-child(13) .menu-link { animation-delay: 0.54s; }
+.menu-item:nth-child(14) .menu-link { animation-delay: 0.57s; }
+.menu-item:nth-child(15) .menu-link { animation-delay: 0.60s; }
 
 .menu-link {
     display: flex;
@@ -251,6 +291,8 @@ img { max-width: 100%; height: auto; }
     transition: all 0.12s;
     border-left: 2px solid transparent;
     cursor: pointer;
+    opacity: 0;
+    animation: slideRight 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .menu-link:hover {
@@ -283,6 +325,8 @@ img { max-width: 100%; height: auto; }
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* 兼容旧类名 */
@@ -632,6 +676,8 @@ img { max-width: 100%; height: auto; }
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: var(--gap-lg);
+    opacity: 0;
+    animation: fadeUp 0.5s 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .form-group { margin-bottom: var(--gap-md); }
@@ -778,6 +824,8 @@ img { max-width: 100%; height: auto; }
     display: flex;
     align-items: flex-end;
     gap: var(--gap-md);
+    opacity: 0;
+    animation: fadeUp 0.5s 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
     margin-bottom: var(--gap-lg);
     flex-wrap: wrap;
 }
@@ -1003,6 +1051,8 @@ img { max-width: 100%; height: auto; }
     align-items: flex-end;
     justify-content: space-between;
     margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.5s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .page-header h1 {
@@ -1031,7 +1081,13 @@ img { max-width: 100%; height: auto; }
     border-radius: var(--radius-lg);
     padding: var(--gap-lg) var(--gap-lg) var(--gap-md);
     transition: border-color 0.15s, box-shadow 0.2s, transform 0.2s;
+    opacity: 0;
+    animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+.stat-card:nth-child(1) { animation-delay: 0.3s; }
+.stat-card:nth-child(2) { animation-delay: 0.36s; }
+.stat-card:nth-child(3) { animation-delay: 0.42s; }
+.stat-card:nth-child(4) { animation-delay: 0.48s; }
 
 .stat-card:hover {
     border-color: color-mix(in oklch, var(--accent) 30%, transparent);
@@ -1107,7 +1163,15 @@ img { max-width: 100%; height: auto; }
     cursor: pointer;
     text-decoration: none;
     color: inherit;
+    opacity: 0;
+    animation: fadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+.module-card:nth-child(1) { animation-delay: 0.5s; }
+.module-card:nth-child(2) { animation-delay: 0.56s; }
+.module-card:nth-child(3) { animation-delay: 0.62s; }
+.module-card:nth-child(4) { animation-delay: 0.68s; }
+.module-card:nth-child(5) { animation-delay: 0.74s; }
+.module-card:nth-child(6) { animation-delay: 0.80s; }
 
 .module-card:hover {
     border-color: var(--fg);
@@ -1159,6 +1223,8 @@ img { max-width: 100%; height: auto; }
     display: flex;
     align-items: center;
     justify-content: space-between;
+    opacity: 0;
+    animation: fadeIn 0.4s 1.35s ease both;
     font-size: var(--fs-meta);
     color: var(--muted);
 }
@@ -1230,6 +1296,12 @@ img { max-width: 100%; height: auto; }
     100% { background-position: -200% 0; }
 }
 
+/* 表格行 stagger 入场 */
+.stagger-row td {
+    opacity: 0;
+    animation: fadeIn 0.35s ease both;
+}
+
 /* ===== 空状态容器 ===== */
 .empty-state {
     display: flex;
@@ -1281,6 +1353,8 @@ img { max-width: 100%; height: auto; }
     border-radius: var(--radius-lg);
     padding: var(--gap-lg);
     margin-bottom: var(--gap-lg);
+    opacity: 0;
+    animation: fadeUp 0.5s 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .detail-section-title {
@@ -1499,10 +1573,9 @@ img { max-width: 100%; height: auto; }
 
 /* 减弱动态效果降级 */
 @media (prefers-reduced-motion: reduce) {
-    .content-body { animation: none; }
-    .skeleton-bar { animation: none; background: var(--skeleton-base); }
-    .stat-card,
-    .module-card { transition: none; }
-    .page-btn { transition: none; }
-    .btn { transition: none; }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+    }
+    .skeleton-bar { animation: none !important; background: var(--skeleton-base); }
 }
