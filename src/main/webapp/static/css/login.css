@@ -17,7 +17,7 @@ body {
 .login-card {
     width: 100%;
     max-width: 400px;
-    background: #FFFFFF;
+    background: var(--surface-opaque);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06);
@@ -108,7 +108,7 @@ body {
 .field-input:focus {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-soft);
-    background: #FFFFFF;
+    background: var(--surface-opaque);
 }
 .field.error .field-input {
     border-color: var(--accent);
@@ -240,12 +240,11 @@ body {
     height: 20px;
     animation: spin 0.8s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 .btn-submit.loading .btn-text { opacity: 0; }
 .btn-submit.loading .btn-spinner { opacity: 1; }
 
 /* Success flash */
-.btn-submit.success { background: #2E7D6F; }
+.btn-submit.success { background: var(--status-ok); }
 
 /* ═══ Global Error Banner ═══ */
 .global-error {

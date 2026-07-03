@@ -90,7 +90,7 @@
                                 <th>联系电话</th>
                                 <th>状态</th>
                                 <th>注册时间</th>
-                                <th style="width: 120px;">操作</th>
+                                <th class="col-actions">操作</th>
                             </tr>
                         </thead>
                         <tbody id="userTableBody">
@@ -183,7 +183,7 @@
                     pageQueryParams.pageSize = result.data.pageSize;
                 }
             }, function() {
-                $('#userTableBody').html('<tr><td colspan="9" class="text-center" style="padding: 40px 0;"><a href="javascript:void(0)" onclick="loadData(pageQueryParams)" style="color: var(--accent); font-size: var(--fs-meta);">加载失败，点击重试</a></td></tr>');
+                $('#userTableBody').html('<tr><td colspan="9" class="text-center" style="padding: 40px 0;"><a href="javascript:void(0)" onclick="loadData(pageQueryParams)" class="error-retry-link">加载失败，点击重试</a></td></tr>');
             });
         }
 

@@ -227,7 +227,7 @@
                     $container.html('<div class="text-center" style="padding: 40px 0; color: var(--muted);">该房间暂无床位，请点击"批量初始化"创建床位</div>');
                 }
             }, function() {
-                $container.html('<div class="text-center" style="padding: 40px 0;"><a href="javascript:void(0)" onclick="loadBedList()" style="color: var(--accent);">加载失败，点击重试</a></div>');
+                $container.html('<div class="text-center" style="padding: 40px 0;"><a href="javascript:void(0)" onclick="loadBedList()" class="error-retry-link">加载失败，点击重试</a></div>');
             });
         }
 
@@ -243,7 +243,7 @@
             html += '<th>状态</th>';
             html += '<th>入住学生</th>';
             html += '<th>备注</th>';
-            html += '<th style="width: 120px;">操作</th>';
+            html += '<th class="col-actions">操作</th>';
             html += '</tr></thead>';
             html += '<tbody>';
 

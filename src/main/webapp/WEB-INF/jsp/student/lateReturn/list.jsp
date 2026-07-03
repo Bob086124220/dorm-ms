@@ -108,7 +108,7 @@
                     pageQueryParams.pageSize = result.data.pageSize;
                 }
             }, function() {
-                $('#tableBody').html('<tr><td colspan="5" class="text-center py-4"><a href="javascript:void(0)" onclick="loadData(pageQueryParams)" style="color: var(--accent);">加载失败，点击重试</a></td></tr>');
+                $('#tableBody').html('<tr><td colspan="5" class="text-center py-4"><a href="javascript:void(0)" onclick="loadData(pageQueryParams)" class="error-retry-link">加载失败，点击重试</a></td></tr>');
             });
         }
 

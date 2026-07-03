@@ -89,7 +89,7 @@
                     renderRepairInfo(result.data);
                 }
             }, function(result) {
-                $('#repairInfo').html('<div class="text-center" style="padding: 40px 0;"><a href="javascript:void(0)" onclick="loadRepairDetail(' + repairId + ')" style="color: var(--accent);">加载失败，点击重试</a></div>');
+                $('#repairInfo').html('<div class="text-center" style="padding: 40px 0;"><a href="javascript:void(0)" onclick="loadRepairDetail(' + repairId + ')" class="error-retry-link">加载失败，点击重试</a></div>');
             });
         }
 

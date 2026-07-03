@@ -173,7 +173,7 @@
                     $container.html('<div class="text-center py-4 text-muted">该房间暂无床位</div>');
                 }
             }, function() {
-                $container.html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadBedList(' + roomId + ')" style="color: var(--accent);">加载失败，点击重试</a></div>');
+                $container.html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadBedList(' + roomId + ')" class="error-retry-link">加载失败，点击重试</a></div>');
             });
         }
 

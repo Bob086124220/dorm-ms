@@ -87,7 +87,7 @@
             currentRepairId = urlParams.get('repairId');
 
             if (!currentRepairId) {
-                $('#repairInfo').html('<div class="text-center py-4" style="color: var(--accent);">参数错误，未指定报修ID</div>');
+                $('#repairInfo').html('<div class="text-center py-4" class="error-retry-link">参数错误，未指定报修ID</div>');
                 return;
             }
 
@@ -104,7 +104,7 @@
                     renderRepairInfo(result.data);
                 }
             }, function(result) {
-                $('#repairInfo').html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadRepairDetail(' + repairId + ')" style="color: var(--accent);">加载失败，点击重试</a></div>');
+                $('#repairInfo').html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadRepairDetail(' + repairId + ')" class="error-retry-link">加载失败，点击重试</a></div>');
             });
         }
 

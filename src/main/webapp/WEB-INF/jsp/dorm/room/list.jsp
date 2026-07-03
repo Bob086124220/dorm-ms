@@ -148,7 +148,7 @@
                     $tbody.html('<tr><td colspan="6" class="text-center py-4 text-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>暂无房间数据</td></tr>');
                 }
             }, function() {
-                $tbody.html('<tr><td colspan="6" class="text-center py-4"><a href="javascript:void(0)" onclick="loadRoomList(' + buildingId + ')" style="color: var(--accent);">加载失败，点击重试</a></td></tr>');
+                $tbody.html('<tr><td colspan="6" class="text-center py-4"><a href="javascript:void(0)" onclick="loadRoomList(' + buildingId + ')" class="error-retry-link">加载失败，点击重试</a></td></tr>');
             });
         }
 

@@ -179,7 +179,7 @@
         });
 
         function setLoadError(elementId) {
-            $('#' + elementId).html('<a href="javascript:void(0)" onclick="loadStatistics()" style="color: var(--accent); font-size: var(--fs-meta);">加载失败，点击重试</a>');
+            $('#' + elementId).html('<a href="javascript:void(0)" onclick="loadStatistics()" class="error-retry-link">加载失败，点击重试</a>');
         }
 
         function loadStatistics() {

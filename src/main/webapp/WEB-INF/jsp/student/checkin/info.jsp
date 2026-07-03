@@ -119,7 +119,7 @@
                     $('#checkinInfo').html('<div class="text-center py-4 text-muted">暂无住宿信息</div>');
                 }
             }, function() {
-                $('#checkinInfo').html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadCheckinInfo()" style="color: var(--accent);">加载失败，点击重试</a></div>');
+                $('#checkinInfo').html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadCheckinInfo()" class="error-retry-link">加载失败，点击重试</a></div>');
             });
         }
 
@@ -151,7 +151,7 @@
                     $('#roommateInfo').html('<div class="text-center py-4 text-muted">暂无舍友信息</div>');
                 }
             }, function() {
-                $('#roommateInfo').html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadRoommateInfo()" style="color: var(--accent);">加载失败，点击重试</a></div>');
+                $('#roommateInfo').html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadRoommateInfo()" class="error-retry-link">加载失败，点击重试</a></div>');
             });
         }
     </script>

@@ -76,7 +76,7 @@
             currentVisitorId = urlParams.get('visitorId');
 
             if (!currentVisitorId) {
-                $('#visitorInfo').html('<div class="text-center py-4" style="color: var(--accent);">参数错误，未指定访客ID</div>');
+                $('#visitorInfo').html('<div class="text-center py-4" class="error-retry-link">参数错误，未指定访客ID</div>');
                 return;
             }
 
@@ -93,7 +93,7 @@
                     renderVisitorInfo(result.data);
                 }
             }, function(result) {
-                $('#visitorInfo').html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadVisitorDetail(' + visitorId + ')" style="color: var(--accent);">加载失败，点击重试</a></div>');
+                $('#visitorInfo').html('<div class="text-center py-4"><a href="javascript:void(0)" onclick="loadVisitorDetail(' + visitorId + ')" class="error-retry-link">加载失败，点击重试</a></div>');
             });
         }
 
