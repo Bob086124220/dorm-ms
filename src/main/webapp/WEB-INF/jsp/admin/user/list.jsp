@@ -23,6 +23,7 @@
                 <!-- 页面头部 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">USER MANAGEMENT</span>
                         <h1>用户管理</h1>
                         <p class="page-meta">管理系统用户账号 · 角色分配 · 状态控制</p>
                     </div>

@@ -27,6 +27,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">LATE RETURN LOG</span>
                         <h1>晚归统计</h1>
                         <p class="page-meta">按楼栋统计月度晚归人次</p>
                     </div>

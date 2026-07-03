@@ -28,6 +28,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">REPAIR SERVICE</span>
                         <h1>报修详情</h1>
                         <p class="page-meta">查看报修处理进度</p>
                     </div>

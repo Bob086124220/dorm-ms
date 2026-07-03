@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">OPERATION LOG</span>
                         <h1>操作日志</h1>
                         <p class="page-meta">查看系统操作记录</p>
                     </div>

@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">REPAIR MANAGEMENT</span>
                         <h1>报修管理</h1>
                         <p class="page-meta">查看和处理学生报修申请 · 超时工单高亮</p>
                     </div>

@@ -27,6 +27,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">ROOM INFORMATION</span>
                         <h1>房间信息</h1>
                         <p class="page-meta">查看负责楼栋的房间信息</p>
                     </div>

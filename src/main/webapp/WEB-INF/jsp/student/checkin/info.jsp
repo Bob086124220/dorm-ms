@@ -28,6 +28,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">ACCOMMODATION INFO</span>
                         <h1>住宿信息</h1>
                         <p class="page-meta">查看您的当前住宿情况和舍友信息</p>
                     </div>

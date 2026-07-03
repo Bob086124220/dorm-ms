@@ -27,6 +27,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">BED INFORMATION</span>
                         <h1>床位信息</h1>
                         <p class="page-meta">查看负责楼栋的床位信息</p>
                     </div>

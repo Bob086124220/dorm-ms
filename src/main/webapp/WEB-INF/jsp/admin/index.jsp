@@ -23,45 +23,58 @@
                 <!-- 页面头部 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">SYSTEM OVERVIEW</span>
                         <h1>系统总览</h1>
                         <p class="page-meta">高校公寓管理系统 · 数据概览与快捷入口</p>
                     </div>
                 </div>
 
-                <!-- 统计卡片 -->
+                <!-- 统计卡片 — 非对称分组 -->
                 <section class="row mb-4">
-                    <div class="col-lg-3 col-md-6 mb-3">
-                        <div class="stat-card" data-decorative-num="01">
-                            <div class="stat-card-label">用户总数</div>
-                            <div class="stat-card-value accent" id="userCount">--</div>
-                            <div class="stat-card-sub">系统注册账号</div>
+                    <!-- 左侧主数据区：2/3 宽度 -->
+                    <div class="col-lg-8 mb-3">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="stat-card" data-decorative-num="01">
+                                    <div class="stat-card-label">用户总数</div>
+                                    <div class="stat-card-value accent" id="userCount">--</div>
+                                    <div class="stat-card-sub">系统注册账号</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="stat-card" data-decorative-num="02">
+                                    <div class="stat-card-label">楼栋总数</div>
+                                    <div class="stat-card-value" id="buildingCount">--</div>
+                                    <div class="stat-card-sub">公寓楼栋数量</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-6 mb-3">
-                        <div class="stat-card" data-decorative-num="02">
-                            <div class="stat-card-label">楼栋总数</div>
-                            <div class="stat-card-value" id="buildingCount">--</div>
-                            <div class="stat-card-sub">公寓楼栋数量</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-3">
-                        <div class="stat-card" data-decorative-num="03">
-                            <div class="stat-card-label">待处理报修</div>
-                            <div class="stat-card-value accent2" id="repairCount">--</div>
-                            <div class="stat-card-sub">需跟进处理</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-3">
-                        <div class="stat-card" data-decorative-num="04">
-                            <div class="stat-card-label">本月晚归</div>
-                            <div class="stat-card-value" id="lateReturnCount">--</div>
-                            <div class="stat-card-sub">本月晚归人次</div>
+                    <!-- 右侧辅助数据区：1/3 宽度 -->
+                    <div class="col-lg-4 mb-3">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-12 mb-3">
+                                <div class="stat-card" data-decorative-num="03">
+                                    <div class="stat-card-label">待处理报修</div>
+                                    <div class="stat-card-value accent2" id="repairCount">--</div>
+                                    <div class="stat-card-sub">需跟进处理</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-12 mb-3">
+                                <div class="stat-card" data-decorative-num="04">
+                                    <div class="stat-card-label">本月晚归</div>
+                                    <div class="stat-card-value" id="lateReturnCount">--</div>
+                                    <div class="stat-card-sub">本月晚归人次</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <!-- 功能模块 -->
                 <section class="row mb-4">
+                    <div class="col-12 mb-3">
+                        <span class="page-eyebrow page-eyebrow--muted">QUICK ACCESS</span>
                     <div class="col-lg-4 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/admin/user/list" class="module-card">
                             <span class="module-card-num">01</span>
@@ -127,6 +140,7 @@
                 <!-- 系统信息 -->
                 <section class="data-panel mb-4">
                     <div class="info-section">
+                        <span class="page-eyebrow page-eyebrow--muted">SYSTEM INFO</span>
                         <h2 class="info-title">系统信息</h2>
                     </div>
                     <div class="info-body">

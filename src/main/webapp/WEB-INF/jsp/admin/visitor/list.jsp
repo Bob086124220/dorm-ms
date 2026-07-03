@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">VISITOR REGISTRATION</span>
                         <h1>访客登记</h1>
                         <p class="page-meta">管理公寓访客记录</p>
                     </div>

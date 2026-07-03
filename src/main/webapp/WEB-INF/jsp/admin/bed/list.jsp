@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">BED MANAGEMENT</span>
                         <h1>床位管理</h1>
                         <p class="page-meta">管理公寓床位信息</p>
                     </div>

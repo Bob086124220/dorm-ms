@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">USER MANAGEMENT</span>
                         <h1>新增用户</h1>
                         <p class="page-meta">创建新的用户账号</p>
                     </div>

@@ -27,6 +27,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">VISITOR REGISTRATION</span>
                         <h1>访客详情</h1>
                         <p class="page-meta">查看访客信息</p>
                     </div>

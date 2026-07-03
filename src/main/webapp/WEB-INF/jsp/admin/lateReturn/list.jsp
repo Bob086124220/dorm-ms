@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">LATE RETURN LOG</span>
                         <h1>晚归登记</h1>
                         <p class="page-meta">管理学生晚归记录</p>
                     </div>

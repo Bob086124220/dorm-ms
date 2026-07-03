@@ -21,6 +21,7 @@
                 <!-- 页面头部 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">DORM OVERVIEW</span>
                         <h1>宿管工作台</h1>
                         <p class="page-meta">欢迎回来，${sessionScope.loginUser.realName} · 宿管工作概览</p>
                     </div>

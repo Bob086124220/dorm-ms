@@ -28,6 +28,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">PERSONAL INFO</span>
                         <h1>个人信息</h1>
                         <p class="page-meta">查看和修改您的个人基本信息</p>
                     </div>

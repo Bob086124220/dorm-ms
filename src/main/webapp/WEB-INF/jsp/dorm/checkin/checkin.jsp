@@ -27,6 +27,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">CHECK-IN REGISTRATION</span>
                         <h1>办理入住</h1>
                         <p class="page-meta">为学生分配床位，办理入住手续</p>
                     </div>

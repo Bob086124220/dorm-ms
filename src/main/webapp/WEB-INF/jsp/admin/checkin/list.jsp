@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">CHECK-IN REGISTRATION</span>
                         <h1>入住管理</h1>
                         <p class="page-meta">管理学生入住和退宿</p>
                     </div>

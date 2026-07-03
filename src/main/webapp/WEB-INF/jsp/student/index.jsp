@@ -28,6 +28,7 @@
                 <!-- 页面头部 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">STUDENT HOME</span>
                         <h1>我的主页</h1>
                         <p class="page-meta">欢迎回来，${sessionScope.loginUser.realName}</p>
                     </div>

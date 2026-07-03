@@ -27,6 +27,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">BUILDING INFORMATION</span>
                         <h1>楼栋信息</h1>
                         <p class="page-meta">查看本人所负责的楼栋基本信息</p>
                     </div>

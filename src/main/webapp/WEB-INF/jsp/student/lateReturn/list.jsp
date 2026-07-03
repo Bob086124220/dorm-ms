@@ -28,6 +28,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">LATE RETURN RECORD</span>
                         <h1>晚归记录</h1>
                         <p class="page-meta">查看我的晚归记录</p>
                     </div>

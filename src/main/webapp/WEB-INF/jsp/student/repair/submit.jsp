@@ -28,6 +28,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">REPAIR SERVICE</span>
                         <h1>提交报修</h1>
                         <p class="page-meta">填写报修信息，房间将根据您的住宿记录自动获取</p>
                     </div>

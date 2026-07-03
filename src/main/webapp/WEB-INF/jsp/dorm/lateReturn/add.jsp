@@ -27,6 +27,7 @@
                 <!-- 页面标题 -->
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">LATE RETURN LOG</span>
                         <h1>录入晚归</h1>
                         <p class="page-meta">登记学生晚归信息</p>
                     </div>

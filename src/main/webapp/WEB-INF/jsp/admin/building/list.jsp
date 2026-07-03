@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">BUILDING MANAGEMENT</span>
                         <h1>楼栋管理</h1>
                         <p class="page-meta">管理公寓楼栋信息 · 楼层 · 区域 · 宿管绑定</p>
                     </div>

@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">BUILDING MANAGEMENT</span>
                         <h1>编辑楼栋</h1>
                         <p class="page-meta">修改楼栋信息</p>
                     </div>

@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">USER MANAGEMENT</span>
                         <h1>编辑用户</h1>
                         <p class="page-meta">修改用户信息</p>
                     </div>

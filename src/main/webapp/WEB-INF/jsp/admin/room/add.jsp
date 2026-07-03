@@ -22,6 +22,7 @@
             <div class="content-body">
                 <div class="page-header">
                     <div>
+                        <span class="page-eyebrow">ROOM MANAGEMENT</span>
                         <h1>新增房间</h1>
                         <p class="page-meta">创建新的房间信息</p>
                     </div>
