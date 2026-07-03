@@ -30,10 +30,10 @@ public class AdminDashboardVO {
     /** 近6月业务趋势 */
     private List<MonthlyTrendItem> monthlyTrend;
 
-    /** 待处理报修列表（前5条） */
-    private List<PendingRepairItem> pendingRepairs;
+    /** 待处理事项列表（含报修+调宿，前5条） */
+    private List<PendingItem> pendingItems;
 
-    /** 待处理报修数 */
+    /** 待处理报修数（含待处理+处理中） */
     private int pendingRepairCount;
 
     /** 超时报修数 */
@@ -42,7 +42,7 @@ public class AdminDashboardVO {
     /** 待审批调宿数 */
     private int pendingMoveCount;
 
-    /** 近期操作日志（最近10条） */
+    /** 近期操作日志（当前管理员最近5条） */
     private List<RecentLogItem> recentLogs;
 
     // ==================== 内部类 ====================
@@ -66,10 +66,16 @@ public class AdminDashboardVO {
 
     @Getter
     @Setter
-    public static class PendingRepairItem {
-        private Long id;
+    public static class PendingItem {
+        /** 事项类型：repair / move */
+        private String type;
+        /** 事项描述 */
         private String title;
+        /** 原始状态码 */
         private int status;
+        /** 状态文本：待处理 / 已超时 / 处理中 / 待审批 */
+        private String statusText;
+        /** 提交时间 */
         private String createTime;
     }
 

@@ -9,6 +9,8 @@ public interface AdminDashboardService {
 
     /**
      * 获取管理员看板聚合数据
+     *
+     * @param adminUserId 当前管理员用户ID
      */
-    AdminDashboardVO getDashboard();
+    AdminDashboardVO getDashboard(Long adminUserId);
 }

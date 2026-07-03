@@ -1,255 +1,373 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理员首页 - 高校公寓管理系统</title>
+    <title>系统总览 - 高校公寓管理系统</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
-
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
-
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
-    <div class="main-container">
-        <%@ include file="/WEB-INF/jsp/common/sidebar.jsp" %>
+<div class="main-container">
+    <%@ include file="/WEB-INF/jsp/common/sidebar.jsp" %>
 
-        <div class="content-wrapper">
-            <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
+    <div class="content-wrapper">
+        <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
 
-            <div class="content-body">
-                <!-- 页面头部 -->
-                <div class="page-header">
-                    <div>
-                        <span class="page-eyebrow">SYSTEM OVERVIEW</span>
-                        <h1>系统总览</h1>
-                        <p class="page-meta">高校公寓管理系统 · 数据概览与快捷入口</p>
-                    </div>
+        <div class="content-body">
+            <!-- 轮播公告 -->
+            <%@ include file="/WEB-INF/jsp/common/carousel.jsp" %>
+
+            <!-- 页面头部 -->
+            <div class="page-header">
+                <div>
+                    <span class="page-eyebrow">SYSTEM OVERVIEW</span>
+                    <h1>系统总览</h1>
+                    <p class="page-meta">高校公寓管理系统 · 实时数据看板</p>
                 </div>
-
-                <!-- 统计卡片 — 非对称分组 -->
-                <section class="row mb-4">
-                    <!-- 左侧主数据区：2/3 宽度 -->
-                    <div class="col-lg-8 mb-3">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="stat-card" data-decorative-num="01">
-                                    <div class="stat-card-label">用户总数</div>
-                                    <div class="stat-card-value accent" id="userCount">--</div>
-                                    <div class="stat-card-sub">系统注册账号</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="stat-card" data-decorative-num="02">
-                                    <div class="stat-card-label">楼栋总数</div>
-                                    <div class="stat-card-value" id="buildingCount">--</div>
-                                    <div class="stat-card-sub">公寓楼栋数量</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 右侧辅助数据区：1/3 宽度 -->
-                    <div class="col-lg-4 mb-3">
-                        <div class="row">
-                            <div class="col-md-6 col-lg-12 mb-3">
-                                <div class="stat-card" data-decorative-num="03">
-                                    <div class="stat-card-label">待处理报修</div>
-                                    <div class="stat-card-value accent2" id="repairCount">--</div>
-                                    <div class="stat-card-sub">需跟进处理</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-lg-12 mb-3">
-                                <div class="stat-card" data-decorative-num="04">
-                                    <div class="stat-card-label">本月晚归</div>
-                                    <div class="stat-card-value" id="lateReturnCount">--</div>
-                                    <div class="stat-card-sub">本月晚归人次</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 功能模块 -->
-                <section class="row mb-4">
-                    <div class="col-12 mb-3">
-                        <span class="page-eyebrow page-eyebrow--muted">QUICK ACCESS</span>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/admin/user/list" class="module-card">
-                            <span class="module-card-num">01</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            </div>
-                            <h3>用户管理</h3>
-                            <p>管理系统用户账号，分配角色权限</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/admin/building/list" class="module-card">
-                            <span class="module-card-num">02</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                            </div>
-                            <h3>楼栋管理</h3>
-                            <p>楼栋信息维护，宿管绑定</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/admin/room/list" class="module-card">
-                            <span class="module-card-num">03</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-                            </div>
-                            <h3>房间与床位</h3>
-                            <p>房间管理，批量初始化床位</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/admin/checkin/list" class="module-card">
-                            <span class="module-card-num">04</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-                            </div>
-                            <h3>入住登记</h3>
-                            <p>办理入住，分配空闲床位</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/admin/repair/list" class="module-card">
-                            <span class="module-card-num">05</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                            </div>
-                            <h3>报修管理</h3>
-                            <p>查看报修工单，跟踪处理进度</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/admin/move/list" class="module-card">
-                            <span class="module-card-num">06</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                            </div>
-                            <h3>调宿审批</h3>
-                            <p>审批学生调宿申请</p>
-                        </a>
-                    </div>
-                </section>
-
-                <!-- 系统信息 -->
-                <section class="data-panel mb-4">
-                    <div class="info-section">
-                        <span class="page-eyebrow page-eyebrow--muted">SYSTEM INFO</span>
-                        <h2 class="info-title">系统信息</h2>
-                    </div>
-                    <div class="info-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="info-row info-row--bordered">
-                                    <span class="info-label">当前时间</span>
-                                    <span class="num" id="currentTime"></span>
-                                </div>
-                                <div class="info-row">
-                                    <span class="info-label">登录账号</span>
-                                    <span>${sessionScope.loginUser.username}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="info-row info-row--bordered">
-                                    <span class="info-label">角色权限</span>
-                                    <span class="pill pill-admin">系统管理员</span>
-                                </div>
-                                <div class="info-row">
-                                    <span class="info-label">系统版本</span>
-                                    <span class="num">v1.0.0</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
             </div>
 
-            <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>
+            <!-- 统计卡片 ×4 -->
+            <section class="stats-row">
+                <div class="stat-card" data-decorative-num="01">
+                    <div class="stat-card-label">入住率</div>
+                    <div class="stat-card-value accent" id="occupancyRate">--</div>
+                    <div class="stat-card-sub">当前公寓整体入住情况</div>
+                </div>
+                <div class="stat-card" data-decorative-num="02">
+                    <div class="stat-card-label">本月报修</div>
+                    <div class="stat-card-value" id="monthRepair">--</div>
+                    <div class="stat-card-sub">超时 <span class="num" id="timeoutRepair">0</span> 件</div>
+                </div>
+                <div class="stat-card" data-decorative-num="03">
+                    <div class="stat-card-label">本月晚归</div>
+                    <div class="stat-card-value accent2" id="monthLate">--</div>
+                    <div class="stat-card-sub">本月晚归登记人次</div>
+                </div>
+                <div class="stat-card" data-decorative-num="04">
+                    <div class="stat-card-label">本月访客</div>
+                    <div class="stat-card-value" id="monthVisitor">--</div>
+                    <div class="stat-card-sub">本月访客登记总量</div>
+                </div>
+            </section>
+
+            <!-- 图表双栏 -->
+            <section class="charts-row">
+                <div class="chart-panel">
+                    <div class="chart-panel-title">
+                        <h2>楼栋入住率</h2>
+                    </div>
+                    <div class="chart-box" id="chartBuilding"></div>
+                </div>
+                <div class="chart-panel">
+                    <div class="chart-panel-title">
+                        <h2>近 6 月业务趋势</h2>
+                    </div>
+                    <div class="chart-box" id="chartTrend"></div>
+                </div>
+            </section>
+
+            <!-- 待处理事项 -->
+            <section class="content-panel" style="margin-bottom: var(--gap-lg);">
+                <div class="content-panel-header">
+                    <h3>待处理事项</h3>
+                    <a href="${pageContext.request.contextPath}/admin/repair/list" class="panel-link">
+                        查看全部
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
+                </div>
+                <table class="pending-table">
+                    <thead>
+                        <tr><th>类型</th><th>事项</th><th>状态</th></tr>
+                    </thead>
+                    <tbody id="pendingList"></tbody>
+                </table>
+                <div class="empty-state" id="pendingEmpty" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <div class="empty-state-title">暂无待处理事项</div>
+                    <div class="empty-state-desc">所有事项已处理完毕</div>
+                </div>
+            </section>
+
+            <!-- 近期操作日志 -->
+            <section class="content-panel" style="margin-bottom: var(--gap-xl);">
+                <div class="content-panel-header">
+                    <h3>近期操作日志</h3>
+                    <a href="${pageContext.request.contextPath}/admin/log/list" class="panel-link">
+                        全部日志
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
+                </div>
+                <div class="activity-log" id="recentLogs"></div>
+                <div class="empty-state" id="logEmpty" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <div class="empty-state-title">暂无操作记录</div>
+                    <div class="empty-state-desc">近期无管理操作</div>
+                </div>
+            </section>
         </div>
+
+        <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>
     </div>
+</div>
 
-    <script src="${pageContext.request.contextPath}/static/js/jquery.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/common.js"></script>
-    <script>window.needChangePasswordFlag = '${sessionScope.needChangePassword}';</script>
-    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/common.js"></script>
+<script>window.needChangePasswordFlag = '${sessionScope.needChangePassword}';</script>
+<script src="${pageContext.request.contextPath}/static/js/header.js"></script>
+<script src="${pageContext.request.contextPath}/static/vendor/echarts/echarts.min.js"></script>
 
-    <script>
-        /**
-         * 数字滚动动画
-         * @param {string} elementId - 目标元素 ID
-         * @param {number} target - 目标数值
-         * @param {number} duration - 动画时长（毫秒），默认 600
-         */
-        function countUp(elementId, target, duration) {
-            duration = duration || 800;
-            var el = document.getElementById(elementId);
-            if (!el || target <= 0) {
-                if (el) el.textContent = target;
-                return;
+<script>
+(function() {
+    'use strict';
+
+    /**
+     * 数字滚动动画 (ease-out-cubic)
+     */
+    function countUp(elementId, target, suffix) {
+        var el = document.getElementById(elementId);
+        if (!el) return;
+        suffix = suffix || '';
+        var duration = 800;
+        if (target <= 0) {
+            el.textContent = '0' + suffix;
+            return;
+        }
+        var startTime = null;
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var elapsed = timestamp - startTime;
+            var progress = Math.min(elapsed / duration, 1);
+            var ease = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.round(target * ease) + suffix;
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    /**
+     * 图表空状态
+     */
+    function showChartEmpty(chart) {
+        chart.setOption({
+            title: {
+                text: '暂无数据',
+                left: 'center',
+                top: 'center',
+                textStyle: {
+                    color: 'rgb(122, 112, 103)',
+                    fontFamily: "-apple-system, system-ui, sans-serif",
+                    fontSize: 14
+                }
             }
-            var startTime = null;
-            function step(timestamp) {
-                if (!startTime) startTime = timestamp;
-                var elapsed = timestamp - startTime;
-                var progress = Math.min(elapsed / duration, 1);
-                /* ease-out-cubic: 1 - (1-t)^3 */
-                var ease = 1 - Math.pow(1 - progress, 3);
-                var current = Math.round(target * ease);
-                el.textContent = current;
-                if (progress < 1) requestAnimationFrame(step);
-            }
-            requestAnimationFrame(step);
+        });
+    }
+
+    /**
+     * PendingItem → pill class 映射
+     */
+    function getTypeClass(type, statusText) {
+        if (type === 'repair' && statusText === '已超时') return 'pill-danger';
+        if (type === 'repair' && statusText === '处理中') return 'pill-processing';
+        return 'pill-pending';
+    }
+
+    function getTypeLabel(type) {
+        return type === 'repair' ? '报修' : '调宿';
+    }
+
+    function getStatusClass(statusText) {
+        if (statusText === '已超时') return 'pill-danger';
+        if (statusText === '处理中') return 'pill-processing';
+        return 'pill-pending';
+    }
+
+    // ==================== 数据加载 ====================
+
+    function loadDashboard() {
+        $.ajaxRequest('/admin/dashboard', 'GET', null, function(result) {
+            renderDashboard(result.data);
+        }, function() {
+            $('#occupancyRate').html('<a href="javascript:void(0)" onclick="loadDashboard()" style="font-size:13px;color:var(--accent)">加载失败，点击重试</a>');
+        });
+    }
+
+    function renderDashboard(data) {
+        var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // 统计卡片
+        countUp('occupancyRate', Math.round(data.occupancyRate || 0), '%');
+        countUp('monthRepair', data.monthRepairCount || 0);
+        countUp('monthLate', data.monthLateReturnCount || 0);
+        countUp('monthVisitor', data.monthVisitorCount || 0);
+        $('#timeoutRepair').text(data.timeoutRepairCount || 0);
+
+        // 图表
+        renderBuildingChart(data.buildingOccupancy, prefersReducedMotion);
+        renderTrendChart(data.monthlyTrend, prefersReducedMotion);
+
+        // 待处理事项
+        renderPendingTable(data.pendingItems);
+
+        // 操作日志
+        renderLogList(data.recentLogs);
+    }
+
+    // ==================== 图表 ====================
+
+    function renderBuildingChart(data, prefersReducedMotion) {
+        var el = document.getElementById('chartBuilding');
+        if (!el) return;
+
+        var chart = echarts.init(el, MAGAZINE_THEME);
+
+        if (!data || data.length === 0) {
+            showChartEmpty(chart);
+            return;
         }
 
-        $(function() {
-            function updateTime() {
-                var now = new Date();
-                $('#currentTime').text($.formatDate(now, 'yyyy-MM-dd HH:mm:ss'));
-            }
-            updateTime();
-            setInterval(updateTime, 60000);
-            loadStatistics();
+        var names = [], values = [], maxVal = 0;
+        data.forEach(function(item) {
+            names.push(item.buildingName);
+            values.push(item.rate);
+            if (item.rate > maxVal) maxVal = item.rate;
         });
 
-        function setLoadError(elementId) {
-            $('#' + elementId).html('<a href="javascript:void(0)" onclick="loadStatistics()" class="error-retry-link">加载失败，点击重试</a>');
-        }
-
-        function loadStatistics() {
-            $('#userCount').text('--');
-            $.ajaxRequest('/admin/user/page', 'GET', { pageSize: 1 }, function(result) {
-                countUp('userCount', result.data.total || 0);
-            }, function() { setLoadError('userCount'); });
-
-            $('#buildingCount').text('--');
-            $.ajaxRequest('/admin/building/page', 'GET', { pageSize: 1 }, function(result) {
-                countUp('buildingCount', result.data.total || 0);
-            }, function() { setLoadError('buildingCount'); });
-
-            $('#repairCount').text('--');
-            $.ajaxRequest('/admin/repair/page', 'GET', { repairStatus: 0, pageSize: 1 }, function(result) {
-                countUp('repairCount', result.data.total || 0);
-            }, function() { setLoadError('repairCount'); });
-
-            $('#lateReturnCount').text('--');
-            $.ajaxRequest('/admin/late-return/stats', 'GET', {}, function(result) {
-                if (result.data) {
-                    var total = 0;
-                    result.data.forEach(function(item) { total += item.count || 0; });
-                    countUp('lateReturnCount', total);
-                } else {
-                    countUp('lateReturnCount', 0);
+        chart.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            grid: { left: '12%', right: '8%', top: '10%', bottom: '12%' },
+            xAxis: { type: 'category', data: names, axisLabel: { fontSize: 11 } },
+            yAxis: { type: 'value', max: 100, axisLabel: { formatter: '{value}%' } },
+            series: [{
+                type: 'bar', data: values, barWidth: '45%',
+                itemStyle: {
+                    borderRadius: [4, 4, 0, 0],
+                    color: function(params) {
+                        return params.value >= maxVal
+                            ? 'rgb(196, 69, 58)'
+                            : 'rgb(212, 132, 90)';
+                    }
+                },
+                label: {
+                    show: true, position: 'top',
+                    fontFamily: "'SF Mono', 'JetBrains Mono', Consolas, ui-monospace, monospace",
+                    fontSize: 11, color: 'rgb(122, 112, 103)', formatter: '{c}%'
                 }
-            }, function() { setLoadError('lateReturnCount'); });
+            }],
+            animationDuration: prefersReducedMotion ? 0 : 800
+        });
+
+        $(window).on('resize.chartBuilding', function() { chart.resize(); });
+    }
+
+    function renderTrendChart(data, prefersReducedMotion) {
+        var el = document.getElementById('chartTrend');
+        if (!el) return;
+
+        var chart = echarts.init(el, MAGAZINE_THEME);
+
+        if (!data || data.length === 0) {
+            showChartEmpty(chart);
+            return;
         }
-    </script>
+
+        var months = [], repairArr = [], lateArr = [], visitorArr = [], checkinArr = [];
+        data.forEach(function(item) {
+            months.push(item.month);
+            repairArr.push(item.repair);
+            lateArr.push(item.lateReturn);
+            visitorArr.push(item.visitor);
+            checkinArr.push(item.checkin);
+        });
+
+        chart.setOption({
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['报修', '晚归', '访客', '入住'], bottom: 0 },
+            grid: { left: '10%', right: '6%', top: '10%', bottom: '18%' },
+            xAxis: { type: 'category', data: months, axisLabel: { fontSize: 11 } },
+            yAxis: { type: 'value' },
+            series: [
+                { name: '报修', type: 'line', data: repairArr, lineStyle: { color: 'rgb(196, 69, 58)', width: 2 }, itemStyle: { color: 'rgb(196, 69, 58)' } },
+                { name: '晚归', type: 'line', data: lateArr, lineStyle: { color: 'rgb(212, 132, 90)', width: 2 }, itemStyle: { color: 'rgb(212, 132, 90)' } },
+                { name: '访客', type: 'line', data: visitorArr, lineStyle: { color: 'rgb(46, 125, 111)', width: 2 }, itemStyle: { color: 'rgb(46, 125, 111)' } },
+                { name: '入住', type: 'line', data: checkinArr, lineStyle: { color: 'rgb(122, 112, 103)', width: 2, type: 'dashed' }, itemStyle: { color: 'rgb(122, 112, 103)' } }
+            ],
+            animationDuration: prefersReducedMotion ? 0 : 800
+        });
+
+        $(window).on('resize.chartTrend', function() { chart.resize(); });
+    }
+
+    // ==================== 待处理表格 ====================
+
+    function renderPendingTable(items) {
+        var $tbody = $('#pendingList');
+        var $empty = $('#pendingEmpty');
+
+        if (!items || items.length === 0) {
+            $tbody.empty();
+            $empty.show();
+            return;
+        }
+
+        $empty.hide();
+        var html = '';
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var typeLabel = getTypeLabel(item.type);
+            var typeClass = getTypeClass(item.type, item.statusText);
+            var statusClass = getStatusClass(item.statusText);
+            var title = item.title || '';
+            var safeTitle = $('<span>').text(title).html();
+            var displayTitle = title.length > 24 ? safeTitle.substring(0, 24) + '...' : safeTitle;
+
+            html += '<tr>'
+                + '<td><span class="pill ' + typeClass + '">' + typeLabel + '</span></td>'
+                + '<td title="' + $('<span>').text(title).html() + '">' + displayTitle + '</td>'
+                + '<td><span class="pill ' + statusClass + '">' + item.statusText + '</span></td>'
+                + '</tr>';
+        }
+        $tbody.html(html);
+    }
+
+    // ==================== 操作日志 ====================
+
+    function renderLogList(items) {
+        var $logArea = $('#recentLogs');
+        var $empty = $('#logEmpty');
+
+        if (!items || items.length === 0) {
+            $logArea.empty();
+            $empty.show();
+            return;
+        }
+
+        $empty.hide();
+        var html = '';
+        for (var i = 0; i < items.length; i++) {
+            var log = items[i];
+            var time = (log.operTime || '').substring(5, 16);
+            var text = $('<span>').text((log.module || '') + ' - ' + (log.operType || '')).html();
+            html += '<div class="log-entry">'
+                + '<span class="log-time">' + time + '</span>'
+                + '<span class="log-text">' + text + '</span>'
+                + '</div>';
+        }
+        $logArea.html(html);
+    }
+
+    // ==================== 入口 ====================
+
+    $(function() {
+        loadDashboard();
+    });
+
+})();
+</script>
 </body>
 </html>

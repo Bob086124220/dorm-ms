@@ -4,6 +4,119 @@
  * 说明：封装公共工具函数，提供统一的AJAX请求、错误处理、提示消息等功能
  */
 
+/**
+ * 杂志风 ECharts 主暖白主题
+ * 基于项目 design tokens，供所有 Dashboard 页面共用
+ */
+var MAGAZINE_THEME = {
+    color: [
+        'rgb(196, 69, 58)',    // accent — 主系列
+        'rgb(212, 132, 90)',   // accent-2 — 次系列
+        'rgb(46, 125, 111)',   // status-ok — 正面
+        'rgb(122, 112, 103)',  // muted — 中性
+        'rgb(145, 100, 75)'    // 衍生暖棕 — 第5系
+    ],
+    textStyle: {
+        fontFamily: "-apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif",
+        fontSize: 14,
+        color: 'rgb(45, 36, 28)'
+    },
+    title: {
+        textStyle: {
+            fontFamily: "Georgia, 'Noto Serif SC', serif",
+            fontSize: 22,
+            fontWeight: 700,
+            color: 'rgb(45, 36, 28)'
+        },
+        subtextStyle: {
+            fontFamily: "'SF Mono', 'JetBrains Mono', Consolas, ui-monospace, monospace",
+            fontSize: 12,
+            color: 'rgb(122, 112, 103)'
+        }
+    },
+    legend: {
+        textStyle: {
+            fontFamily: "-apple-system, system-ui, sans-serif",
+            fontSize: 12,
+            color: 'rgb(122, 112, 103)'
+        },
+        itemGap: 16,
+        itemWidth: 16,
+        itemHeight: 8,
+        icon: 'roundRect'
+    },
+    tooltip: {
+        backgroundColor: 'rgb(255, 255, 255)',
+        borderColor: 'rgb(235, 230, 223)',
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: [12, 16],
+        textStyle: {
+            fontFamily: "-apple-system, system-ui, sans-serif",
+            fontSize: 13,
+            color: 'rgb(45, 36, 28)'
+        },
+        extraCssText: 'box-shadow: 0 8px 24px rgba(0,0,0,0.06);'
+    },
+    grid: {
+        left: '12%',
+        right: '8%',
+        top: '12%',
+        bottom: '12%',
+        containLabel: false
+    },
+    xAxis: {
+        axisLine: { lineStyle: { color: 'rgb(235, 230, 223)' } },
+        axisTick: { show: false },
+        axisLabel: {
+            fontFamily: "'SF Mono', 'JetBrains Mono', Consolas, ui-monospace, monospace",
+            fontSize: 11,
+            color: 'rgb(122, 112, 103)'
+        },
+        splitLine: { show: false }
+    },
+    yAxis: {
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+            fontFamily: "'SF Mono', 'JetBrains Mono', Consolas, ui-monospace, monospace",
+            fontSize: 11,
+            color: 'rgb(122, 112, 103)'
+        },
+        splitLine: {
+            lineStyle: {
+                color: 'rgb(235, 230, 223)',
+                type: 'dashed'
+            }
+        }
+    },
+    bar: {
+        barWidth: '45%',
+        itemStyle: {
+            borderRadius: [4, 4, 0, 0]
+        }
+    },
+    line: {
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 6,
+        lineStyle: { width: 2 }
+    },
+    pie: {
+        itemStyle: {
+            borderColor: 'rgb(255, 255, 255)',
+            borderWidth: 2
+        },
+        label: {
+            fontFamily: "-apple-system, system-ui, sans-serif",
+            fontSize: 12,
+            color: 'rgb(45, 36, 28)'
+        }
+    },
+    animationDuration: 800,
+    animationEasing: 'cubicOut'
+};
+
 (function($) {
     'use strict';
 
@@ -626,6 +739,11 @@
         if (typeof $.initCustomSelect === 'function') {
             $.initCustomSelect();
         }
+
+        // 自动初始化轮播组件（若页面包含 #carouselArea）
+        if ($('#carouselArea').length && typeof $.initCarousel === 'function') {
+            $.initCarousel('#carouselArea');
+        }
     });
 
     /**
@@ -682,6 +800,7 @@
             }
 
             $container.html(html);
+            $container.show();
 
             if (banners.length >= 2) {
                 initCarouselPlay($container, banners.length);

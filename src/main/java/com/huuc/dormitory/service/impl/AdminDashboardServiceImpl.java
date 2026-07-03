@@ -8,7 +8,7 @@ import com.huuc.dormitory.service.RoomService;
 import com.huuc.dormitory.vo.AdminDashboardVO;
 import com.huuc.dormitory.vo.AdminDashboardVO.BuildingOccupancyItem;
 import com.huuc.dormitory.vo.AdminDashboardVO.MonthlyTrendItem;
-import com.huuc.dormitory.vo.AdminDashboardVO.PendingRepairItem;
+import com.huuc.dormitory.vo.AdminDashboardVO.PendingItem;
 import com.huuc.dormitory.vo.AdminDashboardVO.RecentLogItem;
 import com.huuc.dormitory.vo.BuildingVO;
 import com.huuc.dormitory.vo.RoomVO;
@@ -61,7 +61,7 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
     private SysOperLogMapper operLogMapper;
 
     @Override
-    public AdminDashboardVO getDashboard() {
+    public AdminDashboardVO getDashboard(Long adminUserId) {
         AdminDashboardVO vo = new AdminDashboardVO();
 
         List<BuildingVO> buildings = buildingService.getAllBuildings();
@@ -80,14 +80,11 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
         // 近6月趋势
         computeMonthlyTrend(vo, buildingIds);
 
-        // 待处理报修
-        computePendingRepairs(vo, buildingIds);
+        // 待处理事项（报修 + 调宿）
+        computePendingItems(vo, buildingIds);
 
-        // 待审批调宿
-        computePendingMoves(vo);
-
-        // 近期操作日志
-        computeRecentLogs(vo);
+        // 近期操作日志（当前管理员最近5条）
+        computeRecentLogs(vo, adminUserId);
 
         return vo;
     }
@@ -173,50 +170,76 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
         vo.setMonthlyTrend(trendList);
     }
 
-    private void computePendingRepairs(AdminDashboardVO vo, List<Long> buildingIds) {
-        List<PendingRepairItem> items = new ArrayList<>();
+    private void computePendingItems(AdminDashboardVO vo, List<Long> buildingIds) {
+        List<PendingItem> items = new ArrayList<>();
+        int pendingCount = 0;
         int timeoutCount = 0;
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime timeoutThreshold = now.minusHours(24);
 
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
         for (Long bldId : buildingIds) {
-            List<DormRepair> repairs = repairMapper.selectByBuildingId(bldId, 0); // PENDING
-            for (DormRepair r : repairs) {
-                PendingRepairItem item = new PendingRepairItem();
-                item.setId(r.getRepairId());
+            // 待处理报修 (status=0)
+            List<DormRepair> pendingRepairs = repairMapper.selectByBuildingId(bldId, 0);
+            for (DormRepair r : pendingRepairs) {
+                boolean timedOut = r.getSubmitTime() != null && r.getSubmitTime().isBefore(timeoutThreshold);
+                PendingItem item = new PendingItem();
+                item.setType("repair");
                 item.setTitle(r.getRepairContent());
                 item.setStatus(r.getRepairStatus());
-                item.setCreateTime(r.getSubmitTime() != null
-                        ? r.getSubmitTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
-                        : "");
+                item.setStatusText(timedOut ? "已超时" : "待处理");
+                item.setCreateTime(r.getSubmitTime() != null ? r.getSubmitTime().format(fmt) : "");
                 items.add(item);
-
-                if (r.getSubmitTime() != null && r.getSubmitTime().isBefore(timeoutThreshold)) {
-                    timeoutCount++;
-                }
+                pendingCount++;
+                if (timedOut) timeoutCount++;
             }
+
+            // 处理中报修 (status=1)
+            List<DormRepair> processingRepairs = repairMapper.selectByBuildingId(bldId, 1);
+            for (DormRepair r : processingRepairs) {
+                PendingItem item = new PendingItem();
+                item.setType("repair");
+                item.setTitle(r.getRepairContent());
+                item.setStatus(r.getRepairStatus());
+                item.setStatusText("处理中");
+                item.setCreateTime(r.getSubmitTime() != null ? r.getSubmitTime().format(fmt) : "");
+                items.add(item);
+                pendingCount++;
+            }
+        }
+
+        // 待审批调宿
+        DormMoveApply moveQuery = new DormMoveApply();
+        moveQuery.setAuditStatus(0);
+        List<DormMoveApply> pendingMoves = moveApplyMapper.selectList(moveQuery);
+        vo.setPendingMoveCount(pendingMoves.size());
+        for (DormMoveApply m : pendingMoves) {
+            PendingItem item = new PendingItem();
+            item.setType("move");
+            item.setTitle(m.getApplyReason());
+            item.setStatus(0);
+            item.setStatusText("待审批");
+            item.setCreateTime(m.getApplyTime() != null ? m.getApplyTime().format(fmt) : "");
+            items.add(item);
         }
 
         // 按提交时间倒序，取前5条
         items.sort((a, b) -> b.getCreateTime().compareTo(a.getCreateTime()));
-        vo.setPendingRepairs(items.size() > 5 ? items.subList(0, 5) : items);
-        vo.setPendingRepairCount(items.size());
+        vo.setPendingItems(items.size() > 5 ? items.subList(0, 5) : items);
+        vo.setPendingRepairCount(pendingCount);
         vo.setTimeoutRepairCount(timeoutCount);
     }
 
-    private void computePendingMoves(AdminDashboardVO vo) {
-        DormMoveApply query = new DormMoveApply();
-        query.setAuditStatus(0); // PENDING
-        List<DormMoveApply> pendingMoves = moveApplyMapper.selectList(query);
-        vo.setPendingMoveCount(pendingMoves.size());
-    }
+    private void computeRecentLogs(AdminDashboardVO vo, Long adminUserId) {
+        SysOperLog query = new SysOperLog();
+        query.setOperatorId(adminUserId);
+        List<SysOperLog> userLogs = operLogMapper.selectList(query);
 
-    private void computeRecentLogs(AdminDashboardVO vo) {
-        List<SysOperLog> allLogs = operLogMapper.selectList(null);
         List<RecentLogItem> logItems = new ArrayList<>();
-        int count = Math.min(allLogs.size(), 10);
+        int count = Math.min(userLogs.size(), 5);
         for (int i = 0; i < count; i++) {
-            SysOperLog log = allLogs.get(i);
+            SysOperLog log = userLogs.get(i);
             RecentLogItem item = new RecentLogItem();
             item.setId(log.getLogId());
             item.setOperType(log.getOperType());
