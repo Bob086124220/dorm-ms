@@ -89,6 +89,13 @@
 
             <%-- 宿管菜单 --%>
             <c:if test="${roleType == ROLE_DORM}">
+                <li class="menu-item">
+                    <a href="${pageContext.request.contextPath}/dorm/index" class="menu-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                        <span>工作台首页</span>
+                    </a>
+                </li>
+
                 <li class="sidebar-section">公寓信息</li>
                 <li class="menu-item">
                     <a href="${pageContext.request.contextPath}/dorm/building/listPage" class="menu-link">

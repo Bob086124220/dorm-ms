@@ -62,7 +62,7 @@ img { max-width: 100%; height: auto; }
 /* 主入场：从下方淡入上移 — 卡片、section、page-header */
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: none; }
 }
 
 /* 纯淡入 — 表格行、日志条目、footer */
@@ -74,13 +74,13 @@ img { max-width: 100%; height: auto; }
 /* 侧栏菜单项从左侧滑入 */
 @keyframes slideRight {
     from { opacity: 0; transform: translateX(-10px); }
-    to   { opacity: 1; transform: translateX(0); }
+    to   { opacity: 1; transform: none; }
 }
 
 /* 顶部栏从上方滑入 */
 @keyframes headerReveal {
     from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: none; }
 }
 
 /* ============================================= */
@@ -630,7 +630,7 @@ img { max-width: 100%; height: auto; }
     position: absolute;
     top: calc(100% + 4px);
     left: 0; right: 0;
-    z-index: 50;
+    z-index: 150;
     background: var(--surface-opaque);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -828,6 +828,12 @@ img { max-width: 100%; height: auto; }
     animation: fadeUp 0.5s 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
     margin-bottom: var(--gap-lg);
     flex-wrap: wrap;
+    /*
+     * position: relative 确保 .filter-bar 的 compositing layer 高于兄弟 .data-panel，
+     * 使内部 .cselect-panel 下拉框不被后续元素遮挡。
+     */
+    position: relative;
+    z-index: 1;
 }
 
 .filter-field { display: flex; flex-direction: column; gap: 4px; }
