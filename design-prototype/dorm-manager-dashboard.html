@@ -1,424 +1,107 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>高校公寓管理系统 · 宿管</title>
-  <style>
-    :root {
-      --bg:        #FAF9F5;
-      --surface:   rgba(255,255,255,0.92);
-      --fg:        #2D241C;
-      --muted:     #7A7067;
-      --border:    #EBE6DF;
-      --accent:    #C4453A;
-      --accent-2:  #D4845A;
-      --accent-soft: color-mix(in oklch, var(--accent) 10%, transparent);
-      --accent-2-soft: color-mix(in oklch, var(--accent-2) 12%, transparent);
-      --fg-soft:    color-mix(in oklch, var(--fg) 6%, transparent);
-      --stripe:    rgba(0,0,0,0.025);
-      --hover-bg:  rgb(245,244,237);
-      --col-line:  rgb(240,238,230);
-      --status-ok:  #2E7D6F;
-      --online:     #4CAF50;
-      --font-display: 'Georgia', 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
-      --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-      --font-mono:    'SF Mono', 'JetBrains Mono', 'Consolas', ui-monospace, monospace;
-      --fs-h1: 32px; --fs-h2: 22px; --fs-h3: 16px;
-      --fs-body: 14px; --fs-meta: 12px; --fs-sm: 11px;
-      --gap-xs: 6px; --gap-sm: 10px; --gap-md: 16px; --gap-lg: 24px; --gap-xl: 40px;
-      --radius: 8px; --radius-lg: 12px;
-      --sidebar-w: 220px; --header-h: 56px;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; }
-    body { background: radial-gradient(circle, #EDEAE5 0.8px, transparent 0.8px), var(--bg); background-size: 16px 16px; color: var(--fg); font-family: var(--font-body); font-size: var(--fs-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-    a { color: inherit; text-decoration: none; }
-    button { font: inherit; cursor: pointer; }
-    table { border-collapse: separate; border-spacing: 0; width: 100%; }
-
-    /* Header */
-    .app-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 var(--gap-lg); z-index: 100; }
-    .header-left { display: flex; align-items: center; gap: var(--gap-md); }
-    .header-logo { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
-    .header-logo span { color: var(--accent); }
-    .header-divider { width: 1px; height: 20px; background: var(--border); }
-    .header-role { font-family: var(--font-mono); font-size: var(--fs-sm); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-2); }
-    .header-right { display: flex; align-items: center; gap: var(--gap-md); }
-    .user-dropdown { position: relative; }
-    .user-trigger { display: flex; align-items: center; gap: var(--gap-sm); padding: 4px 8px 4px 4px; border-radius: var(--radius); cursor: pointer; transition: background 0.12s; }
-    .user-trigger:hover { background: var(--hover-bg); }
-    .user-trigger .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-2-soft); color: var(--accent-2); display: grid; place-items: center; font-family: var(--font-display); font-size: 14px; font-weight: 600; flex-shrink: 0; }
-    .user-trigger span { font-size: var(--fs-body); color: var(--muted); white-space: nowrap; }
-    .user-trigger .chevron { width: 14px; height: 14px; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
-    .user-dropdown:hover .chevron { transform: rotate(180deg); }
-    .user-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 200; min-width: 140px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(0,0,0,0.08); padding: 4px; opacity: 0; visibility: hidden; transform: translateY(-4px); transition: opacity 0.15s, transform 0.15s, visibility 0.15s; }
-    .user-dropdown:hover .user-menu { opacity: 1; visibility: visible; transform: translateY(0); }
-    .dropdown-item { display: block; padding: 8px 12px; font-size: var(--fs-body); color: var(--fg); border-radius: calc(var(--radius) - 2px); transition: background 0.1s; white-space: nowrap; }
-    .dropdown-item:hover { background: var(--hover-bg); }
-    .dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
-
-    /* Sidebar */
-    .app-sidebar { position: fixed; top: var(--header-h); left: 0; bottom: 0; width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border); padding: var(--gap-md) 0; overflow-y: auto; z-index: 50; }
-    .nav-group { margin-bottom: var(--gap-md); }
-    .nav-group-title { font-family: var(--font-mono); font-size: var(--fs-sm); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: var(--gap-xs) var(--gap-lg); margin-bottom: 2px; }
-    .nav-item { display: flex; align-items: center; gap: var(--gap-sm); padding: 9px var(--gap-lg); font-size: var(--fs-body); color: var(--muted); transition: all 0.12s; border-left: 2px solid transparent; }
-    .nav-item:hover { color: var(--fg); background: var(--hover-bg); }
-    .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-soft); font-weight: 500; }
-    .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
-    .nav-badge { margin-left: auto; background: var(--accent); color: var(--surface); font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 999px; line-height: 1.4; }
-
-    /* Main */
-    .app-main { margin-left: var(--sidebar-w); margin-top: var(--header-h); padding: var(--gap-xl); min-height: calc(100vh - var(--header-h)); }
-
-    /* Page Header */
-    .page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: var(--gap-xl); }
-    .page-header h1 { font-family: var(--font-display); font-size: var(--fs-h1); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
-    .page-header .page-meta { font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--muted); margin-top: var(--gap-xs); }
-    .building-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px 12px; font-family: var(--font-mono); font-size: var(--fs-meta); color: var(--fg); }
-    .building-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--online); }
-
-    /* Stats Row */
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap-md); margin-bottom: var(--gap-xl); }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--gap-lg) var(--gap-lg) var(--gap-md); transition: border-color 0.15s, box-shadow 0.2s, transform 0.2s; }
-    .stat-card:hover { border-color: color-mix(in oklch, var(--accent) 30%, transparent); box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-3px); }
-    .stat-card-label { font-family: var(--font-mono); font-size: var(--fs-sm); letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin-bottom: var(--gap-sm); }
-    .stat-card-value { font-family: var(--font-display); font-size: 36px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
-    .stat-card-value.accent { color: var(--accent); }
-    .stat-card-value.accent2 { color: var(--accent-2); }
-    .stat-card-sub { font-size: var(--fs-meta); color: var(--muted); margin-top: var(--gap-xs); }
-    .stat-card-sub .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-
-    /* Quick Actions */
-    .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gap-md); margin-bottom: var(--gap-xl); }
-    .quick-btn {
-      display: flex; flex-direction: column; align-items: center; gap: var(--gap-sm);
-      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
-      padding: var(--gap-lg) var(--gap-sm);
-      transition: border-color 0.15s, box-shadow 0.2s, transform 0.2s; cursor: pointer; text-align: center;
-    }
-    .quick-btn:hover { border-color: var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-3px); }
-    .quick-btn-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: var(--radius); background: var(--accent-soft); color: var(--accent); }
-    .quick-btn-icon svg { width: 20px; height: 20px; }
-    .quick-btn-label { font-size: var(--fs-body); font-weight: 500; }
-    .quick-btn-desc { font-size: var(--fs-sm); color: var(--muted); line-height: 1.4; }
-
-    /* Section */
-    .dash-section { margin-bottom: var(--gap-xl); }
-    .dash-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--gap-md); padding-bottom: var(--gap-sm); border-bottom: 1px solid var(--border); }
-    .dash-section-header h2 { font-family: var(--font-display); font-size: var(--fs-h2); font-weight: 700; }
-    .section-link { font-size: var(--fs-meta); color: var(--accent); display: flex; align-items: center; gap: 4px; transition: gap 0.15s; }
-    .section-link:hover { gap: 8px; }
-    .section-link svg { width: 14px; height: 14px; }
-
-    /* Table */
-    .data-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
-    .data-table-wrap table { font-size: var(--fs-body); }
-    .data-table-wrap th { text-align: left; padding: var(--gap-sm) var(--gap-md); font-family: var(--font-mono); font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); background: var(--bg); border-bottom: 1px solid var(--border); position: relative; }
-    .data-table-wrap th:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 25%; bottom: 25%; width: 1px; background: var(--col-line); }
-    .data-table-wrap td { padding: 12px var(--gap-md); vertical-align: middle; position: relative; }
-    .data-table-wrap td:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 15%; bottom: 15%; width: 1px; background: var(--col-line); }
-    .data-table-wrap tbody tr { border-bottom: 1px solid var(--border); }
-    .data-table-wrap tbody tr:last-child { border-bottom: none; }
-    .data-table-wrap tbody tr:nth-child(odd) { background: var(--stripe); }
-    .data-table-wrap tbody tr:hover { background: var(--hover-bg); }
-    .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-
-    /* Pills */
-    .pill { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-family: var(--font-mono); font-size: var(--fs-sm); font-weight: 500; letter-spacing: 0.02em; }
-    .pill-processing { background: color-mix(in oklch, var(--status-ok) 14%, transparent); color: var(--status-ok); }
-    .pill-danger { background: color-mix(in oklch, var(--accent) 12%, transparent); color: var(--accent); }
-    .pill-quiet { background: var(--fg-soft); color: var(--muted); }
-    .pill-active { background: color-mix(in oklch, var(--status-ok) 10%, transparent); color: var(--status-ok); }
-
-    /* Alert Bar */
-    .alert-bar {
-      display: flex; align-items: center; gap: var(--gap-sm);
-      padding: var(--gap-sm) var(--gap-md);
-      background: color-mix(in oklch, var(--accent) 6%, transparent);
-      border: 1px solid color-mix(in oklch, var(--accent) 20%, transparent);
-      border-radius: var(--radius);
-      margin-bottom: var(--gap-md);
-      font-size: var(--fs-body);
-    }
-    .alert-bar svg { width: 16px; height: 16px; color: var(--accent); flex-shrink: 0; }
-    .alert-bar .alert-count { font-family: var(--font-mono); font-weight: 600; color: var(--accent); }
-
-    /* Footer */
-    .app-footer { margin-top: var(--gap-xl); padding: var(--gap-lg) 0; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; font-size: var(--fs-meta); color: var(--muted); }
-
-    /* Responsive */
-    @media (max-width: 1024px) { .stats-row { grid-template-columns: repeat(2, 1fr); } .quick-actions { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 768px) { .app-sidebar { display: none; } .app-main { margin-left: 0; } .stats-row, .quick-actions { grid-template-columns: 1fr; } }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>高校公寓管理系统 · 宿管</title>
+<style>
+:root{--bg:#FAF9F5;--surface:rgba(255,255,255,0.92);--surface-opaque:#FFF;--fg:#2D241C;--muted:#7A7067;--border:#EBE6DF;--accent:#C4453A;--accent-2:#D4845A;--status-ok:#2E7D6F;--hover-bg:rgb(245,244,237);--stripe:rgba(0,0,0,0.025);--col-line:rgb(240,238,230);--accent-soft:color-mix(in oklch,var(--accent) 10%,transparent);--accent-2-soft:color-mix(in oklch,var(--accent-2) 12%,transparent);--fg-soft:color-mix(in oklch,var(--fg) 6%,transparent);--font-display:Georgia,'Noto Serif SC','Source Han Serif SC',SimSun,serif;--font-body:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',system-ui,sans-serif;--font-mono:'SF Mono','JetBrains Mono',Consolas,ui-monospace,monospace;--fs-h1:32px;--fs-h2:22px;--fs-h3:16px;--fs-body:14px;--fs-meta:12px;--fs-sm:11px;--gap-xs:6px;--gap-sm:10px;--gap-md:16px;--gap-lg:24px;--gap-xl:40px;--radius:8px;--radius-lg:12px;--sidebar-w:220px;--header-h:56px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{-webkit-text-size-adjust:100%}
+body{background:radial-gradient(circle,rgb(228,225,219) .7px,transparent .7px),var(--bg);background-size:12px 12px;color:var(--fg);font-family:var(--font-body);font-size:var(--fs-body);line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.035;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");background-size:200px 200px}
+body>*{position:relative;z-index:1}a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}table{border-collapse:separate;border-spacing:0;width:100%}.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+@keyframes headerReveal{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.app-header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 var(--gap-lg);z-index:100;animation:headerReveal .4s cubic-bezier(.22,1,.36,1) both}
+.header-left{display:flex;align-items:center;gap:var(--gap-md)}.header-logo{font-family:var(--font-display);font-size:17px;font-weight:700;letter-spacing:-.01em}.header-logo span{color:var(--accent)}.header-divider{width:1px;height:20px;background:var(--border)}.header-role{font-family:var(--font-mono);font-size:var(--fs-sm);letter-spacing:.06em;text-transform:uppercase;color:var(--accent-2)}
+.header-right{display:flex;align-items:center;gap:var(--gap-md)}.user-dropdown{position:relative}.user-trigger{display:flex;align-items:center;gap:var(--gap-sm);padding:4px 8px 4px 4px;border-radius:var(--radius);cursor:pointer;transition:background .12s}.user-trigger:hover{background:var(--hover-bg)}.user-trigger .avatar{width:32px;height:32px;border-radius:50%;background:transparent;color:var(--accent-2);display:grid;place-items:center;font-family:var(--font-display);font-size:14px;font-weight:600;flex-shrink:0}.user-trigger span{font-size:var(--fs-body);color:var(--muted);white-space:nowrap}.user-trigger .chevron{width:14px;height:14px;color:var(--muted);transition:transform .2s;flex-shrink:0}.user-dropdown:hover .chevron{transform:rotate(180deg)}.user-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:200;min-width:140px;background:#FFF;border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,.08);padding:4px;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .15s,transform .15s,visibility .15s}.user-dropdown:hover .user-menu{opacity:1;visibility:visible;transform:translateY(0)}.dropdown-item{display:block;padding:8px 12px;font-size:var(--fs-body);color:var(--fg);border-radius:calc(var(--radius) - 2px);transition:background .1s;white-space:nowrap}.dropdown-item:hover{background:var(--hover-bg)}.dropdown-divider{height:1px;background:var(--border);margin:4px 0}
+.app-sidebar{position:fixed;top:var(--header-h);left:0;bottom:0;width:var(--sidebar-w);background:color-mix(in oklch,var(--surface) 88%,var(--bg));border-right:1px solid var(--border);padding:var(--gap-md) 0;overflow-y:auto;z-index:50;display:flex;flex-direction:column}.sidebar-nav{flex:1}.nav-group{margin-bottom:var(--gap-md)}.nav-group-title{font-family:var(--font-mono);font-size:var(--fs-sm);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:var(--gap-xs) var(--gap-lg);margin-bottom:2px;padding-bottom:var(--gap-xs);border-bottom:1px solid var(--border);animation:fadeIn .3s .15s both}.nav-item{display:flex;align-items:center;gap:var(--gap-sm);padding:10px var(--gap-lg);font-size:var(--fs-body);color:var(--muted);transition:all .12s;border-left:2px solid transparent;opacity:0;animation:slideRight .3s cubic-bezier(.22,1,.36,1) both}.nav-item:hover{color:var(--fg);background:var(--hover-bg)}.nav-item.active{color:var(--accent-2);border-left-color:var(--accent-2);background:var(--accent-2-soft);font-weight:500}.nav-item svg{width:16px;height:16px;flex-shrink:0}
+.nav-item:nth-child(1){animation-delay:.18s}.nav-item:nth-child(2){animation-delay:.21s}.nav-item:nth-child(3){animation-delay:.24s}.nav-item:nth-child(4){animation-delay:.27s}.nav-item:nth-child(5){animation-delay:.30s}.nav-item:nth-child(6){animation-delay:.33s}.nav-item:nth-child(7){animation-delay:.36s}
+.sidebar-stamp{padding:var(--gap-md) var(--gap-lg);border-top:1px solid var(--border);animation:fadeIn .4s .8s both}.sidebar-stamp-inner{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--muted);opacity:.5;text-transform:uppercase;line-height:1.5}
+.app-main{margin-left:var(--sidebar-w);margin-top:var(--header-h);padding:var(--gap-xl);min-height:calc(100vh - var(--header-h))}
+.carousel-wrap{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:var(--gap-xl);opacity:0;animation:fadeUp .5s .15s cubic-bezier(.22,1,.36,1) both;box-shadow:0 2px 12px rgba(0,0,0,.06)}.carousel-item{position:relative;height:220px;overflow:hidden}.carousel-item img{width:100%;height:100%;object-fit:cover;display:block}.carousel-item .overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(45,36,28,.65),rgba(212,132,90,.2));display:flex;flex-direction:column;justify-content:flex-end;padding:var(--gap-lg) var(--gap-xl)}.carousel-item .overlay h2{font-family:var(--font-display);font-size:var(--fs-h2);color:#fff;font-weight:700;margin-bottom:var(--gap-xs)}.carousel-item .overlay p{font-size:var(--fs-body);color:rgba(255,255,255,.85);max-width:60ch}.carousel-indicators{display:flex;gap:8px;justify-content:center;padding:var(--gap-sm) 0;background:var(--surface)}.carousel-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:none;cursor:pointer;transition:background .15s,transform .15s}.carousel-dot.active{background:var(--accent-2);transform:scale(1.3)}
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--gap-xl);opacity:0;animation:fadeUp .5s .2s cubic-bezier(.22,1,.36,1) both}.page-header h1{font-family:var(--font-display);font-size:var(--fs-h1);font-weight:700;line-height:1.15;letter-spacing:-.01em}.page-header .page-meta{font-family:var(--font-mono);font-size:var(--fs-meta);color:var(--muted);margin-top:var(--gap-xs)}.page-eyebrow{display:block;font-family:var(--font-mono);font-size:var(--fs-sm);letter-spacing:.06em;text-transform:uppercase;color:var(--accent-2);margin-bottom:var(--gap-xs)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap-md);margin-bottom:var(--gap-xl)}.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--gap-lg) var(--gap-lg) var(--gap-md);position:relative;overflow:hidden;transition:border-color .15s,box-shadow .2s,transform .2s;opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}.stat-card:nth-child(1){animation-delay:.3s}.stat-card:nth-child(2){animation-delay:.36s}.stat-card:nth-child(3){animation-delay:.42s}.stat-card:nth-child(4){animation-delay:.48s}.stat-card:hover{border-color:color-mix(in oklch,var(--accent-2) 30%,transparent);box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-3px)}.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent-2);opacity:0;transition:opacity .15s;border-radius:var(--radius-lg) var(--radius-lg) 0 0}.stat-card:hover::before{opacity:1}.stat-card::after{content:attr(data-decorative-num);position:absolute;bottom:-8px;right:12px;font-family:var(--font-display);font-size:72px;font-weight:700;line-height:1;color:var(--muted);opacity:.06;pointer-events:none;user-select:none}.stat-card-label{font-family:var(--font-mono);font-size:var(--fs-sm);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:var(--gap-sm)}.stat-card-value{font-family:var(--font-display);font-size:36px;font-weight:700;line-height:1;letter-spacing:-.02em}.stat-card-value.accent2{color:var(--accent-2)}.stat-card-sub{font-size:var(--fs-meta);color:var(--muted);margin-top:var(--gap-xs)}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-md);margin-bottom:var(--gap-xl)}.chart-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--gap-lg);opacity:0;animation:fadeUp .5s .55s cubic-bezier(.22,1,.36,1) both}.chart-panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--gap-md);padding-bottom:var(--gap-sm);border-bottom:1px solid var(--border)}.chart-panel-title h2{font-family:var(--font-display);font-size:var(--fs-h2);font-weight:700}.chart-box{height:260px}
+.content-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-md);margin-bottom:var(--gap-xl)}.content-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;opacity:0;animation:fadeUp .5s .75s cubic-bezier(.22,1,.36,1) both}.content-panel-header{display:flex;align-items:center;justify-content:space-between;padding:var(--gap-md) var(--gap-lg);border-bottom:1px solid var(--border)}.content-panel-header h3{font-family:var(--font-display);font-size:var(--fs-h3);font-weight:600}.content-panel-header .link{font-size:var(--fs-meta);color:var(--accent-2);transition:gap .15s;display:flex;align-items:center;gap:4px}.content-panel-header .link:hover{gap:8px}
+.pending-table{font-size:var(--fs-body)}.pending-table th{text-align:left;padding:var(--gap-sm) var(--gap-md);font-family:var(--font-mono);font-size:var(--fs-sm);font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--bg);border-bottom:1px solid var(--border);position:relative}.pending-table th:not(:last-child)::after{content:'';position:absolute;right:0;top:25%;bottom:25%;width:1px;background:var(--col-line)}.pending-table td{padding:12px var(--gap-md);vertical-align:middle;position:relative;opacity:0;animation:fadeIn .35s ease both}.pending-table td:not(:last-child)::after{content:'';position:absolute;right:0;top:15%;bottom:15%;width:1px;background:var(--col-line)}.pending-table tbody tr{border-bottom:1px solid var(--border);transition:background .1s}.pending-table tbody tr:last-child{border-bottom:none}.pending-table tbody tr:nth-child(odd){background:var(--stripe)}.pending-table tbody tr:hover{background:var(--hover-bg)}.pending-table tbody tr:nth-child(1) td{animation-delay:.95s}.pending-table tbody tr:nth-child(2) td{animation-delay:1s}.pending-table tbody tr:nth-child(3) td{animation-delay:1.05s}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-family:var(--font-mono);font-size:var(--fs-sm);font-weight:500;letter-spacing:.02em}.pill-pending{background:color-mix(in oklch,var(--accent-2) 14%,transparent);color:#9A5D2E}.pill-danger{background:color-mix(in oklch,var(--accent) 12%,transparent);color:var(--accent)}.pill-processing{background:color-mix(in oklch,var(--status-ok) 14%,transparent);color:var(--status-ok)}
+.info-card{padding:var(--gap-md) var(--gap-lg)}.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}.info-row:last-child{border-bottom:none}.info-label{font-family:var(--font-mono);font-size:var(--fs-sm);color:var(--muted);letter-spacing:.04em;text-transform:uppercase}.info-value{font-size:var(--fs-body);color:var(--fg)}
+.app-footer{margin-top:var(--gap-xl);padding:var(--gap-lg) 0;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:var(--fs-meta);color:var(--muted);opacity:0;animation:fadeIn .4s 1.35s ease both}
+@media(max-width:1200px){.stats-row{grid-template-columns:repeat(2,1fr)}.charts-row,.content-row{grid-template-columns:1fr}}
+@media(max-width:768px){.app-sidebar{display:none}.app-main{margin-left:0}.stats-row{grid-template-columns:1fr}.carousel-item{height:160px}}
+@media(max-width:480px){.page-eyebrow{letter-spacing:.03em;font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important}}
+</style>
 </head>
 <body>
-
-  <!-- Header -->
-  <header class="app-header" data-od-id="header">
-    <div class="header-left">
-      <span class="header-logo">寓<span>管理</span></span>
-      <div class="header-divider"></div>
-      <span class="header-role">宿管</span>
-      <div class="header-divider"></div>
-      <div class="building-badge"><span class="dot"></span>3# 德馨楼</div>
+<header class="app-header"><div class="header-left"><span class="header-logo">寓<span>管理</span></span><div class="header-divider"></div><span class="header-role">宿管</span></div><div class="header-right"><div class="user-dropdown"><div class="user-trigger"><div class="avatar">李</div><span>李老师</span><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div><div class="user-menu"><a href="#" class="dropdown-item">修改密码</a><div class="dropdown-divider"></div><a href="#" class="dropdown-item">退出登录</a></div></div></div></header>
+<aside class="app-sidebar"><nav class="sidebar-nav">
+  <div class="nav-group"><div class="nav-group-title">公寓信息</div>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>楼栋信息</a>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>房间信息</a>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>床位信息</a>
+  </div>
+  <div class="nav-group"><div class="nav-group-title">入住管理</div>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>入住登记</a>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>调宿审批</a>
+  </div>
+  <div class="nav-group"><div class="nav-group-title">日常事务</div>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>报修处理</a>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>晚归登记</a>
+    <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>访客登记</a>
+  </div>
+</nav><div class="sidebar-stamp"><div class="sidebar-stamp-inner">管理楼栋：3#德馨楼<br>SSM Framework</div></div></aside>
+<main class="app-main">
+  <div class="carousel-wrap"><div class="carousel-item"><img src="carousel.png" alt="校园公寓"><div class="overlay"><h2>3#德馨楼 · 本月卫生检查通知</h2><p>本月卫生检查定于 6 月 30 日（周一）下午进行，请各宿舍提前做好准备。</p></div></div><div class="carousel-indicators"><button class="carousel-dot active"></button><button class="carousel-dot"></button></div></div>
+  <div class="page-header"><div><span class="page-eyebrow">OPERATIONS DASHBOARD</span><h1>运营看板 — 3#德馨楼</h1><p class="page-meta">楼栋运营数据概览与待办事项</p></div></div>
+  <section class="stats-row">
+    <div class="stat-card" data-decorative-num="01"><div class="stat-card-label">入住率</div><div class="stat-card-value accent2" id="occupancyRate">91%</div><div class="stat-card-sub">共 <span class="num">338</span> 人入住</div></div>
+    <div class="stat-card" data-decorative-num="02"><div class="stat-card-label">空余床位</div><div class="stat-card-value" id="emptyBeds">34</div><div class="stat-card-sub">分布在 <span class="num">12</span> 间房</div></div>
+    <div class="stat-card" data-decorative-num="03"><div class="stat-card-label">维修中</div><div class="stat-card-value accent" id="repairing">3</div><div class="stat-card-sub">超时 <span class="num">1</span> 件</div></div>
+    <div class="stat-card" data-decorative-num="04"><div class="stat-card-label">今日新增</div><div class="stat-card-value" id="todayNew">2</div><div class="stat-card-sub">入住 <span class="num">1</span> · 调宿 <span class="num">1</span></div></div>
+  </section>
+  <section class="charts-row">
+    <div class="chart-panel"><div class="chart-panel-title"><h2>楼层入住分布</h2></div><div class="chart-box" id="chartFloor"></div></div>
+    <div class="chart-panel"><div class="chart-panel-title"><h2>本月报修状态</h2></div><div class="chart-box" id="chartRepair"></div></div>
+  </section>
+  <section class="content-row">
+    <div class="content-panel">
+      <div class="content-panel-header"><h3>待处理报修</h3><a class="link" href="#">查看全部 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a></div>
+      <table class="pending-table"><thead><tr><th>房间</th><th>问题</th><th>状态</th><th>操作</th></tr></thead><tbody>
+        <tr><td class="num">3#105</td><td>卫生间水龙头漏水</td><td><span class="pill pill-danger">已超时</span></td><td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">处理</a></td></tr>
+        <tr><td class="num">3#208</td><td>门锁不好使</td><td><span class="pill pill-pending">待处理</span></td><td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">处理</a></td></tr>
+        <tr><td class="num">3#312</td><td>窗户密封条老化</td><td><span class="pill pill-pending">待处理</span></td><td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">处理</a></td></tr>
+      </tbody></table>
     </div>
-    <div class="header-right">
-      <div class="user-dropdown">
-        <div class="user-trigger">
-          <div class="avatar">王</div>
-          <span>王建国</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="user-menu">
-          <a href="#" class="dropdown-item">修改密码</a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">退出登录</a>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Sidebar -->
-  <aside class="app-sidebar" data-od-id="sidebar">
-    <nav>
-      <div class="nav-group">
-        <div class="nav-group-title">公寓信息</div>
-        <a class="nav-item active" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          运营看板
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          楼栋信息
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-          房间 / 床位
-        </a>
-      </div>
-
-      <div class="nav-group">
-        <div class="nav-group-title">入住管理</div>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-          入住登记
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          调宿审批
-          <span class="nav-badge">2</span>
-        </a>
-      </div>
-
-      <div class="nav-group">
-        <div class="nav-group-title">日常事务</div>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          报修处理
-          <span class="nav-badge">3</span>
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          晚归登记
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          来访登记
-        </a>
-      </div>
-    </nav>
-  </aside>
-
-  <!-- Main -->
-  <main class="app-main" data-od-id="main">
-    <div class="page-header">
-      <div>
-        <h1>德馨楼 · 运营看板</h1>
-        <p class="page-meta">楼栋编号 3# · 共 72 间房 · 288 个床位</p>
+    <div class="content-panel">
+      <div class="content-panel-header"><h3>待审批与访客</h3></div>
+      <div class="info-card">
+        <div class="info-row"><span class="info-label">待审批调宿</span><span class="info-value"><span class="num" style="color:var(--accent-2)">2</span> 件</span></div>
+        <div class="info-row"><span class="info-label">在访未离校</span><span class="info-value"><span class="num" style="color:var(--status-ok)">1</span> 人</span></div>
+        <div class="info-row"><span class="info-label">本月晚归</span><span class="info-value"><span class="num">5</span> 人次</span></div>
+        <div class="info-row"><span class="info-label">本月访客</span><span class="info-value"><span class="num">18</span> 人次</span></div>
       </div>
     </div>
-
-    <!-- Alert -->
-    <div class="alert-bar" data-od-id="alert">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <span>有 <span class="alert-count">2</span> 件报修工单已超过 24 小时未处理，请及时跟进</span>
-    </div>
-
-    <!-- Stats -->
-    <section class="stats-row" data-od-id="stats">
-      <div class="stat-card">
-        <div class="stat-card-label">楼栋入住率</div>
-        <div class="stat-card-value accent">91%</div>
-        <div class="stat-card-sub"><span class="num">262</span> / 288 床位已入住</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label">待处理工单</div>
-        <div class="stat-card-value accent2">3</div>
-        <div class="stat-card-sub">报修 <span class="num">2</span> · 调宿 <span class="num">1</span></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label">今日来访</div>
-        <div class="stat-card-value">4</div>
-        <div class="stat-card-sub">已登记 <span class="num">3</span> · 未离开 <span class="num">1</span></div>
-      </div>
-    </section>
-
-    <!-- Quick Actions -->
-    <section class="quick-actions" data-od-id="actions">
-      <a class="quick-btn" href="#">
-        <div class="quick-btn-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-        </div>
-        <span class="quick-btn-label">办理入住</span>
-        <span class="quick-btn-desc">为学生选择空闲床位</span>
-      </a>
-      <a class="quick-btn" href="#">
-        <div class="quick-btn-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-        </div>
-        <span class="quick-btn-label">处理报修</span>
-        <span class="quick-btn-desc">接单或填写处理结果</span>
-      </a>
-      <a class="quick-btn" href="#">
-        <div class="quick-btn-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <span class="quick-btn-label">晚归登记</span>
-        <span class="quick-btn-desc">记录学生晚归信息</span>
-      </a>
-      <a class="quick-btn" href="#">
-        <div class="quick-btn-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <span class="quick-btn-label">来访登记</span>
-        <span class="quick-btn-desc">登记访客信息并确认离开</span>
-      </a>
-    </section>
-
-    <!-- Room Occupancy -->
-    <section class="dash-section" data-od-id="rooms">
-      <div class="dash-section-header">
-        <h2>房间概况</h2>
-        <a class="section-link" href="#">
-          查看全部
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
-      </div>
-      <div class="data-table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>房间号</th>
-              <th>楼层</th>
-              <th>床位数</th>
-              <th>已入住</th>
-              <th>入住率</th>
-              <th>状态</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="num">3#101</td>
-              <td>1 层</td>
-              <td class="num">4</td>
-              <td class="num">4</td>
-              <td class="num">100%</td>
-              <td><span class="pill pill-quiet">满员</span></td>
-            </tr>
-            <tr>
-              <td class="num">3#102</td>
-              <td>1 层</td>
-              <td class="num">4</td>
-              <td class="num">3</td>
-              <td class="num">75%</td>
-              <td><span class="pill pill-active">空 1 床</span></td>
-            </tr>
-            <tr>
-              <td class="num">3#201</td>
-              <td>2 层</td>
-              <td class="num">4</td>
-              <td class="num">4</td>
-              <td class="num">100%</td>
-              <td><span class="pill pill-quiet">满员</span></td>
-            </tr>
-            <tr>
-              <td class="num">3#202</td>
-              <td>2 层</td>
-              <td class="num">4</td>
-              <td class="num">2</td>
-              <td class="num">50%</td>
-              <td><span class="pill pill-active">空 2 床</span></td>
-            </tr>
-            <tr>
-              <td class="num">3#301</td>
-              <td>3 层</td>
-              <td class="num">4</td>
-              <td class="num">4</td>
-              <td class="num">100%</td>
-              <td><span class="pill pill-quiet">满员</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Pending Repairs -->
-    <section class="dash-section" data-od-id="repairs">
-      <div class="dash-section-header">
-        <h2>待处理报修</h2>
-        <a class="section-link" href="#">
-          全部报修
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
-      </div>
-      <div class="data-table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>房间</th>
-              <th>问题描述</th>
-              <th>报修人</th>
-              <th>报修时间</th>
-              <th>状态</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="num">3#105</td>
-              <td>卫生间水龙头漏水</td>
-              <td>李芳</td>
-              <td class="num" style="color:var(--muted)">06-24 09:15</td>
-              <td><span class="pill pill-danger">已超时</span></td>
-              <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">接单</a></td>
-            </tr>
-            <tr>
-              <td class="num">3#308</td>
-              <td>空调不制冷</td>
-              <td>赵雪</td>
-              <td class="num" style="color:var(--muted)">06-25 18:20</td>
-              <td><span class="pill pill-danger">已超时</span></td>
-              <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">接单</a></td>
-            </tr>
-            <tr>
-              <td class="num">3#402</td>
-              <td>窗户无法关闭</td>
-              <td>刘洋</td>
-              <td class="num" style="color:var(--muted)">06-27 08:00</td>
-              <td><span class="pill pill-processing">待接单</span></td>
-              <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">接单</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <footer class="app-footer" data-od-id="footer">
-      <span>© 2026 高校公寓管理系统</span>
-      <span style="font-family:var(--font-mono)">3# 德馨楼 · 宿管工作台</span>
-    </footer>
-  </main>
-
+  </section>
+  <footer class="app-footer"><span>&copy; 2026 高校公寓管理系统</span><span class="num">SSM 框架 · 课程设计项目</span></footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  if(typeof echarts==='undefined')return;
+  var accent2='#D4845A',accent='#C4453A',muted='#7A7067',border='#EBE6DF',ok='#2E7D6F';
+  /* Floor occupancy horizontal bar */
+  var fc=echarts.init(document.getElementById('chartFloor'));
+  fc.setOption({tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},grid:{left:'15%',right:'10%',top:'8%',bottom:'10%'},xAxis:{type:'value',max:100,axisLabel:{fontSize:11,color:muted,formatter:'{value}%'},splitLine:{lineStyle:{color:border}},axisLine:{show:false},axisTick:{show:false}},yAxis:{type:'category',data:['1F','2F','3F','4F','5F','6F'],axisLabel:{fontSize:11,color:muted,fontFamily:'ui-monospace'},axisLine:{lineStyle:{color:border}},axisTick:{show:false}},series:[{type:'bar',data:[100,95,88,83,90,78],barWidth:'50%',itemStyle:{borderRadius:[0,4,4,0],color:accent2},label:{show:true,position:'right',fontSize:11,color:muted,formatter:'{c}%'}}]});
+  /* Repair status donut */
+  var rc=echarts.init(document.getElementById('chartRepair'));
+  rc.setOption({tooltip:{trigger:'item',formatter:'{b}: {c} ({d}%)'},legend:{bottom:0,textStyle:{fontSize:11,color:muted}},series:[{type:'pie',radius:['40%','65%'],center:['50%','45%'],data:[{value:3,name:'待处理',itemStyle:{color:accent2}},{value:1,name:'已超时',itemStyle:{color:accent}},{value:5,name:'已完成',itemStyle:{color:ok}}],label:{show:false},emphasis:{label:{show:true,fontSize:13,fontWeight:'bold'}}}]});
+  window.addEventListener('resize',function(){fc.resize();rc.resize()});
+})();
+</script>
 </body>
 </html>

@@ -1,759 +1,419 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>高校公寓管理系统 · 管理员</title>
-  <style>
-    /* ═══════════════════════════════════════════════════════════════════
-       Design Tokens — 暖白 × 锗红 × 暖橙 · 杂志风
-       ═══════════════════════════════════════════════════════════════════ */
-    :root {
-      --bg:        #FAF9F5;
-      --surface:   rgba(255,255,255,0.92);
-      --fg:        #2D241C;
-      --muted:     #7A7067;
-      --border:    #EBE6DF;
-      --accent:    #C4453A;
-      --accent-2:  #D4845A;
-
-      --accent-soft: color-mix(in oklch, var(--accent) 10%, transparent);
-      --accent-2-soft: color-mix(in oklch, var(--accent-2) 12%, transparent);
-      --fg-soft:    color-mix(in oklch, var(--fg) 6%, transparent);
-      --stripe:    rgba(0,0,0,0.025);
-      --hover-bg:  rgb(245,244,237);
-      --col-line:  rgb(240,238,230);
-
-      --font-display: 'Georgia', 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
-      --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-      --font-mono:    'SF Mono', 'JetBrains Mono', 'Consolas', ui-monospace, monospace;
-
-      --fs-h1: 32px;
-      --fs-h2: 22px;
-      --fs-h3: 16px;
-      --fs-body: 14px;
-      --fs-meta: 12px;
-      --fs-sm: 11px;
-
-      --gap-xs: 6px;
-      --gap-sm: 10px;
-      --gap-md: 16px;
-      --gap-lg: 24px;
-      --gap-xl: 40px;
-
-      --radius: 8px;
-      --radius-lg: 12px;
-      --sidebar-w: 240px;
-      --header-h: 56px;
-    }
-
-    /* ═══ Reset ═══ */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; }
-    body {
-      background:
-        radial-gradient(circle, #EDEAE5 0.8px, transparent 0.8px),
-        var(--bg);
-      background-size: 16px 16px;
-      color: var(--fg);
-      font-family: var(--font-body);
-      font-size: var(--fs-body);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; text-decoration: none; }
-    button { font: inherit; cursor: pointer; }
-    table { border-collapse: separate; border-spacing: 0; width: 100%; }
-
-    /* ═══ Layout: Header ═══ */
-    .app-header {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: var(--header-h);
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 var(--gap-lg);
-      z-index: 100;
-    }
-    .header-left { display: flex; align-items: center; gap: var(--gap-md); }
-    .header-logo {
-      font-family: var(--font-display);
-      font-size: 17px; font-weight: 700;
-      letter-spacing: -0.01em;
-      color: var(--fg);
-    }
-    .header-logo span { color: var(--accent); }
-    .header-divider {
-      width: 1px; height: 20px;
-      background: var(--border);
-    }
-    .header-role {
-      font-family: var(--font-mono);
-      font-size: var(--fs-sm);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-    .header-right { display: flex; align-items: center; gap: var(--gap-md); }
-    .user-dropdown { position: relative; }
-    .user-trigger {
-      display: flex; align-items: center; gap: var(--gap-sm);
-      padding: 4px 8px 4px 4px; border-radius: var(--radius);
-      cursor: pointer; transition: background 0.12s;
-    }
-    .user-trigger:hover { background: var(--hover-bg); }
-    .user-trigger .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-family: var(--font-display); font-size: 14px; font-weight: 600; flex-shrink: 0; }
-    .user-trigger span { font-size: var(--fs-body); color: var(--muted); white-space: nowrap; }
-    .user-trigger .chevron {
-      width: 14px; height: 14px; color: var(--muted);
-      transition: transform 0.2s; flex-shrink: 0;
-    }
-    .user-dropdown:hover .chevron { transform: rotate(180deg); }
-    .user-menu {
-      position: absolute; top: calc(100% + 6px); right: 0; z-index: 200;
-      min-width: 140px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      padding: 4px;
-      opacity: 0; visibility: hidden;
-      transform: translateY(-4px);
-      transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
-    }
-    .user-dropdown:hover .user-menu {
-      opacity: 1; visibility: visible;
-      transform: translateY(0);
-    }
-    .dropdown-item {
-      display: block;
-      padding: 8px 12px;
-      font-size: var(--fs-body);
-      color: var(--fg);
-      border-radius: calc(var(--radius) - 2px);
-      transition: background 0.1s;
-      white-space: nowrap;
-    }
-    .dropdown-item:hover { background: var(--hover-bg); }
-    .dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
-
-    /* ═══ Layout: Sidebar ═══ */
-    .app-sidebar {
-      position: fixed;
-      top: var(--header-h); left: 0; bottom: 0;
-      width: var(--sidebar-w);
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      padding: var(--gap-md) 0;
-      overflow-y: auto;
-      z-index: 50;
-    }
-    .nav-group { margin-bottom: var(--gap-md); }
-    .nav-group-title {
-      font-family: var(--font-mono);
-      font-size: var(--fs-sm);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: var(--gap-xs) var(--gap-lg);
-      margin-bottom: 2px;
-    }
-    .nav-item {
-      display: flex; align-items: center; gap: var(--gap-sm);
-      padding: 9px var(--gap-lg);
-      font-size: var(--fs-body);
-      color: var(--muted);
-      transition: all 0.12s;
-      border-left: 2px solid transparent;
-    }
-    .nav-item:hover {
-      color: var(--fg);
-      background: var(--hover-bg);
-    }
-    .nav-item.active {
-      color: var(--accent);
-      border-left-color: var(--accent);
-      background: var(--accent-soft);
-      font-weight: 500;
-    }
-    .nav-item svg {
-      width: 16px; height: 16px;
-      flex-shrink: 0;
-    }
-    .nav-badge {
-      margin-left: auto;
-      background: var(--accent);
-      color: var(--surface);
-      font-size: 10px;
-      font-weight: 600;
-      padding: 1px 6px;
-      border-radius: 999px;
-      line-height: 1.4;
-    }
-
-    /* ═══ Layout: Main ═══ */
-    .app-main {
-      margin-left: var(--sidebar-w);
-      margin-top: var(--header-h);
-      padding: var(--gap-xl);
-      min-height: calc(100vh - var(--header-h));
-    }
-
-    /* ═══ Page Header ═══ */
-    .page-header {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: var(--gap-xl);
-    }
-    .page-header h1 {
-      font-family: var(--font-display);
-      font-size: var(--fs-h1);
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.01em;
-    }
-    .page-header .page-meta {
-      font-family: var(--font-mono);
-      font-size: var(--fs-meta);
-      color: var(--muted);
-      margin-top: var(--gap-xs);
-    }
-
-    /* ═══ Stat Cards Row ═══ */
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--gap-md);
-      margin-bottom: var(--gap-xl);
-    }
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--gap-lg) var(--gap-lg) var(--gap-md);
-      transition: border-color 0.15s, box-shadow 0.2s, transform 0.2s;
-    }
-    .stat-card:hover {
-      border-color: color-mix(in oklch, var(--accent) 30%, transparent);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      transform: translateY(-3px);
-    }
-    .stat-card-label {
-      font-family: var(--font-mono);
-      font-size: var(--fs-sm);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: var(--gap-sm);
-    }
-    .stat-card-value {
-      font-family: var(--font-display);
-      font-size: 36px;
-      font-weight: 700;
-      line-height: 1;
-      letter-spacing: -0.02em;
-    }
-    .stat-card-value.accent { color: var(--accent); }
-    .stat-card-value.accent2 { color: var(--accent-2); }
-    .stat-card-sub {
-      font-size: var(--fs-meta);
-      color: var(--muted);
-      margin-top: var(--gap-xs);
-    }
-    .stat-card-sub .num {
-      font-family: var(--font-mono);
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* ═══ Module Grid ═══ */
-    .module-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--gap-md);
-      margin-bottom: var(--gap-xl);
-    }
-    .module-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--gap-lg);
-      display: flex; flex-direction: column; gap: var(--gap-sm);
-      transition: border-color 0.15s, box-shadow 0.2s, transform 0.2s;
-      cursor: pointer;
-    }
-    .module-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      transform: translateY(-3px);
-    }
-    .module-icon {
-      width: 36px; height: 36px;
-      display: grid; place-items: center;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--accent);
-    }
-    .module-icon svg { width: 18px; height: 18px; }
-    .module-card h3 {
-      font-size: var(--fs-h3);
-      font-weight: 600;
-    }
-    .module-card p {
-      font-size: var(--fs-meta);
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    .module-card .module-count {
-      font-family: var(--font-mono);
-      font-size: var(--fs-sm);
-      color: var(--muted);
-      margin-top: auto;
-      padding-top: var(--gap-sm);
-      border-top: 1px solid var(--border);
-    }
-
-    /* ═══ Section ═══ */
-    .dash-section {
-      margin-bottom: var(--gap-xl);
-    }
-    .dash-section-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: var(--gap-md);
-      padding-bottom: var(--gap-sm);
-      border-bottom: 1px solid var(--border);
-    }
-    .dash-section-header h2 {
-      font-family: var(--font-display);
-      font-size: var(--fs-h2);
-      font-weight: 700;
-    }
-    .dash-section-header .section-link {
-      font-size: var(--fs-meta);
-      color: var(--accent);
-      display: flex; align-items: center; gap: 4px;
-      transition: gap 0.15s;
-    }
-    .dash-section-header .section-link:hover { gap: 8px; }
-    .dash-section-header .section-link svg { width: 14px; height: 14px; }
-
-    /* ═══ Pending Table ═══ */
-    .pending-table {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-    .pending-table table { font-size: var(--fs-body); }
-    .pending-table th {
-      text-align: left;
-      padding: var(--gap-sm) var(--gap-md);
-      font-family: var(--font-mono);
-      font-size: var(--fs-sm);
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      position: relative;
-    }
-    .pending-table th:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      right: 0; top: 25%; bottom: 25%;
-      width: 1px;
-      background: var(--col-line);
-    }
-    .pending-table td {
-      padding: 12px var(--gap-md);
-      vertical-align: middle;
-      position: relative;
-    }
-    .pending-table td:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      right: 0; top: 15%; bottom: 15%;
-      width: 1px;
-      background: var(--col-line);
-    }
-    .pending-table tbody tr { border-bottom: 1px solid var(--border); }
-    .pending-table tbody tr:last-child { border-bottom: none; }
-    .pending-table tbody tr:nth-child(odd) { background: var(--stripe); }
-    .pending-table tbody tr:hover { background: var(--hover-bg); }
-
-    /* ═══ Status Pills ═══ */
-    .pill {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      font-family: var(--font-mono);
-      font-size: var(--fs-sm);
-      font-weight: 500;
-      letter-spacing: 0.02em;
-    }
-    .pill-pending {
-      background: color-mix(in oklch, var(--accent-2) 14%, transparent);
-      color: #9A5D2E;
-    }
-    .pill-processing {
-      background: color-mix(in oklch, #2E7D6F 14%, transparent);
-      color: #2E7D6F;
-    }
-    .pill-danger {
-      background: color-mix(in oklch, var(--accent) 12%, transparent);
-      color: var(--accent);
-    }
-
-    /* ═══ Activity Log ═══ */
-    .activity-log {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: var(--gap-md) var(--gap-lg);
-    }
-    .log-entry {
-      display: grid;
-      grid-template-columns: 100px 1fr auto;
-      gap: var(--gap-md);
-      align-items: baseline;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.12s;
-    }
-    .log-entry:last-child { border-bottom: none; }
-    .log-entry:hover { background: var(--hover-bg); }
-    .log-time {
-      font-family: var(--font-mono);
-      font-size: var(--fs-sm);
-      color: var(--muted);
-    }
-    .log-text {
-      font-size: var(--fs-body);
-      color: var(--fg);
-    }
-    .log-user {
-      font-family: var(--font-mono);
-      font-size: var(--fs-sm);
-      color: var(--accent-2);
-    }
-
-    /* ═══ Footer ═══ */
-    .app-footer {
-      margin-top: var(--gap-xl);
-      padding: var(--gap-lg) 0;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: var(--fs-meta);
-      color: var(--muted);
-    }
-
-    /* ═══ Responsive ═══ */
-    @media (max-width: 1200px) {
-      .stats-row { grid-template-columns: repeat(2, 1fr); }
-      .module-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 768px) {
-      .app-sidebar { display: none; }
-      .app-main { margin-left: 0; }
-      .stats-row { grid-template-columns: 1fr; }
-      .module-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ═══ Utility ═══ */
-    .num {
-      font-family: var(--font-mono);
-      font-variant-numeric: tabular-nums;
-    }
-    .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      padding: 0; margin: -1px; overflow: hidden;
-      clip: rect(0,0,0,0); border: 0;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>高校公寓管理系统 · 管理员</title>
+<style>
+/* ═══ Tokens ═══ */
+:root{
+  --bg:#FAF9F5;--surface:rgba(255,255,255,0.92);--surface-opaque:#FFFFFF;
+  --fg:#2D241C;--muted:#7A7067;--border:#EBE6DF;
+  --accent:#C4453A;--accent-2:#D4845A;--status-ok:#2E7D6F;
+  --hover-bg:rgb(245,244,237);--stripe:rgba(0,0,0,0.025);--col-line:rgb(240,238,230);
+  --accent-soft:color-mix(in oklch,var(--accent) 10%,transparent);
+  --accent-2-soft:color-mix(in oklch,var(--accent-2) 12%,transparent);
+  --fg-soft:color-mix(in oklch,var(--fg) 6%,transparent);
+  --font-display:Georgia,'Noto Serif SC','Source Han Serif SC',SimSun,serif;
+  --font-body:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+  --font-mono:'SF Mono','JetBrains Mono',Consolas,ui-monospace,monospace;
+  --fs-h1:32px;--fs-h2:22px;--fs-h3:16px;--fs-body:14px;--fs-meta:12px;--fs-sm:11px;
+  --gap-xs:6px;--gap-sm:10px;--gap-md:16px;--gap-lg:24px;--gap-xl:40px;
+  --radius:8px;--radius-lg:12px;
+  --sidebar-w:240px;--header-h:56px;
+}
+/* ═══ Reset ═══ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:radial-gradient(circle,rgb(228,225,219) .7px,transparent .7px),var(--bg);
+  background-size:12px 12px;color:var(--fg);font-family:var(--font-body);font-size:var(--fs-body);
+  line-height:1.6;-webkit-font-smoothing:antialiased;
+}
+/* 纸张噪点 */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.035;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size:200px 200px}
+body>*{position:relative;z-index:1}
+a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
+table{border-collapse:separate;border-spacing:0;width:100%}
+.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+/* ═══ Keyframes ═══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+@keyframes headerReveal{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp2{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* ═══ Header ═══ */
+.app-header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:var(--surface);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--gap-lg);z-index:100;animation:headerReveal .4s cubic-bezier(.22,1,.36,1) both}
+.header-left{display:flex;align-items:center;gap:var(--gap-md)}
+.header-logo{font-family:var(--font-display);font-size:17px;font-weight:700;letter-spacing:-.01em}
+.header-logo span{color:var(--accent)}
+.header-divider{width:1px;height:20px;background:var(--border)}
+.header-role{font-family:var(--font-mono);font-size:var(--fs-sm);letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:var(--gap-md)}
+/* ═══ User Dropdown ═══ */
+.user-dropdown{position:relative}
+.user-trigger{display:flex;align-items:center;gap:var(--gap-sm);padding:4px 8px 4px 4px;border-radius:var(--radius);cursor:pointer;transition:background .12s}
+.user-trigger:hover{background:var(--hover-bg)}
+.user-trigger .avatar{width:32px;height:32px;border-radius:50%;background:transparent;color:var(--accent);display:grid;place-items:center;font-family:var(--font-display);font-size:14px;font-weight:600;flex-shrink:0}
+.user-trigger span{font-size:var(--fs-body);color:var(--muted);white-space:nowrap}
+.user-trigger .chevron{width:14px;height:14px;color:var(--muted);transition:transform .2s;flex-shrink:0}
+.user-dropdown:hover .chevron{transform:rotate(180deg)}
+.user-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:200;min-width:140px;background:#FFF;border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 8px 24px rgba(0,0,0,.08);padding:4px;opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .15s,transform .15s,visibility .15s}
+.user-dropdown:hover .user-menu{opacity:1;visibility:visible;transform:translateY(0)}
+.dropdown-item{display:block;padding:8px 12px;font-size:var(--fs-body);color:var(--fg);border-radius:calc(var(--radius) - 2px);transition:background .1s;white-space:nowrap}
+.dropdown-item:hover{background:var(--hover-bg)}
+.dropdown-divider{height:1px;background:var(--border);margin:4px 0}
+/* ═══ Sidebar ═══ */
+.app-sidebar{position:fixed;top:var(--header-h);left:0;bottom:0;width:var(--sidebar-w);background:color-mix(in oklch,var(--surface) 88%,var(--bg));
+  border-right:1px solid var(--border);padding:var(--gap-md) 0;overflow-y:auto;z-index:50;display:flex;flex-direction:column}
+.sidebar-nav{flex:1}
+.nav-group{margin-bottom:var(--gap-md)}
+.nav-group-title{font-family:var(--font-mono);font-size:var(--fs-sm);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+  padding:var(--gap-xs) var(--gap-lg);margin-bottom:2px;padding-bottom:var(--gap-xs);border-bottom:1px solid var(--border);
+  animation:fadeIn .3s .15s both}
+.nav-item{display:flex;align-items:center;gap:var(--gap-sm);padding:10px var(--gap-lg);font-size:var(--fs-body);color:var(--muted);
+  transition:all .12s;border-left:2px solid transparent;opacity:0;animation:slideRight .3s cubic-bezier(.22,1,.36,1) both}
+.nav-item:hover{color:var(--fg);background:var(--hover-bg)}
+.nav-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-soft);font-weight:500}
+.nav-item svg{width:16px;height:16px;flex-shrink:0}
+.sidebar-stamp{padding:var(--gap-md) var(--gap-lg);border-top:1px solid var(--border);animation:fadeIn .4s .8s both}
+.sidebar-stamp-inner{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--muted);opacity:.5;text-transform:uppercase;line-height:1.5}
+/* 侧栏延迟 */
+.nav-item:nth-child(1){animation-delay:.18s}.nav-item:nth-child(2){animation-delay:.21s}
+.nav-item:nth-child(3){animation-delay:.24s}.nav-item:nth-child(4){animation-delay:.27s}
+.nav-item:nth-child(5){animation-delay:.30s}.nav-item:nth-child(6){animation-delay:.33s}
+.nav-item:nth-child(7){animation-delay:.36s}.nav-item:nth-child(8){animation-delay:.39s}
+.nav-item:nth-child(9){animation-delay:.42s}.nav-item:nth-child(10){animation-delay:.45s}
+.nav-item:nth-child(11){animation-delay:.48s}
+/* ═══ Main ═══ */
+.app-main{margin-left:var(--sidebar-w);margin-top:var(--header-h);padding:var(--gap-xl);min-height:calc(100vh - var(--header-h))}
+/* ═══ Carousel ═══ */
+.carousel-wrap{border-radius:var(--radius-lg);overflow:hidden;margin-bottom:var(--gap-xl);opacity:0;animation:fadeUp .5s .15s cubic-bezier(.22,1,.36,1) both;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.carousel-item{position:relative;height:220px;overflow:hidden}
+.carousel-item img{width:100%;height:100%;object-fit:cover;display:block}
+.carousel-item .overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(45,36,28,.65),rgba(196,69,58,.15));display:flex;flex-direction:column;justify-content:flex-end;padding:var(--gap-lg) var(--gap-xl)}
+.carousel-item .overlay h2{font-family:var(--font-display);font-size:var(--fs-h2);color:#fff;font-weight:700;margin-bottom:var(--gap-xs)}
+.carousel-item .overlay p{font-size:var(--fs-body);color:rgba(255,255,255,.85);max-width:60ch}
+.carousel-indicators{display:flex;gap:8px;justify-content:center;padding:var(--gap-sm) 0;background:var(--surface)}
+.carousel-dot{width:8px;height:8px;border-radius:50%;background:var(--border);border:none;cursor:pointer;transition:background .15s,transform .15s}
+.carousel-dot.active{background:var(--accent);transform:scale(1.3)}
+/* ═══ Page Header ═══ */
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:var(--gap-xl);opacity:0;animation:fadeUp .5s .2s cubic-bezier(.22,1,.36,1) both}
+.page-header h1{font-family:var(--font-display);font-size:var(--fs-h1);font-weight:700;line-height:1.15;letter-spacing:-.01em}
+.page-header .page-meta{font-family:var(--font-mono);font-size:var(--fs-meta);color:var(--muted);margin-top:var(--gap-xs)}
+.page-eyebrow{display:block;font-family:var(--font-mono);font-size:var(--fs-sm);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:var(--gap-xs)}
+/* ═══ Stat Cards ═══ */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap-md);margin-bottom:var(--gap-xl)}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--gap-lg) var(--gap-lg) var(--gap-md);
+  position:relative;overflow:hidden;transition:border-color .15s,box-shadow .2s,transform .2s;opacity:0;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
+.stat-card:nth-child(1){animation-delay:.3s}.stat-card:nth-child(2){animation-delay:.36s}
+.stat-card:nth-child(3){animation-delay:.42s}.stat-card:nth-child(4){animation-delay:.48s}
+.stat-card:hover{border-color:color-mix(in oklch,var(--accent) 30%,transparent);box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-3px)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity .15s;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
+.stat-card:hover::before{opacity:1}
+.stat-card::after{content:attr(data-decorative-num);position:absolute;bottom:-8px;right:12px;font-family:var(--font-display);font-size:72px;font-weight:700;line-height:1;color:var(--muted);opacity:.06;pointer-events:none;user-select:none}
+.stat-card-label{font-family:var(--font-mono);font-size:var(--fs-sm);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:var(--gap-sm)}
+.stat-card-value{font-family:var(--font-display);font-size:36px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.stat-card-value.accent{color:var(--accent)}.stat-card-value.accent2{color:var(--accent-2)}
+.stat-card-sub{font-size:var(--fs-meta);color:var(--muted);margin-top:var(--gap-xs)}
+.stat-card-sub .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.stat-card-ring{width:48px;height:48px;position:absolute;top:var(--gap-lg);right:var(--gap-lg)}
+.stat-card-ring svg{width:100%;height:100%}
+/* ═══ Charts Row ═══ */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-md);margin-bottom:var(--gap-xl)}
+.chart-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--gap-lg);opacity:0;animation:fadeUp .5s .55s cubic-bezier(.22,1,.36,1) both}
+.chart-panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--gap-md);padding-bottom:var(--gap-sm);border-bottom:1px solid var(--border)}
+.chart-panel-title h2{font-family:var(--font-display);font-size:var(--fs-h2);font-weight:700}
+.chart-panel-title .link{font-size:var(--fs-meta);color:var(--accent);display:flex;align-items:center;gap:4px;transition:gap .15s}
+.chart-panel-title .link:hover{gap:8px}
+.chart-panel-title .link svg{width:14px;height:14px}
+.chart-box{height:260px}
+/* ═══ Content Row ═══ */
+.content-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-md);margin-bottom:var(--gap-xl)}
+.content-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;opacity:0;animation:fadeUp .5s .75s cubic-bezier(.22,1,.36,1) both}
+.content-panel-header{display:flex;align-items:center;justify-content:space-between;padding:var(--gap-md) var(--gap-lg);border-bottom:1px solid var(--border)}
+.content-panel-header h3{font-family:var(--font-display);font-size:var(--fs-h3);font-weight:600}
+.content-panel-header .link{font-size:var(--fs-meta);color:var(--accent);transition:gap .15s;display:flex;align-items:center;gap:4px}
+.content-panel-header .link:hover{gap:8px}
+/* ═══ Table ═══ */
+.pending-table{font-size:var(--fs-body)}
+.pending-table th{text-align:left;padding:var(--gap-sm) var(--gap-md);font-family:var(--font-mono);font-size:var(--fs-sm);font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--bg);border-bottom:1px solid var(--border);position:relative}
+.pending-table th:not(:last-child)::after{content:'';position:absolute;right:0;top:25%;bottom:25%;width:1px;background:var(--col-line)}
+.pending-table td{padding:12px var(--gap-md);vertical-align:middle;position:relative;opacity:0;animation:fadeIn .35s ease both}
+.pending-table td:not(:last-child)::after{content:'';position:absolute;right:0;top:15%;bottom:15%;width:1px;background:var(--col-line)}
+.pending-table tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+.pending-table tbody tr:last-child{border-bottom:none}
+.pending-table tbody tr:nth-child(odd){background:var(--stripe)}
+.pending-table tbody tr:hover{background:var(--hover-bg)}
+.pending-table tbody tr:nth-child(1) td{animation-delay:.95s}
+.pending-table tbody tr:nth-child(2) td{animation-delay:1s}
+.pending-table tbody tr:nth-child(3) td{animation-delay:1.05s}
+.pending-table tbody tr:nth-child(4) td{animation-delay:1.1s}
+/* ═══ Pills ═══ */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-family:var(--font-mono);font-size:var(--fs-sm);font-weight:500;letter-spacing:.02em}
+.pill-pending{background:color-mix(in oklch,var(--accent-2) 14%,transparent);color:#9A5D2E}
+.pill-danger{background:color-mix(in oklch,var(--accent) 12%,transparent);color:var(--accent)}
+.pill-processing{background:color-mix(in oklch,var(--status-ok) 14%,transparent);color:var(--status-ok)}
+/* ═══ Activity Log ═══ */
+.activity-log{padding:var(--gap-md) var(--gap-lg)}
+.log-entry{display:grid;grid-template-columns:90px 1fr auto;gap:var(--gap-md);align-items:baseline;padding:12px 0;border-bottom:1px solid var(--border);transition:background .12s;opacity:0;animation:fadeIn .35s ease both}
+.log-entry:nth-child(1){animation-delay:1.1s}.log-entry:nth-child(2){animation-delay:1.15s}
+.log-entry:nth-child(3){animation-delay:1.2s}.log-entry:nth-child(4){animation-delay:1.25s}
+.log-entry:nth-child(5){animation-delay:1.3s}
+.log-entry:last-child{border-bottom:none}
+.log-entry:hover{background:var(--hover-bg)}
+.log-time{font-family:var(--font-mono);font-size:var(--fs-sm);color:var(--muted)}
+.log-text{font-size:var(--fs-body);color:var(--fg)}
+.log-user{font-family:var(--font-mono);font-size:var(--fs-sm);color:var(--accent-2)}
+/* ═══ Footer ═══ */
+.app-footer{margin-top:var(--gap-xl);padding:var(--gap-lg) 0;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:var(--fs-meta);color:var(--muted);opacity:0;animation:fadeIn .4s 1.35s ease both}
+/* ═══ Responsive ═══ */
+@media(max-width:1200px){.stats-row{grid-template-columns:repeat(2,1fr)}.charts-row,.content-row{grid-template-columns:1fr}}
+@media(max-width:768px){.app-sidebar{display:none}.app-main{margin-left:0}.stats-row{grid-template-columns:1fr}.carousel-item{height:160px}}
+@media(max-width:480px){.page-eyebrow{letter-spacing:.03em;font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important}}
+</style>
 </head>
 <body>
-
-  <!-- ═══ Header ═══ -->
-  <header class="app-header" data-od-id="header">
-    <div class="header-left">
-      <span class="header-logo">寓<span>管理</span></span>
-      <div class="header-divider"></div>
-      <span class="header-role">系统管理员</span>
-    </div>
-    <div class="header-right">
-      <div class="user-dropdown">
-        <div class="user-trigger">
-          <div class="avatar">A</div>
-          <span>管理员</span>
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </div>
-        <div class="user-menu">
-          <a href="#" class="dropdown-item">修改密码</a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">退出登录</a>
-        </div>
+<!-- Header -->
+<header class="app-header">
+  <div class="header-left">
+    <span class="header-logo">寓<span>管理</span></span>
+    <div class="header-divider"></div>
+    <span class="header-role">系统管理员</span>
+  </div>
+  <div class="header-right">
+    <div class="user-dropdown">
+      <div class="user-trigger">
+        <div class="avatar">A</div>
+        <span>管理员</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="user-menu">
+        <a href="#" class="dropdown-item">修改密码</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dropdown-item">退出登录</a>
       </div>
     </div>
-  </header>
-
-  <!-- ═══ Sidebar ═══ -->
-  <aside class="app-sidebar" data-od-id="sidebar">
-    <nav>
-      <div class="nav-group">
-        <div class="nav-group-title">系统管理</div>
-        <a class="nav-item active" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          系统总览
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          用户管理
-          <span class="nav-badge">128</span>
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          操作日志
-        </a>
-      </div>
-
-      <div class="nav-group">
-        <div class="nav-group-title">公寓管理</div>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          楼栋管理
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-          房间管理
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>
-          床位管理
-        </a>
-      </div>
-
-      <div class="nav-group">
-        <div class="nav-group-title">入住管理</div>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-          入住登记
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          调宿审批
-          <span class="nav-badge">3</span>
-        </a>
-      </div>
-
-      <div class="nav-group">
-        <div class="nav-group-title">日常事务</div>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-          报修管理
-          <span class="nav-badge">5</span>
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          晚归登记
-        </a>
-        <a class="nav-item" href="#">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          来访登记
-        </a>
-      </div>
-    </nav>
-  </aside>
-
-  <!-- ═══ Main Content ═══ -->
-  <main class="app-main" data-od-id="main">
-
-    <!-- Page Header -->
-    <div class="page-header">
-      <div>
-        <h1>系统总览</h1>
-        <p class="page-meta">高校公寓管理系统 · 数据概览与快捷入口</p>
+  </div>
+</header>
+<!-- Sidebar -->
+<aside class="app-sidebar">
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-title">系统管理</div>
+      <a class="nav-item active" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>系统总览</a>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>用户管理</a>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>操作日志</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-title">公寓管理</div>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>楼栋管理</a>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>房间管理</a>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>床位管理</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-title">入住管理</div>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>入住登记</a>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>调宿审批</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-title">日常事务</div>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>报修管理</a>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>晚归登记</a>
+      <a class="nav-item" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>访客登记</a>
+    </div>
+  </nav>
+  <div class="sidebar-stamp"><div class="sidebar-stamp-inner">高校公寓管理系统<br>SSM Framework</div></div>
+</aside>
+<!-- Main -->
+<main class="app-main">
+  <!-- Carousel -->
+  <div class="carousel-wrap">
+    <div class="carousel-item">
+      <img src="carousel.png" alt="校园公寓">
+      <div class="overlay">
+        <h2>2026 年秋季学期迎新公告</h2>
+        <p>欢迎新同学入住！请查看分楼指南和报到流程，祝你在寓管理的生活愉快。</p>
       </div>
     </div>
-
-    <!-- Stats Row -->
-    <section class="stats-row" data-od-id="stats">
-      <div class="stat-card">
-        <div class="stat-card-label">管理楼栋</div>
-        <div class="stat-card-value accent">6</div>
-        <div class="stat-card-sub">共 <span class="num">42</span> 个单元</div>
+    <div class="carousel-indicators">
+      <button class="carousel-dot active" aria-label="第 1 张"></button>
+      <button class="carousel-dot" aria-label="第 2 张"></button>
+      <button class="carousel-dot" aria-label="第 3 张"></button>
+    </div>
+  </div>
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <span class="page-eyebrow">SYSTEM OVERVIEW</span>
+      <h1>系统总览</h1>
+      <p class="page-meta">高校公寓管理系统 · 数据概览与快捷入口</p>
+    </div>
+  </div>
+  <!-- Stats -->
+  <section class="stats-row">
+    <div class="stat-card" data-decorative-num="01">
+      <div class="stat-card-label">入住率</div>
+      <div class="stat-card-value accent" id="occupancyRate" data-count="87" data-suffix="%">--</div>
+      <div class="stat-card-sub">共 <span class="num" data-count="1284">1,284</span> 人入住</div>
+    </div>
+    <div class="stat-card" data-decorative-num="02">
+      <div class="stat-card-label">本月报修</div>
+      <div class="stat-card-value" id="monthlyRepairs" data-count="12">--</div>
+      <div class="stat-card-sub">超时 <span class="num" data-count="2">2</span> 件</div>
+    </div>
+    <div class="stat-card" data-decorative-num="03">
+      <div class="stat-card-label">本月晚归</div>
+      <div class="stat-card-value accent2" id="monthlyLate" data-count="3">--</div>
+      <div class="stat-card-sub">较上月 <span class="num" style="color:var(--status-ok)">-15%</span></div>
+    </div>
+    <div class="stat-card" data-decorative-num="04">
+      <div class="stat-card-label">本月访客</div>
+      <div class="stat-card-value" id="monthlyVisitor" data-count="28">--</div>
+      <div class="stat-card-sub">日均 <span class="num">0.9</span> 人次</div>
+    </div>
+  </section>
+  <!-- Charts -->
+  <section class="charts-row">
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        <h2>楼栋入住率</h2>
+        <a class="link" href="#">详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
       </div>
-      <div class="stat-card">
-        <div class="stat-card-label">总房间数</div>
-        <div class="stat-card-value">368</div>
-        <div class="stat-card-sub">入住率 <span class="num">87.2%</span></div>
+      <div class="chart-box" id="chartBuilding"></div>
+    </div>
+    <div class="chart-panel">
+      <div class="chart-panel-title">
+        <h2>近 6 月业务趋势</h2>
+        <a class="link" href="#">详情 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
       </div>
-      <div class="stat-card">
-        <div class="stat-card-label">在住学生</div>
-        <div class="stat-card-value">1,284</div>
-        <div class="stat-card-sub">本月新入住 <span class="num">56</span> 人</div>
+      <div class="chart-box" id="chartTrend"></div>
+    </div>
+  </section>
+  <!-- Content Row -->
+  <section class="content-row">
+    <!-- Pending -->
+    <div class="content-panel">
+      <div class="content-panel-header">
+        <h3>待处理事项</h3>
+        <a class="link" href="#">查看全部 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
       </div>
-      <div class="stat-card">
-        <div class="stat-card-label">待处理事项</div>
-        <div class="stat-card-value accent2">8</div>
-        <div class="stat-card-sub">报修 <span class="num">5</span> · 调宿 <span class="num">3</span></div>
-      </div>
-    </section>
-
-    <!-- Module Grid -->
-    <section class="module-grid" data-od-id="modules">
-      <a class="module-card" href="#">
-        <div class="module-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <h3>用户管理</h3>
-        <p>管理系统用户账号，分配角色权限，管理启用与禁用状态</p>
-        <div class="module-count">共 <span class="num">128</span> 个账号</div>
-      </a>
-      <a class="module-card" href="#">
-        <div class="module-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        </div>
-        <h3>楼栋管理</h3>
-        <p>楼栋信息维护，包括楼号、名称、楼层、楼栋宿管绑定</p>
-        <div class="module-count">共 <span class="num">6</span> 栋 · <span class="num">42</span> 单元</div>
-      </a>
-      <a class="module-card" href="#">
-        <div class="module-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-        </div>
-        <h3>房间与床位</h3>
-        <p>房间 CRUD 管理，批量初始化床位，维护楼-房-床三级关联</p>
-        <div class="module-count"><span class="num">368</span> 间 · <span class="num">1,472</span> 床位</div>
-      </a>
-      <a class="module-card" href="#">
-        <div class="module-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-        </div>
-        <h3>入住登记</h3>
-        <p>为学生办理入住，选择空闲床位，创建入住记录并更新床位状态</p>
-        <div class="module-count">本月办理 <span class="num">56</span> 人次</div>
-      </a>
-      <a class="module-card" href="#">
-        <div class="module-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-        </div>
-        <h3>报修管理</h3>
-        <p>查看全校报修工单，跟踪处理进度，超时工单自动标红预警</p>
-        <div class="module-count">待处理 <span class="num">5</span> 件 · 已超时 <span class="num">2</span> 件</div>
-      </a>
-      <a class="module-card" href="#">
-        <div class="module-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        </div>
-        <h3>调宿审批</h3>
-        <p>审批学生调宿申请，系统自动释放原床位、占用新床位并创建记录</p>
-        <div class="module-count">待审批 <span class="num">3</span> 件</div>
-      </a>
-    </section>
-
-    <!-- Pending Items -->
-    <section class="dash-section" data-od-id="pending">
-      <div class="dash-section-header">
-        <h2>待处理事项</h2>
-        <a class="section-link" href="#">
-          查看全部
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
-      </div>
-      <div class="pending-table">
-        <table>
-          <thead>
-            <tr>
-              <th>类型</th>
-              <th>事项</th>
-              <th>提报人</th>
-              <th>时间</th>
-              <th>状态</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><span class="pill pill-pending">调宿</span></td>
-              <td>申请从 3#201 调至 5#102</td>
-              <td>张明 <span class="num" style="color:var(--muted)">20240101</span></td>
-              <td class="num" style="color:var(--muted)">06-25 14:30</td>
-              <td><span class="pill pill-pending">待审批</span></td>
-              <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">处理</a></td>
-            </tr>
-            <tr>
-              <td><span class="pill pill-danger">报修</span></td>
-              <td>3#105 卫生间水龙头漏水</td>
-              <td>李芳 <span class="num" style="color:var(--muted)">20240305</span></td>
-              <td class="num" style="color:var(--muted)">06-24 09:15</td>
-              <td><span class="pill pill-danger">已超时</span></td>
-              <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">查看</a></td>
-            </tr>
-            <tr>
-              <td><span class="pill pill-pending">调宿</span></td>
-              <td>申请从 1#302 调至 2#401</td>
-              <td>王磊 <span class="num" style="color:var(--muted)">20240218</span></td>
-              <td class="num" style="color:var(--muted)">06-24 11:00</td>
-              <td><span class="pill pill-pending">待审批</span></td>
-              <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">处理</a></td>
-            </tr>
-            <tr>
-              <td><span class="pill pill-danger">报修</span></td>
-              <td>5#308 空调不制冷</td>
-              <td>赵雪 <span class="num" style="color:var(--muted)">20240412</span></td>
-              <td class="num" style="color:var(--muted)">06-23 20:40</td>
-              <td><span class="pill pill-danger">已超时</span></td>
-              <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">查看</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Activity Log -->
-    <section class="dash-section" data-od-id="activity">
-      <div class="dash-section-header">
-        <h2>近期操作</h2>
-        <a class="section-link" href="#">
-          全部日志
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        </a>
+      <table class="pending-table">
+        <thead><tr><th>类型</th><th>事项</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="pill pill-danger">报修</span></td>
+            <td>3#105 卫生间水龙头漏水</td>
+            <td><span class="pill pill-danger">已超时</span></td>
+            <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">查看</a></td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-pending">调宿</span></td>
+            <td>张明申请从 3#201 调至 5#102</td>
+            <td><span class="pill pill-pending">待审批</span></td>
+            <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">处理</a></td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-danger">报修</span></td>
+            <td>5#308 空调不制冷</td>
+            <td><span class="pill pill-danger">已超时</span></td>
+            <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">查看</a></td>
+          </tr>
+          <tr>
+            <td><span class="pill pill-pending">调宿</span></td>
+            <td>王磊申请从 1#302 调至 2#401</td>
+            <td><span class="pill pill-pending">待审批</span></td>
+            <td><a href="#" style="color:var(--accent);font-size:var(--fs-meta)">处理</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Activity -->
+    <div class="content-panel">
+      <div class="content-panel-header">
+        <h3>近期操作</h3>
+        <a class="link" href="#">全部日志 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
       </div>
       <div class="activity-log">
-        <div class="log-entry">
-          <span class="log-time">06-27 09:02</span>
-          <span class="log-text">新增入住登记 — 2#301 陈思远（2024级计算机科学）</span>
-          <span class="log-user">管理员</span>
-        </div>
-        <div class="log-entry">
-          <span class="log-time">06-26 16:45</span>
-          <span class="log-text">审批通过调宿申请 — 张晓从 4#202 调至 1#105</span>
-          <span class="log-user">管理员</span>
-        </div>
-        <div class="log-entry">
-          <span class="log-time">06-26 14:20</span>
-          <span class="log-text">修改楼栋信息 — 3#楼栋名称更新为"德馨楼"</span>
-          <span class="log-user">管理员</span>
-        </div>
-        <div class="log-entry">
-          <span class="log-time">06-26 10:30</span>
-          <span class="log-text">禁用用户账号 — 20230156（已毕业）</span>
-          <span class="log-user">管理员</span>
-        </div>
-        <div class="log-entry">
-          <span class="log-time">06-25 15:10</span>
-          <span class="log-text">批量初始化床位 — 6#楼 201-210室，每间4床</span>
-          <span class="log-user">管理员</span>
-        </div>
+        <div class="log-entry"><span class="log-time">06-27 09:02</span><span class="log-text">新增入住登记 — 2#301 陈思远</span><span class="log-user">管理员</span></div>
+        <div class="log-entry"><span class="log-time">06-26 16:45</span><span class="log-text">审批通过调宿 — 张晓 4#202→1#105</span><span class="log-user">管理员</span></div>
+        <div class="log-entry"><span class="log-time">06-26 14:20</span><span class="log-text">修改楼栋信息 — 3#更名为"德馨楼"</span><span class="log-user">管理员</span></div>
+        <div class="log-entry"><span class="log-time">06-26 10:30</span><span class="log-text">禁用用户 — 20230156（已毕业）</span><span class="log-user">管理员</span></div>
+        <div class="log-entry"><span class="log-time">06-25 15:10</span><span class="log-text">批量初始化床位 — 6# 201-210</span><span class="log-user">管理员</span></div>
       </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="app-footer" data-od-id="footer">
-      <span>© 2026 高校公寓管理系统</span>
-      <span style="font-family:var(--font-mono)">SSM 框架 · 课程设计项目</span>
-    </footer>
-
-  </main>
-
+    </div>
+  </section>
+  <footer class="app-footer">
+    <span>&copy; 2026 高校公寓管理系统</span>
+    <span class="num">SSM 框架 · 课程设计项目</span>
+  </footer>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  /* ── Count-up ── */
+  function countUp(el,target,useSep){
+    if(!el||target<=0){if(el)el.textContent=useSep?target.toLocaleString('en-US'):target;return}
+    var dur=800,start=null;
+    function step(ts){
+      if(!start)start=ts;var p=Math.min((ts-start)/dur,1);
+      var ease=1-Math.pow(1-p,3);var c=Math.round(target*ease);
+      el.textContent=useSep?c.toLocaleString('en-US'):c;
+      if(p<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  /* ── IntersectionObserver for stat cards ── */
+  if('IntersectionObserver' in window){
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          var card=e.target;var val=card.querySelector('[data-count]');
+          if(val){var t=parseInt(val.getAttribute('data-count'),10);countUp(val,t,val.hasAttribute('data-suffix'))}
+          obs.unobserve(card);
+        }
+      });
+    },{threshold:.3});
+    document.querySelectorAll('.stat-card').forEach(function(c){obs.observe(c)});
+  }
+  /* ── Carousel auto-play ── */
+  var dots=document.querySelectorAll('.carousel-dot');var cur=0;
+  setInterval(function(){dots[cur].classList.remove('active');cur=(cur+1)%dots.length;dots[cur].classList.add('active')},5000);
+  /* ── ECharts ── */
+  if(typeof echarts==='undefined')return;
+  var accent='#C4453A',accent2='#D4845A',muted='#7A7067',border='#EBE6DF';
+  /* Building occupancy bar chart */
+  var bc=echarts.init(document.getElementById('chartBuilding'));
+  bc.setOption({
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+    grid:{left:'12%',right:'8%',top:'10%',bottom:'15%'},
+    xAxis:{type:'category',data:['1#致远楼','2#博学楼','3#德馨楼','4#明德楼','5#弘毅楼','6#笃行楼'],axisLabel:{fontSize:11,color:muted,fontFamily:'ui-monospace'},axisLine:{lineStyle:{color:border}},axisTick:{show:false}},
+    yAxis:{type:'value',max:100,axisLabel:{fontSize:11,color:muted,formatter:'{value}%'},splitLine:{lineStyle:{color:border}},axisLine:{show:false},axisTick:{show:false}},
+    series:[{type:'bar',data:[92,85,78,90,88,83],barWidth:'45%',itemStyle:{borderRadius:[4,4,0,0],color:function(p){return p.dataIndex===2?accent2:accent}},label:{show:true,position:'top',fontSize:11,color:muted,formatter:'{c}%'}}]
+  });
+  /* Trend line chart */
+  var tc=echarts.init(document.getElementById('chartTrend'));
+  tc.setOption({
+    tooltip:{trigger:'axis'},
+    legend:{data:['报修','晚归','访客','入住'],bottom:0,textStyle:{fontSize:11,color:muted}},
+    grid:{left:'10%',right:'5%',top:'10%',bottom:'20%'},
+    xAxis:{type:'category',data:['1月','2月','3月','4月','5月','6月'],axisLabel:{fontSize:11,color:muted},axisLine:{lineStyle:{color:border}},axisTick:{show:false}},
+    yAxis:{type:'value',axisLabel:{fontSize:11,color:muted},splitLine:{lineStyle:{color:border}},axisLine:{show:false},axisTick:{show:false}},
+    series:[
+      {name:'报修',type:'line',smooth:true,data:[8,12,10,15,11,12],lineStyle:{color:accent,width:2},itemStyle:{color:accent},symbol:'circle',symbolSize:6},
+      {name:'晚归',type:'line',smooth:true,data:[2,5,3,4,2,3],lineStyle:{color:accent2,width:2},itemStyle:{color:accent2},symbol:'circle',symbolSize:6},
+      {name:'访客',type:'line',smooth:true,data:[15,22,18,25,20,28],lineStyle:{color:'#2E7D6F',width:2},itemStyle:{color:'#2E7D6F'},symbol:'circle',symbolSize:6},
+      {name:'入住',type:'line',smooth:true,data:[12,8,15,10,18,56],lineStyle:{color:muted,width:2,type:'dashed'},itemStyle:{color:muted},symbol:'circle',symbolSize:6}
+    ]
+  });
+  window.addEventListener('resize',function(){bc.resize();tc.resize()});
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公告详情 — 高校公寓管理系统</title>
+
+    <!-- marked.js (Markdown 渲染) -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+    <!-- DOMPurify (XSS 过滤) -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+
+    <style>
+        /* ═══════════════════════════════════════════════════════════
+           设计令牌（design tokens）— 全部继承自项目 tokens.css
+           ═══════════════════════════════════════════════════════════ */
+        :root {
+            /* 色彩 */
+            --bg:               rgb(250, 249, 245);
+            --surface:          rgba(255, 255, 255, 0.92);
+            --surface-opaque:   #ffffff;
+            --fg:               rgb(45, 36, 28);
+            --muted:            rgb(122, 112, 103);
+            --border:           rgb(235, 230, 223);
+            --hover-bg:         rgba(0, 0, 0, 0.04);
+            --accent:           rgb(196, 69, 58);
+            --accent-2:         rgb(212, 132, 90);
+            --accent-soft:      rgba(196, 69, 58, 0.08);
+            --status-ok:        rgb(46, 125, 111);
+            --status-warn:      rgb(212, 160, 90);
+
+            /* 通知类型色 */
+            --type-1:           rgb(212, 132, 90);  /* 通知 */
+            --type-2:           rgb(196, 69, 58);   /* 维修 */
+            --type-3:           rgb(46, 125, 111);   /* 活动 */
+            --type-4:           color-mix(in oklch, rgb(196, 69, 58) 80%, black);  /* 紧急 */
+
+            /* 字体 */
+            --font-display:     Georgia, 'Noto Serif SC', 'SimSun', serif;
+            --font-body:        -apple-system, BlinkMacSystemFont, 'PingFang SC',
+                                'Microsoft YaHei', 'Helvetica Neue', system-ui, sans-serif;
+            --font-mono:        'SF Mono', 'JetBrains Mono', Consolas,
+                                'Source Code Pro', ui-monospace, monospace;
+
+            /* 字号 */
+            --fs-display:       clamp(32px, 5vw, 44px);
+            --fs-h1:            clamp(28px, 4vw, 36px);
+            --fs-h2:            24px;
+            --fs-h3:            20px;
+            --fs-body:          15px;
+            --fs-meta:          13px;
+            --fs-sm:            12px;
+            --fs-caption:       11px;
+
+            /* 间距 */
+            --gap-xs:           4px;
+            --gap-sm:           8px;
+            --gap-md:           16px;
+            --gap-lg:           24px;
+            --gap-xl:           40px;
+            --gap-xxl:          64px;
+
+            /* 圆角 */
+            --radius:           8px;
+            --radius-lg:        12px;
+
+            /* 过渡曲线（阶段 H 规范） */
+            --ease-out-expo:    cubic-bezier(0.22, 1, 0.36, 1);
+            --transition-base:  0.12s var(--ease-out-expo);
+            --transition-page:  0.3s var(--ease-out-expo);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           基础重置
+           ═══════════════════════════════════════════════════════════ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-size: var(--fs-body);
+            line-height: 1.6;
+            color: var(--fg);
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle, rgb(237, 234, 229) 0.8px, transparent 0.8px);
+            background-size: 16px 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           顶部导航栏
+           ═══════════════════════════════════════════════════════════ */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--surface-opaque);
+            border-bottom: 1px solid var(--border);
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 var(--gap-lg);
+            animation: headerReveal 0.3s var(--ease-out-expo) both;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-md);
+        }
+
+        .topbar-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            font-family: var(--font-mono);
+            font-size: var(--fs-sm);
+            letter-spacing: 0.02em;
+            color: var(--muted);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: transparent;
+            cursor: pointer;
+            transition: color var(--transition-base), border-color var(--transition-base);
+        }
+
+        .topbar-back:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .topbar-back svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .topbar-title {
+            font-family: var(--font-body);
+            font-size: var(--fs-meta);
+            color: var(--muted);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           主内容区
+           ═══════════════════════════════════════════════════════════ */
+        .detail-page {
+            flex: 1;
+            max-width: 860px;
+            width: 100%;
+            margin: 0 auto;
+            padding: var(--gap-xl) var(--gap-lg);
+        }
+
+        /* ── 公告眉标 (eyebrow) ── */
+        .notice-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-sm);
+            margin-bottom: var(--gap-sm);
+            animation: fadeUp 0.3s var(--ease-out-expo) 0.1s both;
+        }
+
+        .notice-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            font-family: var(--font-mono);
+            font-size: var(--fs-caption);
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--surface-opaque);
+            border-radius: 4px;
+        }
+
+        .notice-type-badge[data-type="1"] { background: var(--type-1); }
+        .notice-type-badge[data-type="2"] { background: var(--type-2); }
+        .notice-type-badge[data-type="3"] { background: var(--type-3); }
+        .notice-type-badge[data-type="4"] { background: var(--type-4); }
+
+        .notice-type-badge svg {
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .notice-eyebrow-date {
+            font-family: var(--font-mono);
+            font-size: var(--fs-sm);
+            letter-spacing: 0.02em;
+            color: var(--muted);
+        }
+
+        .notice-eyebrow-scope {
+            margin-left: auto;
+            font-family: var(--font-mono);
+            font-size: var(--fs-caption);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            opacity: 0.6;
+        }
+
+        /* ── 公告标题 ── */
+        .notice-title {
+            font-family: var(--font-display);
+            font-size: var(--fs-display);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            color: var(--fg);
+            margin-bottom: var(--gap-md);
+            animation: fadeUp 0.3s var(--ease-out-expo) 0.15s both;
+        }
+
+        /* ── 发布信息栏 ── */
+        .notice-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-lg);
+            padding: var(--gap-md) 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: var(--gap-xl);
+            animation: fadeUp 0.3s var(--ease-out-expo) 0.2s both;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .meta-item svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--muted);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .meta-item-label {
+            font-family: var(--font-mono);
+            font-size: var(--fs-caption);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .meta-item-value {
+            font-family: var(--font-body);
+            font-size: var(--fs-sm);
+            color: var(--fg);
+        }
+
+        /* ── Banner 图片区 ── */
+        .notice-banner {
+            position: relative;
+            width: 100%;
+            margin-bottom: var(--gap-xl);
+            animation: fadeUp 0.3s var(--ease-out-expo) 0.25s both;
+        }
+
+        .notice-banner-img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            border-radius: var(--radius-lg);
+            display: block;
+        }
+
+        /* 无图样式 — 半调网点 + 左侧类型色带 */
+        .notice-banner--no-image {
+            display: flex;
+            height: 220px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background:
+                radial-gradient(circle, rgb(237, 234, 229) 0.8px, transparent 0.8px),
+                var(--bg);
+            background-size: 16px 16px;
+        }
+
+        .banner-color-stripe {
+            width: 4px;
+            flex-shrink: 0;
+        }
+
+        .banner-color-stripe[data-type="1"] { background: var(--type-1); }
+        .banner-color-stripe[data-type="2"] { background: var(--type-2); }
+        .banner-color-stripe[data-type="3"] { background: var(--type-3); }
+        .banner-color-stripe[data-type="4"] { background: var(--type-4); }
+
+        .banner-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: var(--gap-xl);
+        }
+
+        .banner-text-title {
+            font-family: var(--font-display);
+            font-size: var(--fs-h2);
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--fg);
+            margin-bottom: var(--gap-sm);
+        }
+
+        .banner-text-excerpt {
+            font-size: var(--fs-body);
+            line-height: 1.6;
+            color: var(--muted);
+            max-width: 50ch;
+        }
+
+        /* ── Markdown 内容区 ── */
+        .notice-content {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: var(--gap-xxl) var(--gap-xl);
+            margin-bottom: var(--gap-xl);
+            animation: fadeUp 0.3s var(--ease-out-expo) 0.3s both;
+        }
+
+        /* 大号背景装饰数字 */
+        .notice-content::after {
+            content: attr(data-decorative-num);
+            position: absolute;
+            bottom: -16px;
+            right: 24px;
+            font-family: var(--font-display);
+            font-size: 96px;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--muted);
+            opacity: 0.04;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* ── Markdown 渲染样式 ── */
+        .md-body h1,
+        .md-body h2,
+        .md-body h3,
+        .md-body h4 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--fg);
+            margin-top: 1.8em;
+            margin-bottom: 0.6em;
+        }
+
+        .md-body h1 {
+            font-size: var(--fs-h1);
+            letter-spacing: -0.01em;
+        }
+
+        .md-body h2 {
+            font-size: var(--fs-h2);
+            padding-bottom: var(--gap-sm);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .md-body h3 {
+            font-size: var(--fs-h3);
+        }
+
+        .md-body h4 {
+            font-size: var(--fs-body);
+            font-family: var(--font-mono);
+            letter-spacing: 0.02em;
+        }
+
+        .md-body p {
+            margin-bottom: 1.2em;
+            line-height: 1.7;
+            max-width: 65ch;
+        }
+
+        .md-body strong {
+            font-weight: 600;
+            color: var(--fg);
+        }
+
+        .md-body em {
+            font-style: italic;
+        }
+
+        .md-body a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color var(--transition-base);
+        }
+
+        .md-body a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        /* 列表 */
+        .md-body ul,
+        .md-body ol {
+            margin-bottom: 1.2em;
+            padding-left: 1.6em;
+        }
+
+        .md-body li {
+            margin-bottom: 0.4em;
+            line-height: 1.6;
+        }
+
+        .md-body li::marker {
+            color: var(--accent);
+        }
+
+        /* 引用块 */
+        .md-body blockquote {
+            border-left: 3px solid var(--accent);
+            padding-left: var(--gap-md);
+            margin: 1.5em 0;
+            color: var(--muted);
+            font-style: italic;
+            max-width: 56ch;
+        }
+
+        /* 行内代码 */
+        .md-body code {
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            background: var(--hover-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        /* 代码块 */
+        .md-body pre {
+            background: var(--fg);
+            color: var(--bg);
+            border-radius: var(--radius);
+            padding: var(--gap-md);
+            margin: 1.5em 0;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        .md-body pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: var(--fs-sm);
+        }
+
+        /* 表格 — 杂志风列间竖线 */
+        .md-body table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1.5em 0;
+        }
+
+        .md-body th {
+            font-family: var(--font-mono);
+            font-size: var(--fs-sm);
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: left;
+            padding: 10px 16px;
+            border-bottom: 2px solid var(--fg);
+            position: relative;
+        }
+
+        .md-body th:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 25%;
+            height: 50%;
+            width: 1px;
+            background: var(--border);
+        }
+
+        .md-body td {
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .md-body td:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 15%;
+            height: 70%;
+            width: 1px;
+            background: var(--border);
+        }
+
+        .md-body tr:hover td {
+            background: var(--hover-bg);
+        }
+
+        /* 分割线 */
+        .md-body hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 2em 0;
+        }
+
+        /* 图片 */
+        .md-body img {
+            max-width: 100%;
+            border-radius: var(--radius);
+            margin: 1em 0;
+        }
+
+        /* 任务列表 */
+        .md-body .task-list-item {
+            list-style: none;
+            margin-left: -1.6em;
+        }
+
+        .md-body .task-list-item input {
+            margin-right: 6px;
+            accent-color: var(--accent);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           相关公告
+           ═══════════════════════════════════════════════════════════ */
+        .related-section {
+            margin-bottom: var(--gap-xl);
+            animation: fadeUp 0.3s var(--ease-out-expo) 0.45s both;
+        }
+
+        .related-heading {
+            font-family: var(--font-mono);
+            font-size: var(--fs-sm);
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: var(--gap-md);
+            padding-bottom: var(--gap-sm);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .related-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap-sm);
+        }
+
+        .related-item {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-md);
+            padding: var(--gap-md);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            text-decoration: none;
+            color: var(--fg);
+            transition: border-color var(--transition-base), box-shadow var(--transition-base);
+        }
+
+        .related-item:hover {
+            border-color: var(--accent);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .related-item-type {
+            width: 4px;
+            height: 32px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .related-item-type[data-type="1"] { background: var(--type-1); }
+        .related-item-type[data-type="2"] { background: var(--type-2); }
+        .related-item-type[data-type="3"] { background: var(--type-3); }
+        .related-item-type[data-type="4"] { background: var(--type-4); }
+
+        .related-item-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .related-item-title {
+            font-family: var(--font-display);
+            font-size: var(--fs-body);
+            font-weight: 600;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .related-item-date {
+            font-family: var(--font-mono);
+            font-size: var(--fs-caption);
+            color: var(--muted);
+            letter-spacing: 0.02em;
+        }
+
+        .related-item-arrow {
+            color: var(--muted);
+            transition: color var(--transition-base), transform var(--transition-base);
+        }
+
+        .related-item:hover .related-item-arrow {
+            color: var(--accent);
+            transform: translateX(3px);
+        }
+
+        .related-item-arrow svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           页脚
+           ═══════════════════════════════════════════════════════════ */
+        .app-footer {
+            padding: var(--gap-lg);
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: var(--fs-caption);
+            color: var(--muted);
+            letter-spacing: 0.02em;
+            border-top: 1px solid var(--border);
+            opacity: 0.6;
+            animation: fadeIn 0.3s var(--ease-out-expo) 0.5s both;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           核心动画 — 阶段 H 规范
+           所有过渡曲线: cubic-bezier(0.22, 1, 0.36, 1)
+           ═══════════════════════════════════════════════════════════ */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @keyframes headerReveal {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           返回顶部按钮
+           ═══════════════════════════════════════════════════════════ */
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 40px;
+            height: 40px;
+            background: var(--surface-opaque);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.3s var(--ease-out-expo),
+                        transform 0.3s var(--ease-out-expo),
+                        border-color 0.12s var(--ease-out-expo);
+            z-index: 50;
+        }
+
+        .scroll-top-btn.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-top-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .scroll-top-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--muted);
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .scroll-top-btn:hover svg {
+            stroke: var(--accent);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           prefers-reduced-motion — 全局降级
+           ═══════════════════════════════════════════════════════════ */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           响应式
+           ═══════════════════════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .detail-page {
+                padding: var(--gap-lg) var(--gap-md);
+            }
+
+            .notice-content {
+                padding: var(--gap-xl) var(--gap-lg);
+            }
+
+            .notice-banner-img {
+                height: 220px;
+            }
+
+            .notice-banner--no-image {
+                height: 160px;
+            }
+
+            .notice-meta {
+                flex-wrap: wrap;
+                gap: var(--gap-sm) var(--gap-md);
+            }
+
+            .notice-eyebrow {
+                flex-wrap: wrap;
+            }
+
+            .notice-eyebrow-scope {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .scroll-top-btn {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .notice-title {
+                font-size: clamp(24px, 7vw, 32px);
+            }
+
+            .notice-content {
+                padding: var(--gap-lg) var(--gap-md);
+            }
+
+            .notice-content::after {
+                font-size: 64px;
+            }
+
+            .notice-eyebrow-date {
+                letter-spacing: 0.01em;
+            }
+
+            .related-item {
+                padding: var(--gap-sm) var(--gap-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ═══════════════════════════════════════════════════════════
+         顶部导航栏
+         ═══════════════════════════════════════════════════════════ -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <a href="javascript:history.back()" class="topbar-back" id="btnBack">
+                <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                返回列表
+            </a>
+            <span class="topbar-title">公告通知</span>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         主内容区
+         ═══════════════════════════════════════════════════════════ -->
+    <main class="detail-page" id="detailPage">
+
+        <!-- 公告眉标 -->
+        <div class="notice-eyebrow">
+            <span class="notice-type-badge" id="typeBadge" data-type="2">
+                <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+                <span id="typeName">维修</span>
+            </span>
+            <span class="notice-eyebrow-date" id="publishDate">2026.07.02 14:30</span>
+            <span class="notice-eyebrow-scope" id="scopeText">全校通知</span>
+        </div>
+
+        <!-- 公告标题 -->
+        <h1 class="notice-title" id="noticeTitle">关于 3 号楼供水系统维修完成的公告</h1>
+
+        <!-- 发布信息栏 -->
+        <div class="notice-meta">
+            <div class="meta-item">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="meta-item-label">发布者</span>
+                <span class="meta-item-value" id="publisher">后勤管理处</span>
+            </div>
+            <div class="meta-item">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                <span class="meta-item-label">发布时间</span>
+                <span class="meta-item-value" id="publishTime">2026-07-02 14:30</span>
+            </div>
+            <div class="meta-item">
+                <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span class="meta-item-label">适用楼栋</span>
+                <span class="meta-item-value" id="buildingScope">全部楼栋</span>
+            </div>
+        </div>
+
+        <!-- Banner 图片区 —— 有图时显示轮播图，无图时显示样式化纯色 banner -->
+        <div class="notice-banner" id="bannerArea">
+            <!-- 有图模式（实际项目从 banner_image 字段读取） -->
+            <img class="notice-banner-img" src="carousel.png" alt="公告配图" id="bannerImg">
+
+            <!-- 无图模式（取消上方 img 的 display，启用下方 div）——
+            <div class="notice-banner--no-image" id="noImageBanner">
+                <div class="banner-color-stripe" data-type="2"></div>
+                <div class="banner-text">
+                    <div class="banner-text-title">关于 3 号楼供水系统维修完成的公告</div>
+                    <div class="banner-text-excerpt">3 号楼供水系统已于 7 月 2 日上午恢复正常供水，请各宿舍检查水龙头是否正常……</div>
+                </div>
+            </div>
+            -->
+        </div>
+
+        <!-- Markdown 内容区 -->
+        <article class="notice-content" data-decorative-num="03">
+            <div class="md-body" id="markdownBody">
+                <!-- 由 JS 动态渲染 -->
+            </div>
+        </article>
+
+        <!-- 其他公告 -->
+        <section class="related-section">
+            <div class="related-heading">其他公告</div>
+            <div class="related-list" id="relatedList">
+                <!-- 由 JS 动态渲染 -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="app-footer">
+        高校公寓管理系统 · 后勤管理处
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button class="scroll-top-btn" id="scrollTopBtn" aria-label="返回顶部">
+        <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+
+    <script>
+        /* ═══════════════════════════════════════════════════════════
+           模拟数据（实际项目从 sys_notice 表读取）
+           ═══════════════════════════════════════════════════════════ */
+        var NOTICE = {
+            noticeId:    1024,
+            title:       '关于 3 号楼供水系统维修完成的公告',
+            content:     [
+                '## 维修概况',
+                '',
+                '3 号楼（德馨楼）供水系统因地下主管道老化导致水压不足，经后勤管理处协调，已于 **2026 年 7 月 2 日上午 10:00** 完成全部维修工作，恢复正常供水。',
+                '',
+                '## 影响范围',
+                '',
+                '| 楼层 | 影响区域 | 修复状态 |',
+                '| :--- | :--- | :--- |',
+                '| 1F | 公共盥洗室、开水间 | 已恢复 |',
+                '| 2F | 全部宿舍 | 已恢复 |',
+                '| 3F | 全部宿舍 | 已恢复 |',
+                '| 4F | 全部宿舍 | 已恢复 |',
+                '| 5F | 公共盥洗室 | 已恢复 |',
+                '| 6F | 全部宿舍 | 已恢复 |',
+                '',
+                '## 注意事项',
+                '',
+                '1. 请各宿舍打开水龙头 **放水 2 分钟**，排出管道内残留的铁锈和沉淀物',
+                '2. 如发现水质浑浊或水压异常，请及时联系宿管或拨打报修电话',
+                '3. 建议在恢复正常供水后的 **24 小时内** 避免饮用自来水，优先使用饮水机',
+                '',
+                '> 维修期间给同学们带来的不便，我们深表歉意。后续将对 3 号楼供水系统进行全面排查，防止类似问题再次发生。',
+                '',
+                '## 后续计划',
+                '',
+                '- **7 月 3 日**：水质检测，出具水质报告',
+                '- **7 月 5 日**：管道冲洗消毒',
+                '- **7 月 10 日**：全楼水压测试',
+                '',
+                '如有疑问，请联系后勤管理处：',
+                '',
+                '- 服务热线：**0571-8888-0003**',
+                '- 办公地点：行政楼 206 室',
+                '- 工作时间：周一至周五 8:30 — 17:00'
+            ].join('\n'),
+            noticeType:  2,
+            publishTime: '2026-07-02 14:30:00',
+            publisherName: '后勤管理处',
+            buildingScope: '全部楼栋'
+        };
+
+        var TYPE_MAP = {
+            1: '通知',
+            2: '维修',
+            3: '活动',
+            4: '紧急'
+        };
+
+        var RELATED_NOTICES = [
+            { title: '暑期宿舍安全检查通知',         date: '2026.06.28', type: 1 },
+            { title: '5 号楼电梯年检暂停使用公告',    date: '2026.06.25', type: 2 },
+            { title: '宿舍文化节投票通道已开启',      date: '2026.06.20', type: 3 }
+        ];
+
+        /* ═══════════════════════════════════════════════════════════
+           渲染函数
+           ═══════════════════════════════════════════════════════════ */
+
+        /**
+         * Markdown → 安全 HTML
+         * 使用 marked.js 渲染 + DOMPurify 过滤 XSS
+         */
+        function renderMarkdown(mdText) {
+            if (typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined') {
+                var raw = marked.parse(mdText);
+                return DOMPurify.sanitize(raw, {
+                    ADD_TAGS: ['input'],
+                    ADD_ATTR: ['type', 'checked', 'disabled']
+                });
+            }
+            /* fallback：无 marked/DOMPurify 时纯文本展示 */
+            return '<p>' + mdText.replace(/\n/g, '</p><p>') + '</p>';
+        }
+
+        /**
+         * 格式化发布时间
+         */
+        function formatDateTime(dtStr) {
+            if (!dtStr) return '—';
+            var d = new Date(dtStr.replace(/-/g, '/'));
+            var y = d.getFullYear();
+            var m = String(d.getMonth() + 1).padStart(2, '0');
+            var day = String(d.getDate()).padStart(2, '0');
+            var hh = String(d.getHours()).padStart(2, '0');
+            var mm = String(d.getMinutes()).padStart(2, '0');
+            return y + '-' + m + '-' + day + ' ' + hh + ':' + mm;
+        }
+
+        function formatDateDot(dtStr) {
+            if (!dtStr) return '—';
+            var parts = dtStr.split(' ')[0].split('-');
+            return parts[0] + '.' + parts[1] + '.' + parts[2];
+        }
+
+        /**
+         * 渲染页面数据
+         */
+        function renderNotice(notice) {
+            /* 标题 */
+            document.getElementById('noticeTitle').textContent = notice.title;
+            document.title = notice.title + ' — 公告详情 — 高校公寓管理系统';
+
+            /* 类型标签 */
+            var badge = document.getElementById('typeBadge');
+            badge.setAttribute('data-type', notice.noticeType);
+            document.getElementById('typeName').textContent = TYPE_MAP[notice.noticeType] || '通知';
+
+            /* 日期 */
+            document.getElementById('publishDate').textContent = formatDateDot(notice.publishTime);
+            document.getElementById('publishTime').textContent = formatDateTime(notice.publishTime);
+
+            /* 发布者 */
+            document.getElementById('publisher').textContent = notice.publisherName || '—';
+
+            /* 适用范围 */
+            document.getElementById('buildingScope').textContent = notice.buildingScope || '全部楼栋';
+
+            /* Markdown 内容 */
+            document.getElementById('markdownBody').innerHTML = renderMarkdown(notice.content);
+
+            /* 装饰数字 */
+            document.querySelector('.notice-content').setAttribute('data-decorative-num',
+                String(notice.noticeId).slice(-2));
+        }
+
+        /**
+         * 渲染相关公告列表
+         */
+        function renderRelated(items) {
+            var container = document.getElementById('relatedList');
+            if (!items || items.length === 0) {
+                container.innerHTML = '<p style="color: var(--muted); font-size: var(--fs-sm);">暂无相关公告</p>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                html += '<a href="javascript:void(0)" class="related-item">' +
+                    '<div class="related-item-type" data-type="' + item.type + '"></div>' +
+                    '<div class="related-item-body">' +
+                        '<div class="related-item-title">' + escapeHtml(item.title) + '</div>' +
+                        '<div class="related-item-date">' + item.date + '</div>' +
+                    '</div>' +
+                    '<div class="related-item-arrow">' +
+                        '<svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>' +
+                    '</div>' +
+                '</a>';
+            }
+            container.innerHTML = html;
+        }
+
+        /**
+         * HTML 转义
+         */
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           返回顶部按钮
+           ═══════════════════════════════════════════════════════════ */
+        (function () {
+            var btn = document.getElementById('scrollTopBtn');
+            var ticking = false;
+
+            window.addEventListener('scroll', function () {
+                if (!ticking) {
+                    window.requestAnimationFrame(function () {
+                        btn.classList.toggle('visible', window.scrollY > 300);
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+
+            btn.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        })();
+
+        /* ═══════════════════════════════════════════════════════════
+           初始化
+           ═══════════════════════════════════════════════════════════ */
+        renderNotice(NOTICE);
+        renderRelated(RELATED_NOTICES);
+    </script>
+</body>
+</html>
