@@ -501,6 +501,56 @@
     };
 
     /**
+     * 生成骨架屏行
+     * @param {number} count - 骨架屏行数，默认 5
+     * @param {number} colCount - 列数，需与实际表格 th 数量一致，默认 4
+     * @returns {string} HTML 字符串
+     */
+    $.renderSkeletonRows = function(count, colCount) {
+        count = count || 5;
+        colCount = colCount || 4;
+        var html = '';
+        for (var i = 0; i < count; i++) {
+            html += '<tr class="skeleton-row">';
+            for (var j = 0; j < colCount; j++) {
+                html += '<td><div class="skeleton-bar"></div></td>';
+            }
+            html += '</tr>';
+        }
+        return html;
+    };
+
+    /**
+     * 渲染空状态
+     * @param {string} type - 'no-data' | 'no-result'
+     * @param {string} [actionUrl] - 引导操作链接
+     * @param {string} [actionText] - 引导操作文案
+     * @returns {string} HTML 字符串
+     */
+    $.renderEmptyState = function(type, actionUrl, actionText) {
+        var title, desc;
+        if (type === 'no-result') {
+            title = '未找到匹配结果';
+            desc = '当前筛选条件下没有找到匹配的记录，请调整筛选条件后重试';
+        } else {
+            title = '暂无数据';
+            desc = '当前没有任何记录，可以点击下方按钮添加';
+        }
+        var html = '<tr><td colspan="99">' +
+            '<div class="empty-state">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>' +
+            '<polyline points="13 2 13 9 20 9"/></svg>' +
+            '<div class="empty-state-title">' + title + '</div>' +
+            '<div class="empty-state-desc">' + desc + '</div>';
+        if (actionUrl && actionText) {
+            html += '<a href="' + $.buildUrl(actionUrl) + '" class="btn btn-primary btn-sm">' + actionText + '</a>';
+        }
+        html += '</div></td></tr>';
+        return html;
+    };
+
+    /**
      * 初始化页面公共功能
      */
     $(document).ready(function() {
