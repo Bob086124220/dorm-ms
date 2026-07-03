@@ -264,5 +264,61 @@ INSERT INTO dorm_visitor (visitor_id, visitor_name, id_card, student_id, buildin
     (4, '赵六', '110101199004040004', 12, 1, '2024-11-05 09:00:00', NULL, '维修电脑', 2, '已登记，当日未离开'),
     (5, '孙七', '110101199005050005', 25, 2, '2024-11-10 13:00:00', '2024-11-10 15:00:00', '送学习资料', 3, NULL);
 
+-- ============================================
+-- 10. 公告通知测试数据 (sys_notice)
+-- 要求：图片路径统一使用 src/main/webapp/static/images/carousel.png
+--       过期时间全部留空 NULL
+-- ============================================
+
+INSERT INTO sys_notice (title, content, notice_type, visible_scope, building_id, status, is_top, is_banner, banner_image, banner_expire, publisher_id, publish_time)
+VALUES
+-- 公告1：普通通知，全校可见，已发布
+(
+    '关于2024年国庆节放假安排的通知',
+    '# 国庆节放假通知\n\n各位同学：\n\n根据学校安排，国庆节放假时间为 **10月1日-10月7日**，共7天。\n放假期间请做好宿舍卫生检查，离校前关闭水电门窗。\n\n祝大家假期愉快！',
+    1,   -- notice_type: 1-通知
+    1,   -- visible_scope: 1-全部
+    NULL, -- building_id: 全部可见时为空
+    1,   -- status: 1-发布
+    0,   -- is_top: 0-不置顶
+    0,   -- is_banner: 0-不上轮播
+    NULL, -- banner_image: 不上轮播为空
+    NULL, -- banner_expire: 不上轮播为空
+    1,   -- publisher_id: 系统管理员
+    '2024-09-28 08:30:00'
+),
+
+-- 公告2：紧急通知，仅1号楼可见，置顶+轮播展示
+(
+    '【紧急】1号楼水管抢修临时停水通知',
+    '# 临时停水通知\n\n**1号楼全体同学：**\n\n因主供水管道破裂，物业将于 **今天14:00-17:00** 进行紧急抢修，届时1号楼将暂停供水。\n请提前做好储水准备，给您带来的不便敬请谅解。\n\n如有疑问请致电维修中心：12345。',
+    4,   -- notice_type: 4-紧急
+    2,   -- visible_scope: 2-按楼栋
+    1,   -- building_id: 1号楼
+    1,   -- status: 1-发布
+    1,   -- is_top: 1-置顶
+    1,   -- is_banner: 1-上轮播
+    '/static/images/carousel.png', -- banner图片路径
+    NULL, -- 过期时间留空（长期有效）
+    1,   -- publisher_id: 系统管理员
+    '2024-10-15 13:00:00'
+),
+
+-- 公告3：活动通知，全校可见，已下架
+(
+    '“文明宿舍”评比活动报名通知',
+    '# 文明宿舍评比活动\n\n**主办：** 学生工作处\n\n**报名时间：** 2024年11月1日-11月7日\n\n**活动内容：**\n- 宿舍卫生评比\n- 宿舍文化装饰\n- 安全知识问答\n\n请有意参加的宿舍到宿管处登记报名。',
+    3,   -- notice_type: 3-活动
+    1,   -- visible_scope: 1-全部
+    NULL, -- 全部可见
+    0,   -- status: 0-下架（测试下架状态）
+    0,   -- is_top: 不置顶
+    0,   -- is_banner: 不上轮播
+    NULL,
+    NULL,
+    1,
+    '2024-10-20 09:00:00'
+);
+
 SET FOREIGN_KEY_CHECKS = 1;
 -- ======================= 脚本结束 =======================
