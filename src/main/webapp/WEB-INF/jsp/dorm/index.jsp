@@ -29,21 +29,21 @@
                 <!-- 统计卡片 -->
                 <section class="row mb-4">
                     <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="stat-card">
+                        <div class="stat-card" data-decorative-num="01">
                             <div class="stat-card-label">负责楼栋</div>
                             <div class="stat-card-value" id="buildingCount">--</div>
                             <div class="stat-card-sub">当前管理楼栋</div>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="stat-card">
+                        <div class="stat-card" data-decorative-num="02">
                             <div class="stat-card-label">待处理报修</div>
                             <div class="stat-card-value accent" id="repairCount">--</div>
                             <div class="stat-card-sub">需跟进处理</div>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="stat-card">
+                        <div class="stat-card" data-decorative-num="03">
                             <div class="stat-card-label">本月晚归</div>
                             <div class="stat-card-value accent2" id="lateReturnCount">--</div>
                             <div class="stat-card-sub">本月晚归人次</div>
@@ -55,6 +55,7 @@
                 <section class="row mb-4">
                     <div class="col-lg-3 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/dorm/checkin/list" class="module-card">
+                            <span class="module-card-num">01</span>
                             <div class="module-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
                             </div>
@@ -64,6 +65,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/dorm/repair/list" class="module-card">
+                            <span class="module-card-num">02</span>
                             <div class="module-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                             </div>
@@ -73,6 +75,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/dorm/late-return/list" class="module-card">
+                            <span class="module-card-num">03</span>
                             <div class="module-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                             </div>
@@ -82,6 +85,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/dorm/visitor/list" class="module-card">
+                            <span class="module-card-num">04</span>
                             <div class="module-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             </div>

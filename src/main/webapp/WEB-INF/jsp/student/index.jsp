@@ -36,14 +36,14 @@
                 <!-- 统计卡片 -->
                 <section class="row mb-4">
                     <div class="col-md-6 mb-3">
-                        <div class="stat-card">
+                        <div class="stat-card" data-decorative-num="01">
                             <div class="stat-card-label">住宿状态</div>
                             <div class="stat-card-value" id="checkinStatus">--</div>
                             <div class="stat-card-sub">当前住宿信息</div>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <div class="stat-card">
+                        <div class="stat-card" data-decorative-num="02">
                             <div class="stat-card-label">待处理报修</div>
                             <div class="stat-card-value accent" id="repairCount">--</div>
                             <div class="stat-card-sub">报修工单数量</div>
@@ -55,6 +55,7 @@
                 <section class="row mb-4">
                     <div class="col-lg-3 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/student/checkin/infoPage" class="module-card">
+                            <span class="module-card-num">01</span>
                             <div class="module-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                             </div>
@@ -64,6 +65,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/student/move/list" class="module-card">
+                            <span class="module-card-num">02</span>
                             <div class="module-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                             </div>
@@ -73,6 +75,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/student/repair/submit" class="module-card">
+                            <span class="module-card-num">03</span>
                             <div class="module-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
                             </div>
@@ -82,6 +85,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/student/late-return/list" class="module-card">
+                            <span class="module-card-num">04</span>
                             <div class="module-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                             </div>

@@ -1001,6 +1001,8 @@ img { max-width: 100%; height: auto; }
 /* 十九、统计卡片与模块卡片                         */
 /* ============================================= */
 .stat-card {
+    position: relative;
+    overflow: hidden;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
@@ -1040,6 +1042,36 @@ img { max-width: 100%; height: auto; }
     margin-top: var(--gap-xs);
 }
 
+/* stat-card hover 顶部装饰线 */
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.15s;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+/* 背景装饰数字 */
+.stat-card::after {
+    content: attr(data-decorative-num);
+    position: absolute;
+    bottom: -8px; right: 12px;
+    font-family: var(--font-display);
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--muted);
+    opacity: 0.06;
+    pointer-events: none;
+    user-select: none;
+}
+
 .module-card {
     display: flex;
     flex-direction: column;
@@ -1055,9 +1087,9 @@ img { max-width: 100%; height: auto; }
 }
 
 .module-card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    transform: translateY(-3px);
+    border-color: var(--fg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
     color: inherit;
 }
 
@@ -1071,6 +1103,15 @@ img { max-width: 100%; height: auto; }
 }
 
 .module-icon svg { width: 18px; height: 18px; }
+
+/* module-card 编号标签 */
+.module-card-num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    opacity: 0.5;
+}
 
 .module-card h3 {
     font-size: var(--fs-h3);
