@@ -1606,9 +1606,14 @@ img { max-width: 100%; height: auto; }
     pointer-events: none;
 }
 
+.carousel-inner {
+    position: relative;
+    width: 100%;
+    height: 200px;
+}
+
 .carousel-item.active {
     opacity: 1;
-    position: relative;
     pointer-events: auto;
 }
 

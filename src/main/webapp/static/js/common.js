@@ -628,4 +628,148 @@
         }
     });
 
+    /**
+     * 初始化轮播公告组件
+     * @param {string} selector 轮播容器选择器
+     */
+    $.initCarousel = function(selector) {
+        var $container = $(selector);
+        if (!$container.length) return;
+
+        $.ajaxRequest('/common/notice/banners', 'GET', null, function(result) {
+            var banners = result.data;
+            if (!banners || banners.length === 0) {
+                $container.hide();
+                return;
+            }
+
+            var html = '<div class="carousel-inner">';
+            for (var i = 0; i < banners.length; i++) {
+                var item = banners[i];
+                var isActive = i === 0 ? ' active' : '';
+                if (item.bannerImage) {
+                    html += '<div class="carousel-item' + isActive + '">'
+                        + '<img src="' + $.buildUrl(item.bannerImage) + '" alt="' + escapeHtml(item.title) + '" class="carousel-banner-img">'
+                        + '<div class="carousel-caption">' + escapeHtml(item.title) + '</div>'
+                        + '</div>';
+                } else {
+                    var summary = getMarkdownSummary(item.content, 100);
+                    var dateText = (item.publishTime || '').substring(0, 10);
+                    html += '<div class="carousel-item no-image' + isActive + '">'
+                        + '<div class="type-stripe" data-type="' + item.noticeType + '"></div>'
+                        + '<div class="overlay">'
+                        + '<h2>' + escapeHtml(item.title) + '</h2>'
+                        + '<p>' + escapeHtml(summary) + '</p>'
+                        + '<span class="notice-time num">' + escapeHtml(dateText) + ' 发布</span>'
+                        + '</div>'
+                        + '</div>';
+                }
+            }
+            html += '</div>';
+
+            if (banners.length >= 2) {
+                html += '<button class="carousel-arrow carousel-arrow--left" aria-label="上一张">'
+                    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>'
+                    + '</button>'
+                    + '<button class="carousel-arrow carousel-arrow--right" aria-label="下一张">'
+                    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
+                    + '</button>'
+                    + '<div class="carousel-indicators">';
+                for (var j = 0; j < banners.length; j++) {
+                    html += '<button class="carousel-dot' + (j === 0 ? ' active' : '') + '" data-index="' + j + '" aria-label="第' + (j + 1) + '张"></button>';
+                }
+                html += '</div>';
+            }
+
+            $container.html(html);
+
+            if (banners.length >= 2) {
+                initCarouselPlay($container, banners.length);
+            }
+        });
+    };
+
+    /**
+     * 从 Markdown 提取纯文本摘要
+     */
+    function getMarkdownSummary(markdown, maxLen) {
+        if (!markdown) return '';
+        var text = markdown
+            .replace(/^#{1,6}\s+/gm, '')
+            .replace(/\*{1,3}(.+?)\*{1,3}/g, '$1')
+            .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+            .replace(/`{1,3}[^`]*`{1,3}/g, '')
+            .replace(/>\s+/g, '')
+            .replace(/\n+/g, ' ')
+            .trim();
+        if (text.length > maxLen) {
+            text = text.substring(0, maxLen) + '...';
+        }
+        return text;
+    }
+
+    /**
+     * HTML 转义
+     */
+    function escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    /**
+     * 轮播自动播放控制
+     */
+    function initCarouselPlay($container, total) {
+        var $items = $container.find('.carousel-item');
+        var $dots = $container.find('.carousel-dot');
+        var currentIndex = 0;
+        var autoTimer = null;
+        var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function goTo(index) {
+            if (index === currentIndex) return;
+            $items.eq(currentIndex).removeClass('active');
+            $dots.eq(currentIndex).removeClass('active');
+            currentIndex = ((index % total) + total) % total;
+            $items.eq(currentIndex).addClass('active');
+            $dots.eq(currentIndex).addClass('active');
+        }
+
+        function next() { goTo(currentIndex + 1); }
+        function prev() { goTo(currentIndex - 1); }
+
+        function startAuto() {
+            if (prefersReducedMotion) return;
+            stopAuto();
+            autoTimer = setInterval(next, 5000);
+        }
+
+        function stopAuto() {
+            if (autoTimer) {
+                clearInterval(autoTimer);
+                autoTimer = null;
+            }
+        }
+
+        // 箭头按钮
+        $container.find('.carousel-arrow--left').on('click', function() { prev(); startAuto(); });
+        $container.find('.carousel-arrow--right').on('click', function() { next(); startAuto(); });
+
+        // 指示点
+        $dots.on('click', function() {
+            goTo(parseInt($(this).attr('data-index'), 10));
+            startAuto();
+        });
+
+        // 悬停暂停
+        $container.on('mouseenter', stopAuto);
+        $container.on('mouseleave', startAuto);
+
+        startAuto();
+    }
+
 })(jQuery);
