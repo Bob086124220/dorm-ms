@@ -1,5 +1,6 @@
 package com.huuc.dormitory.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.huuc.dormitory.dao.DormCheckinRecordMapper;
 import com.huuc.dormitory.dao.DormLateReturnMapper;
 import com.huuc.dormitory.dao.DormRepairMapper;
@@ -34,6 +35,9 @@ public class StudentDashboardServiceImpl implements StudentDashboardService {
 
     @Override
     public StudentDashboardVO getDashboard(Long studentId) {
+        // 清除可能残留的 PageHelper 分页状态，避免污染后续非分页查询
+        PageHelper.clearPage();
+
         StudentDashboardVO vo = new StudentDashboardVO();
 
         String currentMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));

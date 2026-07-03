@@ -1,5 +1,6 @@
 package com.huuc.dormitory.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.huuc.dormitory.common.enums.NoticeTypeEnum;
 import com.huuc.dormitory.common.enums.RoleTypeEnum;
@@ -191,8 +192,13 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public PageInfo<NoticeVO> getVisibleNotices(Long userId, Integer roleType, int pageNum, int pageSize) {
+        // getVisibleBuildingIds 会触发含 LIMIT 的 MyBatis 查询，
+        // 必须在此之前清除 Controller 预置的 PageHelper 分页状态，
+        // 之后重新 startPage 让分页作用于真正的查询
+        PageHelper.clearPage();
         List<Long> buildingIds = getVisibleBuildingIds(userId, roleType);
 
+        PageHelper.startPage(pageNum, pageSize);
         List<Notice> notices;
         if (RoleTypeEnum.ADMIN.getCode().equals(roleType)) {
             Notice query = new Notice();

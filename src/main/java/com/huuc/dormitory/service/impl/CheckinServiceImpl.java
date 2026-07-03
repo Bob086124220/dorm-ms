@@ -1,5 +1,6 @@
 package com.huuc.dormitory.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.huuc.dormitory.common.enums.BedStatusEnum;
 import com.huuc.dormitory.common.enums.CheckinStatusEnum;
@@ -43,6 +44,7 @@ public class CheckinServiceImpl implements CheckinService {
 
     @Override
     public CheckinVO getCheckinByStudentId(Long studentId) {
+        PageHelper.clearPage();
         DormCheckinRecord record = checkinRecordMapper.selectActiveByStudentId(studentId);
         if (record == null) {
             return null;
@@ -52,6 +54,7 @@ public class CheckinServiceImpl implements CheckinService {
 
     @Override
     public List<RoommateVO> getRoommatesByStudentId(Long studentId) {
+        PageHelper.clearPage();
         List<RoommateVO> roommateList = new ArrayList<>();
 
         // 查询学生在住记录
