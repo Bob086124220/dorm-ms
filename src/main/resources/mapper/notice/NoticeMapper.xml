@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huuc.dormitory.dao.NoticeMapper">
+
+    <!-- 结果映射 -->
+    <resultMap id="BaseResultMap" type="Notice">
+        <id column="notice_id" property="noticeId"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="notice_type" property="noticeType"/>
+        <result column="visible_scope" property="visibleScope"/>
+        <result column="building_id" property="buildingId"/>
+        <result column="status" property="status"/>
+        <result column="is_top" property="isTop"/>
+        <result column="is_banner" property="isBanner"/>
+        <result column="banner_image" property="bannerImage"/>
+        <result column="banner_expire" property="bannerExpire"/>
+        <result column="publisher_id" property="publisherId"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 公共可见性条件片段 -->
+    <sql id="visibilityFilter">
+        (
+            visible_scope = 1
+            <if test="buildingIds != null and buildingIds.size() > 0">
+                OR (visible_scope = 2 AND building_id IN
+                <foreach collection="buildingIds" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+                )
+            </if>
+        )
+    </sql>
+
+    <!-- 插入公告 -->
+    <insert id="insert" parameterType="Notice" useGeneratedKeys="true" keyProperty="noticeId">
+        INSERT INTO sys_notice (title, content, notice_type, visible_scope, building_id,
+                                status, is_top, is_banner, banner_image, banner_expire,
+                                publisher_id, publish_time)
+        VALUES (#{title}, #{content}, #{noticeType}, #{visibleScope}, #{buildingId},
+                #{status}, #{isTop}, #{isBanner}, #{bannerImage}, #{bannerExpire},
+                #{publisherId}, #{publishTime})
+    </insert>
+
+    <!-- 更新公告（动态更新非空字段） -->
+    <update id="update" parameterType="Notice">
+        UPDATE sys_notice
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="noticeType != null">notice_type = #{noticeType},</if>
+            <if test="visibleScope != null">visible_scope = #{visibleScope},</if>
+            <if test="buildingId != null">building_id = #{buildingId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="isTop != null">is_top = #{isTop},</if>
+            <if test="isBanner != null">is_banner = #{isBanner},</if>
+            <if test="bannerImage != null">banner_image = #{bannerImage},</if>
+            <if test="bannerExpire != null">banner_expire = #{bannerExpire},</if>
+            <if test="publishTime != null">publish_time = #{publishTime},</if>
+        </set>
+        WHERE notice_id = #{noticeId}
+    </update>
+
+    <!-- 管理员分页查询 -->
+    <select id="selectPage" parameterType="Notice" resultMap="BaseResultMap">
+        SELECT * FROM sys_notice
+        <where>
+            <if test="title != null and title != ''">
+                AND title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="noticeType != null">
+                AND notice_type = #{noticeType}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY is_top DESC, publish_time DESC
+    </select>
+
+    <!-- 当前用户可见公告分页 -->
+    <select id="selectVisiblePage" resultMap="BaseResultMap">
+        SELECT * FROM sys_notice
+        WHERE status = 1
+        AND <include refid="visibilityFilter"/>
+        ORDER BY is_top DESC, publish_time DESC
+    </select>
+
+    <!-- 根据ID查询公告 -->
+    <select id="selectById" parameterType="Long" resultMap="BaseResultMap">
+        SELECT * FROM sys_notice
+        WHERE notice_id = #{noticeId}
+    </select>
+
+    <!-- 查询当前用户可见轮播公告 -->
+    <select id="selectBanners" resultMap="BaseResultMap">
+        SELECT * FROM sys_notice
+        WHERE is_banner = 1 AND status = 1
+        AND (banner_expire IS NULL OR banner_expire > NOW())
+        <if test="buildingIds != null">
+            AND <include refid="visibilityFilter"/>
+        </if>
+        ORDER BY is_top DESC, publish_time DESC
+    </select>
+
+    <!-- 查询相关公告 -->
+    <select id="selectRelated" resultMap="BaseResultMap">
+        SELECT * FROM sys_notice
+        WHERE notice_id != #{noticeId}
+        AND status = 1
+        <if test="buildingIds != null">
+            AND <include refid="visibilityFilter"/>
+        </if>
+        AND (notice_type = #{noticeType} OR visible_scope = #{visibleScope})
+        ORDER BY is_top DESC, publish_time DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

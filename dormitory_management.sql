@@ -283,4 +283,33 @@ CREATE TABLE dorm_visitor (
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '访客登记表';
 
+-- ----------------------------
+-- 11. 公告通知表 sys_notice
+-- ----------------------------
+DROP TABLE IF EXISTS sys_notice;
+CREATE TABLE sys_notice (
+    notice_id     BIGINT       NOT NULL AUTO_INCREMENT COMMENT '公告ID',
+    title         VARCHAR(100) NOT NULL              COMMENT '标题',
+    content       TEXT         NOT NULL              COMMENT '内容（Markdown）',
+    notice_type   TINYINT      NOT NULL DEFAULT 1    COMMENT '分类：1-通知 2-维修 3-活动 4-紧急',
+    visible_scope TINYINT      NOT NULL DEFAULT 1    COMMENT '可见范围：1-全部 2-按楼栋',
+    building_id   BIGINT       DEFAULT NULL          COMMENT '楼栋ID（scope=2时必填）',
+    status        TINYINT      NOT NULL DEFAULT 1    COMMENT '状态：1-发布 0-下架',
+    is_top        TINYINT      NOT NULL DEFAULT 0    COMMENT '是否置顶：0-否 1-是',
+    is_banner     TINYINT      NOT NULL DEFAULT 0    COMMENT '是否上轮播：0-否 1-是',
+    banner_image  VARCHAR(255) DEFAULT NULL          COMMENT '轮播图片路径（服务器本地）',
+    banner_expire DATETIME     DEFAULT NULL          COMMENT '轮播过期时间',
+    publisher_id  BIGINT       NOT NULL              COMMENT '发布人ID',
+    publish_time  DATETIME     DEFAULT NULL          COMMENT '发布时间',
+    create_time   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    update_time   DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (notice_id),
+    KEY idx_status (status) COMMENT '状态查询索引',
+    KEY idx_publish_time (publish_time) COMMENT '发布时间排序索引',
+    KEY idx_banner_expire (banner_expire) COMMENT '轮播过期时间索引'
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '公告通知表';
+
 SET FOREIGN_KEY_CHECKS = 1;
