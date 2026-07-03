@@ -320,13 +320,13 @@
         var endPage = Math.min(totalPages, currentPage + 2);
         if (startPage > 1) {
             html += '<button class="page-btn" data-page="1">1</button>';
-            if (startPage > 2) html += '<span style="padding:0 4px;color:var(--muted)">...</span>';
+            if (startPage > 2) html += '<span class="page-ellipsis">...</span>';
         }
         for (var i = startPage; i <= endPage; i++) {
             html += '<button class="page-btn' + (i === currentPage ? ' active' : '') + '" data-page="' + i + '">' + i + '</button>';
         }
         if (endPage < totalPages) {
-            if (endPage < totalPages - 1) html += '<span style="padding:0 4px;color:var(--muted)">...</span>';
+            if (endPage < totalPages - 1) html += '<span class="page-ellipsis">...</span>';
             html += '<button class="page-btn" data-page="' + totalPages + '">' + totalPages + '</button>';
         }
 

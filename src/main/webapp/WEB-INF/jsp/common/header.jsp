@@ -4,6 +4,21 @@
 <c:set var="ROLE_ADMIN" value="1" />
 <c:set var="ROLE_DORM" value="2" />
 <c:set var="ROLE_STUDENT" value="3" />
+<!-- 纸张纹理 — SVG overlay 层，仅覆盖背景，不影响内容交互 -->
+<svg class="paper-noise-svg" aria-hidden="true"
+     style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;">
+  <filter id="paper-grain">
+    <feTurbulence type="fractalNoise"
+      baseFrequency="0.65"
+      numOctaves="5"
+      seed="2"
+      stitchTiles="stitch" result="noise"/>
+    <feColorMatrix type="saturate" values="0" in="noise" result="grey"/>
+    <feBlend in="SourceGraphic" in2="grey" mode="soft-light"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#paper-grain)" opacity="0.035"/>
+</svg>
+
 <!-- 顶部导航栏 -->
 <nav class="navbar">
     <!-- 左侧：Logo和标题 -->

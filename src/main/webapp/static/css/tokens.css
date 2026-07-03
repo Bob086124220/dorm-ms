@@ -53,6 +53,18 @@
     --accent-2-soft: color-mix(in oklch, var(--accent-2) 12%, transparent);
     --fg-soft: color-mix(in oklch, var(--fg) 6%, transparent);
 
+    /* 纸张纹理参数（SVG feTurbulence） */
+    --paper-noise-opacity: 0.035;
+    --paper-noise-base-freq: 0.65;
+    --paper-noise-octaves: 5;
+
+    /* 侧边栏微调 */
+    --sidebar-bg: color-mix(in oklch, var(--surface) 88%, var(--bg));
+
+    /* 骨架屏 */
+    --skeleton-base: var(--border);
+    --skeleton-shine: var(--hover-bg);
+
     /* Bootstrap 变量覆盖 */
     --bs-primary: rgb(196, 69, 58);
     --bs-secondary: rgb(122, 112, 103);

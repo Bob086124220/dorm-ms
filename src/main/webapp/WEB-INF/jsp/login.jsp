@@ -14,6 +14,21 @@
 </head>
 <body>
 
+<!-- 纸张纹理 — SVG overlay 层，仅覆盖背景，不影响内容交互（登录页不包含 header.jsp，需单独定义） -->
+<svg class="paper-noise-svg" aria-hidden="true"
+     style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;">
+  <filter id="paper-grain">
+    <feTurbulence type="fractalNoise"
+      baseFrequency="0.65"
+      numOctaves="5"
+      seed="2"
+      stitchTiles="stitch" result="noise"/>
+    <feColorMatrix type="saturate" values="0" in="noise" result="grey"/>
+    <feBlend in="SourceGraphic" in2="grey" mode="soft-light"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#paper-grain)" opacity="0.035"/>
+</svg>
+
 <div class="login-card">
 
     <!-- Logo -->

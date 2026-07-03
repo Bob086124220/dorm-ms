@@ -1367,3 +1367,13 @@ img { max-width: 100%; height: auto; }
     .page-header { flex-direction: column; align-items: flex-start; gap: var(--gap-sm); }
     .pagination-container { flex-direction: column; align-items: flex-start; gap: var(--gap-sm); }
 }
+
+/* 减弱动态效果降级 */
+@media (prefers-reduced-motion: reduce) {
+    .content-body { animation: none; }
+    .skeleton-bar { animation: none; background: var(--skeleton-base); }
+    .stat-card,
+    .module-card { transition: none; }
+    .page-btn { transition: none; }
+    .btn { transition: none; }
+}
