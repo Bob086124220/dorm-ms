@@ -160,6 +160,18 @@ public class DormDashboardServiceImpl implements DormDashboardService {
                     timeoutCount++;
                 }
             }
+
+            // 处理中报修也加入待处理列表
+            for (DormRepair r : processingRepairs) {
+                PendingRepairItem item = new PendingRepairItem();
+                item.setId(r.getRepairId());
+                item.setTitle(r.getRepairContent());
+                item.setStatus(1);
+                item.setCreateTime(r.getSubmitTime() != null
+                        ? r.getSubmitTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                        : "");
+                pendingItems.add(item);
+            }
         }
 
         vo.setProcessingRepairCount(processingCount);

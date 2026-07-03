@@ -5,225 +5,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>宿管首页 - 高校公寓管理系统</title>
+    <title>运营看板 - 高校公寓管理系统</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
 </head>
 <body>
-    <div class="main-container">
-        <%@ include file="/WEB-INF/jsp/common/sidebar.jsp" %>
+<div class="main-container">
+    <%@ include file="/WEB-INF/jsp/common/sidebar.jsp" %>
 
-        <div class="content-wrapper">
-            <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
+    <div class="content-wrapper">
+        <%@ include file="/WEB-INF/jsp/common/header.jsp" %>
 
-            <div class="content-body">
-                <!-- 页面头部 -->
-                <div class="page-header">
-                    <div>
-                        <span class="page-eyebrow">DORM OVERVIEW</span>
-                        <h1>宿管工作台</h1>
-                        <p class="page-meta">欢迎回来，${sessionScope.loginUser.realName} · 宿管工作概览</p>
-                    </div>
+        <div class="content-body">
+            <!-- 轮播公告 -->
+            <%@ include file="/WEB-INF/jsp/common/carousel.jsp" %>
+
+            <!-- 页面头部 -->
+            <div class="page-header">
+                <div>
+                    <span class="page-eyebrow">DORM OVERVIEW</span>
+                    <h1 id="dashboardTitle">运营看板</h1>
+                    <p class="page-meta" id="dashboardMeta">欢迎回来，${sessionScope.loginUser.realName} · 宿管工作概览</p>
                 </div>
-
-                <!-- 统计卡片 -->
-                <section class="row mb-4">
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="stat-card" data-decorative-num="01">
-                            <div class="stat-card-label">负责楼栋</div>
-                            <div class="stat-card-value" id="buildingCount">--</div>
-                            <div class="stat-card-sub">当前管理楼栋</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="stat-card" data-decorative-num="02">
-                            <div class="stat-card-label">待处理报修</div>
-                            <div class="stat-card-value accent" id="repairCount">--</div>
-                            <div class="stat-card-sub">需跟进处理</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-3">
-                        <div class="stat-card" data-decorative-num="03">
-                            <div class="stat-card-label">本月晚归</div>
-                            <div class="stat-card-value accent2" id="lateReturnCount">--</div>
-                            <div class="stat-card-sub">本月晚归人次</div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 快捷操作 -->
-                <section class="row mb-4">
-                    <div class="col-lg-3 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/dorm/checkin/list" class="module-card">
-                            <span class="module-card-num">01</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-                            </div>
-                            <h3>入住登记</h3>
-                            <p>办理入住，分配空闲床位</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/dorm/repair/list" class="module-card">
-                            <span class="module-card-num">02</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                            </div>
-                            <h3>报修处理</h3>
-                            <p>查看报修工单，跟进处理</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/dorm/late-return/list" class="module-card">
-                            <span class="module-card-num">03</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-                            </div>
-                            <h3>晚归登记</h3>
-                            <p>登记学生晚归信息</p>
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 mb-3">
-                        <a href="${pageContext.request.contextPath}/dorm/visitor/list" class="module-card">
-                            <span class="module-card-num">04</span>
-                            <div class="module-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            </div>
-                            <h3>访客登记</h3>
-                            <p>登记来访访客信息</p>
-                        </a>
-                    </div>
-                </section>
-
-                <!-- 系统信息 -->
-                <section class="data-panel mb-4">
-                    <div class="info-section">
-                        <h2 class="info-title">系统信息</h2>
-                    </div>
-                    <div class="info-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="info-row info-row--bordered">
-                                    <span class="info-label">当前时间</span>
-                                    <span class="info-value num" id="currentTime"></span>
-                                </div>
-                                <div class="info-row">
-                                    <span class="info-label">登录账号</span>
-                                    <span class="info-value">${sessionScope.loginUser.username}</span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="info-row info-row--bordered">
-                                    <span class="info-label">角色权限</span>
-                                    <span class="pill pill-manager">宿管</span>
-                                </div>
-                                <div class="info-row">
-                                    <span class="info-label">系统版本</span>
-                                    <span class="info-value num">v1.0.0</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
             </div>
 
-            <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>
+            <!-- 统计卡片 ×4 -->
+            <section class="stats-row">
+                <div class="stat-card" data-decorative-num="01">
+                    <div class="stat-card-label">入住率</div>
+                    <div class="stat-card-value accent" id="occupancyRate">--</div>
+                    <div class="stat-card-sub">当前管辖楼栋入住情况</div>
+                </div>
+                <div class="stat-card" data-decorative-num="02">
+                    <div class="stat-card-label">空余床位</div>
+                    <div class="stat-card-value" id="freeBedCount">--</div>
+                    <div class="stat-card-sub">可分配床位数量</div>
+                </div>
+                <div class="stat-card" data-decorative-num="03">
+                    <div class="stat-card-label">维修中</div>
+                    <div class="stat-card-value accent2" id="processingRepair">--</div>
+                    <div class="stat-card-sub">已接单待完成的报修</div>
+                </div>
+                <div class="stat-card" data-decorative-num="04">
+                    <div class="stat-card-label">今日新增</div>
+                    <div class="stat-card-value" id="todayCheckin">--</div>
+                    <div class="stat-card-sub">今日新增入住人数</div>
+                </div>
+            </section>
+
+            <!-- 图表双栏 -->
+            <section class="charts-row">
+                <div class="chart-panel">
+                    <div class="chart-panel-title">
+                        <h2>楼层入住分布</h2>
+                    </div>
+                    <div class="chart-box" id="chartFloor"></div>
+                </div>
+                <div class="chart-panel">
+                    <div class="chart-panel-title">
+                        <h2>报修状态占比</h2>
+                    </div>
+                    <div class="chart-box" id="chartRepairStatus"></div>
+                </div>
+            </section>
+
+            <!-- 待处理报修 -->
+            <section class="content-panel" style="margin-bottom: var(--gap-lg);">
+                <div class="content-panel-header">
+                    <h3>待处理报修</h3>
+                    <a href="${pageContext.request.contextPath}/dorm/repair/list" class="panel-link">
+                        查看全部
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
+                </div>
+                <table class="pending-table">
+                    <thead>
+                        <tr><th>状态</th><th>事项</th><th>提交时间</th></tr>
+                    </thead>
+                    <tbody id="pendingList"></tbody>
+                </table>
+                <div class="empty-state" id="pendingEmpty" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <div class="empty-state-title">暂无待处理报修</div>
+                    <div class="empty-state-desc">所有报修已处理完毕</div>
+                </div>
+            </section>
+
+            <!-- 其他待办 -->
+            <section class="stats-row" style="margin-bottom: var(--gap-xl);">
+                <div class="stat-card" data-decorative-num="05">
+                    <div class="stat-card-label">待审批调宿</div>
+                    <div class="stat-card-value accent" id="pendingMoveCount">--</div>
+                    <div class="stat-card-sub">需审核的调宿申请</div>
+                </div>
+                <div class="stat-card" data-decorative-num="06">
+                    <div class="stat-card-label">在访未离校</div>
+                    <div class="stat-card-value accent2" id="activeVisitorCount">--</div>
+                    <div class="stat-card-sub">尚未登记离开的访客</div>
+                </div>
+            </section>
         </div>
+
+        <%@ include file="/WEB-INF/jsp/common/footer.jsp" %>
     </div>
+</div>
 
-    <script src="${pageContext.request.contextPath}/static/js/jquery.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/common.js"></script>
-    <script>window.needChangePasswordFlag = '${sessionScope.needChangePassword}';</script>
-    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/common.js"></script>
+<script>window.needChangePasswordFlag = '${sessionScope.needChangePassword}';</script>
+<script src="${pageContext.request.contextPath}/static/js/header.js"></script>
+<script src="${pageContext.request.contextPath}/static/vendor/echarts/echarts.min.js"></script>
 
-    <script>
-        /**
-         * 数字滚动动画
-         * @param {string} elementId - 目标元素 ID
-         * @param {number} target - 目标数值
-         * @param {number} duration - 动画时长（毫秒），默认 600
-         */
-        function countUp(elementId, target, duration) {
-            duration = duration || 800;
-            var el = document.getElementById(elementId);
-            if (!el || target <= 0) {
-                if (el) el.textContent = target;
-                return;
+<script>
+(function() {
+    'use strict';
+
+    function countUp(elementId, target, suffix) {
+        var el = document.getElementById(elementId);
+        if (!el) return;
+        suffix = suffix || '';
+        var duration = 800;
+        if (target <= 0) {
+            el.textContent = '0' + suffix;
+            return;
+        }
+        var startTime = null;
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var elapsed = timestamp - startTime;
+            var progress = Math.min(elapsed / duration, 1);
+            var ease = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.round(target * ease) + suffix;
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    function showChartEmpty(chart) {
+        chart.setOption({
+            title: {
+                text: '暂无数据',
+                left: 'center',
+                top: 'center',
+                textStyle: { color: 'rgb(122, 112, 103)', fontFamily: "-apple-system, system-ui, sans-serif", fontSize: 14 }
             }
-            var startTime = null;
-            function step(timestamp) {
-                if (!startTime) startTime = timestamp;
-                var elapsed = timestamp - startTime;
-                var progress = Math.min(elapsed / duration, 1);
-                /* ease-out-cubic: 1 - (1-t)^3 */
-                var ease = 1 - Math.pow(1 - progress, 3);
-                var current = Math.round(target * ease);
-                el.textContent = current;
-                if (progress < 1) requestAnimationFrame(step);
-            }
-            requestAnimationFrame(step);
+        });
+    }
+
+    function isTimeout(createTime) {
+        if (!createTime) return false;
+        var then = new Date(createTime.replace(/-/g, '/'));
+        if (isNaN(then.getTime())) return false;
+        return (new Date() - then) > 24 * 60 * 60 * 1000;
+    }
+
+    // ==================== 数据加载 ====================
+
+    function loadDashboard() {
+        $.ajaxRequest('/dorm/dashboard', 'GET', null, function(result) {
+            renderDashboard(result.data);
+        }, function() {
+            $('#occupancyRate').html('<a href="javascript:void(0)" onclick="loadDashboard()" style="font-size:13px;color:var(--accent)">加载失败，点击重试</a>');
+        });
+    }
+
+    function renderDashboard(data) {
+        var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // 页面标题
+        updatePageHeader(data.managedBuildings, data.buildingCount);
+
+        // 统计卡片
+        countUp('occupancyRate', Math.round(data.occupancyRate || 0), '%');
+        countUp('freeBedCount', data.freeBedCount || 0);
+        countUp('processingRepair', data.processingRepairCount || 0);
+        countUp('todayCheckin', data.todayNewCheckinCount || 0);
+        countUp('pendingMoveCount', data.pendingMoveCount || 0);
+        countUp('activeVisitorCount', data.activeVisitorCount || 0);
+
+        // 图表
+        renderFloorChart(data.floorOccupancy, prefersReducedMotion);
+        renderRepairStatusChart(data.repairStatusPie, prefersReducedMotion);
+
+        // 待处理报修
+        renderPendingTable(data.pendingRepairs, data.timeoutRepairCount);
+    }
+
+    function updatePageHeader(managedBuildings, buildingCount) {
+        if (!managedBuildings || managedBuildings.length === 0) {
+            $('#dashboardTitle').text('运营看板 · 未分配楼栋');
+            $('#dashboardMeta').text('暂未分配管辖楼栋');
+            return;
+        }
+        if (managedBuildings.length === 1) {
+            $('#dashboardTitle').text('运营看板 · ' + managedBuildings[0]);
+        } else {
+            $('#dashboardTitle').text('运营看板 · 共 ' + buildingCount + ' 栋');
+        }
+    }
+
+    // ==================== 图表 ====================
+
+    function renderFloorChart(data, prefersReducedMotion) {
+        var el = document.getElementById('chartFloor');
+        if (!el) return;
+        var chart = echarts.init(el, MAGAZINE_THEME);
+
+        if (!data || data.length === 0) {
+            showChartEmpty(chart);
+            return;
         }
 
-        $(function() {
-            function updateTime() {
-                var now = new Date();
-                $('#currentTime').text($.formatDate(now, 'yyyy-MM-dd HH:mm:ss'));
-            }
-            updateTime();
-            setInterval(updateTime, 60000);
-            loadStatistics();
+        var floors = [], values = [];
+        data.forEach(function(item) {
+            floors.push(item.floor);
+            values.push(item.rate);
+        });
+        floors.reverse();
+        values.reverse();
+
+        chart.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            grid: { left: '20%', right: '10%', top: '6%', bottom: '6%' },
+            xAxis: { type: 'value', max: 100, axisLabel: { formatter: '{value}%' } },
+            yAxis: { type: 'category', data: floors },
+            series: [{
+                type: 'bar', data: values, barWidth: '50%',
+                itemStyle: {
+                    borderRadius: [0, 4, 4, 0],
+                    color: 'rgb(212, 132, 90)'
+                },
+                label: {
+                    show: true, position: 'right',
+                    fontFamily: "'SF Mono', 'JetBrains Mono', Consolas, ui-monospace, monospace",
+                    fontSize: 11, color: 'rgb(122, 112, 103)', formatter: '{c}%'
+                }
+            }],
+            animationDuration: prefersReducedMotion ? 0 : 800
         });
 
-        function setLoadError(elementId) {
-            $('#' + elementId).html('<a href="javascript:void(0)" onclick="loadStatistics()" class="error-retry-link">加载失败，点击重试</a>');
+        $(window).on('resize.chartFloor', function() { chart.resize(); });
+    }
+
+    function renderRepairStatusChart(data, prefersReducedMotion) {
+        var el = document.getElementById('chartRepairStatus');
+        if (!el) return;
+        var chart = echarts.init(el, MAGAZINE_THEME);
+
+        if (!data || data.length === 0) {
+            showChartEmpty(chart);
+            return;
         }
 
-        function loadStatistics() {
-            $('#buildingCount').text('--');
-            $.ajaxRequest('/dorm/building/list', 'GET', {}, function(result) {
-                if (result.data) {
-                    countUp('buildingCount', result.data.length || 0);
-                } else {
-                    countUp('buildingCount', 0);
-                }
-            }, function(result) {
-                if (result.msg && result.msg.indexOf('未负责任何楼栋') !== -1) {
-                    $('#buildingCount').html('<span style="font-size: var(--fs-meta); color: var(--accent-2);">未分配</span>');
-                } else {
-                    setLoadError('buildingCount');
-                }
-            });
+        chart.setOption({
+            tooltip: { trigger: 'item', formatter: '{b}: {c} 件 ({d}%)' },
+            series: [{
+                type: 'pie',
+                radius: ['40%', '65%'],
+                center: ['50%', '50%'],
+                data: data.map(function(item) {
+                    var color = 'rgb(122, 112, 103)';
+                    if (item.name === '待处理') color = 'rgb(212, 132, 90)';
+                    else if (item.name === '处理中') color = 'rgb(196, 69, 58)';
+                    else if (item.name === '已完成') color = 'rgb(46, 125, 111)';
+                    return { value: item.value, name: item.name, itemStyle: { color: color } };
+                }),
+                label: { show: false },
+                emphasis: { label: { show: true, fontSize: 13, fontWeight: 'bold' } }
+            }],
+            animationDuration: prefersReducedMotion ? 0 : 800
+        });
 
-            $('#repairCount').text('--');
-            $.ajaxRequest('/dorm/repair/page', 'GET', { repairStatus: 0, pageSize: 1 }, function(result) {
-                countUp('repairCount', result.data.total || 0);
-            }, function(result) {
-                if (result.msg && result.msg.indexOf('未负责任何楼栋') !== -1) {
-                    $('#repairCount').html('<span style="font-size: var(--fs-meta); color: var(--accent-2);">-</span>');
-                } else {
-                    setLoadError('repairCount');
-                }
-            });
+        $(window).on('resize.chartRepairStatus', function() { chart.resize(); });
+    }
 
-            $('#lateReturnCount').text('--');
-            $.ajaxRequest('/dorm/late-return/stats', 'GET', {}, function(result) {
-                if (result.data) {
-                    var total = 0;
-                    result.data.forEach(function(item) { total += item.count || 0; });
-                    countUp('lateReturnCount', total);
-                } else {
-                    countUp('lateReturnCount', 0);
-                }
-            }, function(result) {
-                if (result.msg && result.msg.indexOf('未负责任何楼栋') !== -1) {
-                    $('#lateReturnCount').html('<span style="font-size: var(--fs-meta); color: var(--accent-2);">-</span>');
-                } else {
-                    setLoadError('lateReturnCount');
-                }
-            });
+    // ==================== 待处理报修表格 ====================
+
+    function renderPendingTable(items, timeoutCount) {
+        var $tbody = $('#pendingList');
+        var $empty = $('#pendingEmpty');
+
+        if (!items || items.length === 0) {
+            $tbody.empty();
+            $empty.show();
+            return;
         }
-    </script>
+
+        $empty.hide();
+        var html = '';
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var timedOut = isTimeout(item.createTime);
+            var statusText, statusClass;
+            if (item.status === 1) { // PROCESSING
+                statusText = '处理中';
+                statusClass = 'pill-processing';
+            } else if (timedOut) {
+                statusText = '已超时';
+                statusClass = 'pill-danger';
+            } else {
+                statusText = '待处理';
+                statusClass = 'pill-pending';
+            }
+            var title = item.title || '';
+            var displayTitle = title.length > 24 ? $('<span>').text(title).html().substring(0, 24) + '...' : $('<span>').text(title).html();
+            var time = (item.createTime || '').substring(5, 16);
+
+            html += '<tr>'
+                + '<td><span class="pill ' + statusClass + '">' + statusText + '</span></td>'
+                + '<td title="' + $('<span>').text(title).html() + '">' + displayTitle + '</td>'
+                + '<td><span style="font-family:var(--font-mono);font-size:var(--fs-sm);color:var(--muted)">' + time + '</span></td>'
+                + '</tr>';
+        }
+        $tbody.html(html);
+    }
+
+    // ==================== 入口 ====================
+
+    $(function() {
+        loadDashboard();
+    });
+
+})();
+</script>
 </body>
 </html>
