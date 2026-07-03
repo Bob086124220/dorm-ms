@@ -178,18 +178,10 @@
 }
 
 /* ============================================= */
-/* 三、Side-by-side 布局                          */
+/* 三、清除浮动                                    */
 /* ============================================= */
 
-/* 编辑区 60% + 预览 40%，覆盖 SimpleMDE 内联的 50% */
-.editor-wrapper .CodeMirror-sided {
-    width: 60% !important;  /* 覆盖 SimpleMDE 默认的 50%（内联样式，无法通过选择器特异性替代） */
-}
-
-.editor-wrapper .editor-preview-side {
-    width: 38%;
-    margin-left: 2%;
-    border-left: 1px solid var(--border);
-    padding: var(--gap-lg);
-    overflow-y: auto;
+/* BFC 包含所有浮动子元素 */
+.editor-wrapper {
+    overflow: hidden;
 }

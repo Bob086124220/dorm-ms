@@ -31,6 +31,12 @@
                         <span>操作日志</span>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="${pageContext.request.contextPath}/admin/notice/list" class="menu-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        <span>公告管理</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-section">公寓管理</li>
                 <li class="menu-item">

@@ -31,6 +31,22 @@ public class AdminNoticeController {
     private NoticeService noticeService;
 
     /**
+     * 公告管理列表页面
+     */
+    @GetMapping("/list")
+    public String listPage() {
+        return "admin/notice/list";
+    }
+
+    /**
+     * 公告新增/编辑页面
+     */
+    @GetMapping("/editPage")
+    public String editPage() {
+        return "admin/notice/edit";
+    }
+
+    /**
      * 分页查询公告
      */
     @GetMapping("/page")

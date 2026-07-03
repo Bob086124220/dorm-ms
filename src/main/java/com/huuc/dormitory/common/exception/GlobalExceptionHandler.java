@@ -10,6 +10,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * 全局异常处理器
@@ -74,6 +75,15 @@ public class GlobalExceptionHandler {
     public Result<Void> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
         logger.warn("不支持的请求方法：{}", e.getMethod());
         return Result.fail(405, "不支持的请求方法");
+    }
+
+    /**
+     * 处理文件上传超限
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public Result<Void> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
+        logger.warn("文件上传超限：{}", e.getMessage());
+        return Result.badRequest("文件大小不能超过 1MB");
     }
 
     /**

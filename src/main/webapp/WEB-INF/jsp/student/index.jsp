@@ -135,7 +135,7 @@
             <section class="content-panel" style="margin-bottom: var(--gap-xl);">
                 <div class="content-panel-header">
                     <h3>最新公告</h3>
-                    <a href="${pageContext.request.contextPath}/common/notice/list" class="panel-link">
+                    <a href="${pageContext.request.contextPath}/common/notice/listPage" class="panel-link">
                         查看全部
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
                     </a>
@@ -305,7 +305,7 @@
             var time = (n.publishTime || '').substring(5, 10);
             html += '<div class="log-entry">'
                 + '<span class="log-time">' + time + '</span>'
-                + '<a href="${pageContext.request.contextPath}/common/notice/detail.jsp?noticeId=' + n.noticeId + '" class="log-text" style="text-decoration:none;">' + $('<span>').text(title).html() + '</a>'
+                + '<a href="${pageContext.request.contextPath}/common/notice/detailPage?noticeId=' + n.noticeId + '" class="log-text" style="text-decoration:none;">' + $('<span>').text(title).html() + '</a>'
                 + '</div>';
         }
         $area.html(html);

@@ -110,4 +110,20 @@ public class CommonController {
         NoticeVO vo = noticeService.getNoticeById(noticeId);
         return Result.success(vo);
     }
+
+    /**
+     * 公告列表页面（宿管/学生可见）
+     */
+    @GetMapping("/notice/listPage")
+    public String noticeListPage() {
+        return "common/notice/list";
+    }
+
+    /**
+     * 公告详情页面
+     */
+    @GetMapping("/notice/detailPage")
+    public String noticeDetailPage() {
+        return "common/notice/detail";
+    }
 }

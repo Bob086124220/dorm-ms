@@ -1,9 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!-- 角色类型常量 -->
-<c:set var="ROLE_ADMIN" value="1" />
-<c:set var="ROLE_DORM" value="2" />
-<c:set var="ROLE_STUDENT" value="3" />
+<!-- 角色类型常量由 sidebar.jsp 统一定义，header.jsp 不重复定义 -->
 <!-- 纸张纹理 — SVG overlay 层，仅覆盖背景，不影响内容交互 -->
 <svg class="paper-noise-svg" aria-hidden="true"
      style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;">
