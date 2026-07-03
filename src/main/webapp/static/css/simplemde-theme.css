@@ -1,0 +1,195 @@
+/*
+ * 高校公寓管理系统 - SimpleMDE 杂志风主题覆盖
+ * 覆盖 SimpleMDE 默认样式，对齐项目设计令牌
+ * 仅用于公告编辑页（admin/notice/edit.jsp）
+ */
+
+/* ============================================= */
+/* 一、编辑器区域                                   */
+/* ============================================= */
+
+/* 编辑器外框 — 匹配 .form-control 边框 */
+.editor-wrapper .CodeMirror {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    color: var(--fg);
+    background: var(--bg);
+    padding: var(--gap-sm);
+    min-height: 240px;
+    height: auto;
+    max-height: 480px;
+    transition: border-color 0.15s;
+}
+
+/* 聚焦态 — 匹配 .form-control:focus */
+.editor-wrapper .CodeMirror-focused {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* 工具栏 */
+.editor-wrapper .editor-toolbar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 6px var(--gap-sm);
+    opacity: 1;  /* 覆盖 SimpleMDE 默认的 0.7 */
+}
+
+/* 工具栏按钮 */
+.editor-wrapper .editor-toolbar button {
+    color: var(--muted);
+    border-radius: var(--radius);
+    transition: color 0.12s, background 0.12s;
+}
+
+.editor-wrapper .editor-toolbar button:hover {
+    color: var(--fg);
+    background: var(--hover-bg);
+}
+
+.editor-wrapper .editor-toolbar button.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+}
+
+/* 工具栏分隔线 */
+.editor-wrapper .editor-toolbar i.separator {
+    border-left-color: var(--border);
+}
+
+/* CodeMirror 光标 */
+.editor-wrapper .CodeMirror-cursor {
+    border-left: 2px solid var(--accent);
+}
+
+/* 选中高亮 */
+.editor-wrapper .CodeMirror .CodeMirror-selected {
+    background: var(--accent-soft);
+}
+
+/* 滚动条（WebKit） */
+.editor-wrapper .CodeMirror::-webkit-scrollbar { width: 6px; }
+.editor-wrapper .CodeMirror::-webkit-scrollbar-track { background: transparent; }
+.editor-wrapper .CodeMirror::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+/* ============================================= */
+/* 二、预览区                                     */
+/* ============================================= */
+
+.editor-wrapper .editor-preview,
+.editor-wrapper .editor-preview-side {
+    background: var(--surface-opaque);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--gap-lg);
+    font-family: var(--font-body);
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    color: var(--fg);
+}
+
+/* 预览区标题 — 衬线字体 */
+.editor-wrapper .editor-preview h1,
+.editor-wrapper .editor-preview h2,
+.editor-wrapper .editor-preview h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--fg);
+    margin-top: var(--gap-lg);
+    margin-bottom: var(--gap-sm);
+}
+.editor-wrapper .editor-preview h1 { font-size: var(--fs-h1); letter-spacing: -0.01em; }
+.editor-wrapper .editor-preview h2 { font-size: var(--fs-h2); }
+.editor-wrapper .editor-preview h3 { font-size: var(--fs-h3); }
+
+/* 预览区代码块 */
+.editor-wrapper .editor-preview pre {
+    background: var(--hover-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--gap-md);
+    font-family: var(--font-mono);
+    font-size: var(--fs-meta);
+    overflow-x: auto;
+}
+
+.editor-wrapper .editor-preview code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--hover-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* 预览区引用 */
+.editor-wrapper .editor-preview blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: var(--gap-md);
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* 预览区链接 */
+.editor-wrapper .editor-preview a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.12s;
+}
+.editor-wrapper .editor-preview a:hover {
+    border-bottom-color: var(--accent);
+}
+
+/* 预览区表格 */
+.editor-wrapper .editor-preview table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+.editor-wrapper .editor-preview th {
+    background: var(--bg);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    padding: var(--gap-sm) var(--gap-md);
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+.editor-wrapper .editor-preview td {
+    padding: 10px var(--gap-md);
+    border-bottom: 1px solid var(--border);
+}
+
+/* 预览区图片 */
+.editor-wrapper .editor-preview img {
+    max-width: 100%;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+/* ============================================= */
+/* 三、Side-by-side 布局                          */
+/* ============================================= */
+
+/* 编辑区 60% + 预览 40%，覆盖 SimpleMDE 内联的 50% */
+.editor-wrapper .CodeMirror-sided {
+    width: 60% !important;  /* 覆盖 SimpleMDE 默认的 50%（内联样式，无法通过选择器特异性替代） */
+}
+
+.editor-wrapper .editor-preview-side {
+    width: 38%;
+    margin-left: 2%;
+    border-left: 1px solid var(--border);
+    padding: var(--gap-lg);
+    overflow-y: auto;
+}
