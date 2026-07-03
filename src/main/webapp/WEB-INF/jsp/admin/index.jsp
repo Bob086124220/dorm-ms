@@ -75,6 +75,7 @@
                 <section class="row mb-4">
                     <div class="col-12 mb-3">
                         <span class="page-eyebrow page-eyebrow--muted">QUICK ACCESS</span>
+                    </div>
                     <div class="col-lg-4 col-md-6 mb-3">
                         <a href="${pageContext.request.contextPath}/admin/user/list" class="module-card">
                             <span class="module-card-num">01</span>
@@ -181,6 +182,35 @@
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
 
     <script>
+        /**
+         * 数字滚动动画
+         * @param {string} elementId - 目标元素 ID
+         * @param {number} target - 目标数值
+         * @param {number} duration - 动画时长（毫秒），默认 600
+         */
+        function countUp(elementId, target, duration) {
+            duration = duration || 600;
+            var el = document.getElementById(elementId);
+            if (!el || target <= 0) {
+                if (el) el.textContent = target;
+                return;
+            }
+            var start = 0;
+            var startTime = null;
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                var progress = Math.min((timestamp - startTime) / duration, 1);
+                var current = Math.floor(progress * target);
+                el.textContent = current;
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    el.textContent = target;
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
         $(function() {
             function updateTime() {
                 var now = new Date();
@@ -198,17 +228,17 @@
         function loadStatistics() {
             $('#userCount').text('--');
             $.ajaxRequest('/admin/user/page', 'GET', { pageSize: 1 }, function(result) {
-                $('#userCount').text(result.data.total || 0);
+                countUp('userCount', result.data.total || 0);
             }, function() { setLoadError('userCount'); });
 
             $('#buildingCount').text('--');
             $.ajaxRequest('/admin/building/page', 'GET', { pageSize: 1 }, function(result) {
-                $('#buildingCount').text(result.data.total || 0);
+                countUp('buildingCount', result.data.total || 0);
             }, function() { setLoadError('buildingCount'); });
 
             $('#repairCount').text('--');
             $.ajaxRequest('/admin/repair/page', 'GET', { repairStatus: 0, pageSize: 1 }, function(result) {
-                $('#repairCount').text(result.data.total || 0);
+                countUp('repairCount', result.data.total || 0);
             }, function() { setLoadError('repairCount'); });
 
             $('#lateReturnCount').text('--');
@@ -216,9 +246,9 @@
                 if (result.data) {
                     var total = 0;
                     result.data.forEach(function(item) { total += item.count || 0; });
-                    $('#lateReturnCount').text(total);
+                    countUp('lateReturnCount', total);
                 } else {
-                    $('#lateReturnCount').text('0');
+                    countUp('lateReturnCount', 0);
                 }
             }, function() { setLoadError('lateReturnCount'); });
         }

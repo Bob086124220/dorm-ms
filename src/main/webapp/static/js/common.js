@@ -484,6 +484,23 @@
     };
 
     /**
+     * 表格行 stagger 入场动画
+     * @param {jQuery} $tbody - 表格 tbody 的 jQuery 对象
+     * @param {number} rowLimit - 动画行数上限，默认 20（超过仅前 20 行做 stagger，其余直接显示）
+     */
+    $.staggerRows = function($tbody, rowLimit) {
+        rowLimit = rowLimit || 20;
+        $tbody.find('tr').each(function(i) {
+            if (i >= rowLimit) return;
+            var $row = $(this);
+            $row.css({ opacity: 0, transform: 'translateY(6px)' });
+            setTimeout(function() {
+                $row.css({ transition: 'opacity 0.3s ease, transform 0.3s ease', opacity: 1, transform: 'translateY(0)' });
+            }, i * 30);
+        });
+    };
+
+    /**
      * 初始化页面公共功能
      */
     $(document).ready(function() {
