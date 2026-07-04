@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DormMS — 高校公寓管理系统</title>
+  <title>高校公寓管理系统</title>
   <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
   <style>
     /* ═══════════════════════════════════════════════════════════
