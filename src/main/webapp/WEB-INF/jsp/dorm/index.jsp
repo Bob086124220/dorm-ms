@@ -43,12 +43,12 @@
                     <div class="stat-card-value" id="freeBedCount">--</div>
                     <div class="stat-card-sub">可分配床位数量</div>
                 </div>
-                <div class="stat-card" data-decorative-num="03">
+                <div class="stat-card" data-decorative-num="03" id="processingRepairCard">
                     <div class="stat-card-label">维修中</div>
                     <div class="stat-card-value accent2" id="processingRepair">--</div>
                     <div class="stat-card-sub">已接单待完成的报修</div>
                 </div>
-                <div class="stat-card" data-decorative-num="04">
+                <div class="stat-card" data-decorative-num="04" id="todayCheckinCard">
                     <div class="stat-card-label">今日新增</div>
                     <div class="stat-card-value" id="todayCheckin">--</div>
                     <div class="stat-card-sub">今日新增入住人数</div>
@@ -62,7 +62,7 @@
                     <div class="stat-card-value accent" id="pendingMoveCount">--</div>
                     <div class="stat-card-sub">需审核的调宿申请</div>
                 </div>
-                <div class="stat-card" data-decorative-num="06">
+                <div class="stat-card" data-decorative-num="06" id="activeVisitorCard">
                     <div class="stat-card-label">在访未离校</div>
                     <div class="stat-card-value accent2" id="activeVisitorCount">--</div>
                     <div class="stat-card-sub">尚未登记离开的访客</div>
@@ -186,12 +186,45 @@
         countUp('pendingMoveCount', data.pendingMoveCount || 0);
         countUp('activeVisitorCount', data.activeVisitorCount || 0);
 
+        // 迷你横向指示条（占管理楼栋总容量比例）
+        renderMiniBars(data);
+
         // 图表
         renderFloorChart(data.floorOccupancy, prefersReducedMotion);
         renderRepairStatusChart(data.repairStatusPie, prefersReducedMotion);
 
         // 待处理报修
         renderPendingTable(data.pendingRepairs, data.timeoutRepairCount);
+    }
+
+    // ==================== 迷你横向指示条 ====================
+
+    function renderMiniBars(data) {
+        var v1 = data.processingRepairCount || 0;
+        var v2 = data.todayNewCheckinCount || 0;
+        var v3 = data.activeVisitorCount || 0;
+        var maxVal = Math.max(v1, v2, v3);
+
+        function ensureBar(cardSelector, value, color) {
+            var $card = $(cardSelector);
+            if ($card.length === 0) return;
+            var $bar = $card.find('.stat-card-minibar');
+            if ($bar.length === 0) {
+                $card.append(
+                    '<div class="stat-card-minibar"><div class="stat-card-minibar-fill"></div></div>'
+                );
+                $bar = $card.find('.stat-card-minibar');
+            }
+            var pct = maxVal > 0 ? ((value || 0) / maxVal * 100) : 0;
+            $bar.find('.stat-card-minibar-fill').css({
+                width: pct + '%',
+                background: color
+            });
+        }
+
+        ensureBar('#processingRepairCard', v1, 'var(--accent-2)');
+        ensureBar('#todayCheckinCard', v2, 'var(--accent)');
+        ensureBar('#activeVisitorCard', v3, 'var(--status-ok)');
     }
 
     function updatePageHeader(managedBuildings, buildingCount) {

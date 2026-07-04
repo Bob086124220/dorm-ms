@@ -2080,6 +2080,55 @@ textarea:hover:not(:focus):not(:disabled) {
     color: var(--fg);
 }
 
+/* ============================================= */
+/* 待办分布对比条（Admin Dashboard）             */
+/* ============================================= */
+.pending-bar {
+    display: flex;
+    gap: 2px;
+    height: 28px;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.pending-bar-segment {
+    display: flex;
+    flex: 0.001;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--surface-opaque);
+    letter-spacing: 0.03em;
+    transition: flex 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pending-bar-segment span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================= */
+/* Stat-Card 迷你横向指示条（Dorm Dashboard）    */
+/* ============================================= */
+.stat-card-minibar {
+    margin-top: var(--gap-sm);
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.stat-card-minibar-fill {
+    height: 100%;
+    border-radius: 2px;
+    width: 0;
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* 响应式 */
 @media (max-width: 1200px) {
     .stats-row { grid-template-columns: repeat(2, 1fr); }

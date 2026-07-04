@@ -56,15 +56,25 @@
                 </div>
             </section>
 
-            <!-- 图表双栏 -->
+            <!-- 图表行1：环形图 + 柱状图 -->
             <section class="charts-row">
+                <div class="chart-panel">
+                    <div class="chart-panel-title">
+                        <h2>当月业务构成</h2>
+                    </div>
+                    <div class="chart-box" id="chartRing"></div>
+                </div>
                 <div class="chart-panel">
                     <div class="chart-panel-title">
                         <h2>楼栋入住率</h2>
                     </div>
                     <div class="chart-box" id="chartBuilding"></div>
                 </div>
-                <div class="chart-panel">
+            </section>
+
+            <!-- 图表行2：趋势折线图（全宽） -->
+            <section class="charts-row">
+                <div class="chart-panel" style="grid-column: 1 / -1;">
                     <div class="chart-panel-title">
                         <h2>近 6 月业务趋势</h2>
                     </div>
@@ -80,6 +90,17 @@
                         查看全部
                         <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-right"/></svg>
                     </a>
+                </div>
+                <!-- 待办分布对比条 -->
+                <div style="padding: var(--gap-md) var(--gap-lg) 0;">
+                    <div class="pending-bar" id="pendingBar" style="display:none;">
+                        <div class="pending-bar-segment" data-label="待处理报修" id="segRepair"
+                             style="background: var(--accent-2);"><span></span></div>
+                        <div class="pending-bar-segment" data-label="已超时" id="segTimeout"
+                             style="background: var(--accent);"><span></span></div>
+                        <div class="pending-bar-segment" data-label="待审批调宿" id="segMove"
+                             style="background: var(--muted);"><span></span></div>
+                    </div>
                 </div>
                 <table class="pending-table">
                     <thead>
@@ -209,8 +230,12 @@
         $('#timeoutRepair').text(data.timeoutRepairCount || 0);
 
         // 图表
+        renderRingChart(data.monthlyTrend, prefersReducedMotion);
         renderBuildingChart(data.buildingOccupancy, prefersReducedMotion);
         renderTrendChart(data.monthlyTrend, prefersReducedMotion);
+
+        // 待办分布对比条
+        renderPendingBar(data.pendingRepairCount || 0, data.timeoutRepairCount || 0, data.pendingMoveCount || 0);
 
         // 待处理事项
         renderPendingTable(data.pendingItems);
@@ -302,6 +327,91 @@
         });
 
         $(window).on('resize.chartTrend', function() { chart.resize(); });
+    }
+
+    // ==================== 环形图：当月业务构成 ====================
+
+    function renderRingChart(monthlyTrend, prefersReducedMotion) {
+        var el = document.getElementById('chartRing');
+        if (!el) return;
+
+        var chart = echarts.init(el, MAGAZINE_THEME);
+
+        if (!monthlyTrend || monthlyTrend.length === 0) {
+            showChartEmpty(chart);
+            return;
+        }
+
+        var latest = monthlyTrend[monthlyTrend.length - 1];
+        var total = (latest.repair || 0) + (latest.lateReturn || 0) + (latest.visitor || 0) + (latest.checkin || 0);
+
+        if (total === 0) {
+            showChartEmpty(chart);
+            return;
+        }
+
+        chart.setOption({
+            tooltip: { trigger: 'item', formatter: '{b}: {c} 次 ({d}%)' },
+            legend: {
+                bottom: 0,
+                textStyle: {
+                    fontFamily: "'SF Mono', 'JetBrains Mono', Consolas, ui-monospace, monospace",
+                    fontSize: 11,
+                    color: 'rgb(122, 112, 103)'
+                }
+            },
+            graphic: [{
+                type: 'text',
+                left: 'center',
+                top: '40%',
+                style: {
+                    text: latest.month + '月',
+                    textAlign: 'center',
+                    fontFamily: 'Georgia, "Noto Serif SC", "Source Han Serif SC", SimSun, serif',
+                    fontSize: 16,
+                    fontWeight: 700,
+                    fill: 'rgb(45, 36, 28)'
+                }
+            }],
+            series: [{
+                type: 'pie',
+                radius: ['45%', '70%'],
+                center: ['50%', '46%'],
+                data: [
+                    { value: latest.repair, name: '报修', itemStyle: { color: 'rgb(196, 69, 58)' } },
+                    { value: latest.lateReturn, name: '晚归', itemStyle: { color: 'rgb(212, 132, 90)' } },
+                    { value: latest.visitor, name: '访客', itemStyle: { color: 'rgb(46, 125, 111)' } },
+                    { value: latest.checkin, name: '入住', itemStyle: { color: 'rgb(122, 112, 103)' } }
+                ],
+                label: { show: false },
+                emphasis: { label: { show: true, fontSize: 13, fontWeight: 'bold' } }
+            }],
+            animationDuration: prefersReducedMotion ? 0 : 800
+        });
+
+        $(window).on('resize.chartRing', function() { chart.resize(); });
+    }
+
+    // ==================== 待办分布对比条 ====================
+
+    function renderPendingBar(pendingRepair, timeoutRepair, pendingMove) {
+        var total = pendingRepair + timeoutRepair + pendingMove;
+        var $bar = $('#pendingBar');
+
+        if (total === 0) {
+            $bar.hide();
+            return;
+        }
+        $bar.show();
+
+        function setSeg(id, val, label) {
+            var $seg = $('#' + id);
+            $seg.css('flex', val || '0.001').find('span').text(val + ' ' + label);
+        }
+
+        setSeg('segRepair', pendingRepair, '条');
+        setSeg('segTimeout', timeoutRepair, '条');
+        setSeg('segMove', pendingMove, '条');
     }
 
     // ==================== 待处理表格 ====================
