@@ -1,759 +1,777 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>高校公寓管理系统</title>
+  <title>DormMS — 高校公寓管理系统</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <style>
-    /* ═══════════════════════════════════════════════════════════════════
-       Design Tokens — 暖白 × 锗红 × 暖橙 · 杂志风
-       ═══════════════════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════════
+       Design Tokens
+       ═══════════════════════════════════════════════════════════ */
     :root {
-      --bg:        #FAF9F5;
-      --surface:   #FFFFFF;
-      --fg:        #2D241C;
-      --muted:     #7A7067;
-      --border:    #EBE6DF;
-      --accent:    #C4453A;
-      --accent-2:  #D4845A;
-
-      --accent-soft: color-mix(in oklch, var(--accent) 10%, transparent);
+      --bg:           rgb(250, 249, 245);
+      --surface:      rgba(255, 255, 255, 0.92);
+      --fg:           rgb(45, 36, 28);
+      --muted:        rgb(122, 112, 103);
+      --border:       rgb(235, 230, 223);
+      --accent:       rgb(196, 69, 58);
+      --accent-2:     rgb(212, 132, 90);
+      --hover-bg:     rgb(245, 244, 237);
+      --status-ok:    rgb(46, 125, 111);
+      --accent-soft:  color-mix(in oklch, var(--accent) 10%, transparent);
       --accent-2-soft: color-mix(in oklch, var(--accent-2) 12%, transparent);
-      --fg-soft:    color-mix(in oklch, var(--fg) 6%, transparent);
-      --hover-bg:  rgb(245,244,237);
-      --on-accent: #FFFFFF;
-
-      --font-display: 'Georgia', 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
-      --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-      --font-mono:    'SF Mono', 'JetBrains Mono', 'Consolas', ui-monospace, monospace;
-
-      --gap-xs: 6px;
-      --gap-sm: 10px;
-      --gap-md: 16px;
-      --gap-lg: 24px;
-      --gap-xl: 40px;
-
-      --radius: 8px;
-      --radius-lg: 12px;
+      --fg-soft:      color-mix(in oklch, var(--fg) 6%, transparent);
+      --font-display: Georgia, 'Noto Serif SC', 'Source Han Serif SC', SimSun, serif;
+      --font-body:    'PingFang SC', 'Microsoft YaHei', -apple-system, system-ui, sans-serif;
+      --font-mono:    'SF Mono', 'JetBrains Mono', Consolas, ui-monospace, monospace;
+      --gap-xs: 6px; --gap-sm: 10px; --gap-md: 16px; --gap-lg: 24px; --gap-xl: 40px;
+      --radius: 8px; --radius-lg: 12px;
+      --ease-expo: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* ═══ Reset ═══ */
+    /* ═══════════════════════════════════════════════════════════
+       Reset & Base
+       ═══════════════════════════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
     body {
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--fg);
       background:
-        radial-gradient(circle, #EDEAE5 0.8px, transparent 0.8px),
+        radial-gradient(circle, rgb(237, 234, 229) 0.8px, transparent 0.8px),
         var(--bg);
       background-size: 16px 16px;
-      color: var(--fg);
-      font-family: var(--font-body);
-      font-size: 15px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
-    a { color: inherit; text-decoration: none; }
-    button { font: inherit; cursor: pointer; }
+    ::selection { background: var(--accent-soft); color: var(--fg); }
+    .paper-grain { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.035; }
 
-    /* ═══ Navigation ═══ */
-    .topnav {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: 56px;
-      background: rgba(250,249,245,0);
-      backdrop-filter: blur(0px);
-      border-bottom: 1px solid transparent;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 48px;
-      z-index: 100;
-      transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+    /* ═══════════════════════════════════════════════════════════
+       Typography
+       ═══════════════════════════════════════════════════════════ */
+    h1, h2 { font-family: var(--font-display); color: var(--fg); text-wrap: balance; }
+    h1 { font-size: clamp(36px, 5vw, 56px); font-weight: 700; line-height: 1.08; letter-spacing: -0.02em; }
+    h2 { font-size: clamp(24px, 3vw, 36px); font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
+    .eyebrow {
+      display: block; font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: var(--gap-xs);
     }
-    .topnav.scrolled {
-      background: rgba(250,249,245,0.88);
-      backdrop-filter: blur(12px);
-      border-bottom-color: var(--border);
-    }
-    .nav-brand {
-      font-family: var(--font-display);
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      color: var(--fg);
-    }
-    .nav-brand span { color: var(--accent); }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
-    .nav-links a {
-      font-size: 14px;
-      color: var(--muted);
-      transition: color 0.12s;
-      position: relative;
-    }
-    .nav-links a:hover { color: var(--fg); }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -2px; left: 0; right: 0;
-      height: 1px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transition: transform 0.2s;
-    }
-    .nav-links a:hover::after { transform: scaleX(1); }
+    .section-body { max-width: 65ch; }
 
-    /* ═══ Buttons ═══ */
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 11px 20px;
-      border-radius: var(--radius);
-      border: 1px solid transparent;
-      font-size: 15px;
-      font-weight: 500;
-      letter-spacing: -0.005em;
-      transition: all 0.15s;
+    /* ═══════════════════════════════════════════════════════════
+       Container / Section / Deco
+       ═══════════════════════════════════════════════════════════ */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--gap-lg); position: relative; z-index: 1; }
+    section { padding: 100px 0; position: relative; }
+    .section-deco-num {
+      font-family: var(--font-display); font-size: clamp(120px, 14vw, 200px);
+      font-weight: 700; color: var(--muted); opacity: 0.03; position: absolute;
+      top: 40px; right: var(--gap-lg); line-height: 1; letter-spacing: -0.04em;
+      pointer-events: none; user-select: none; z-index: 0;
     }
-    .btn:active { transform: translateY(1px); }
-    .btn-primary {
-      background: var(--accent);
-      color: var(--on-accent);
-      border-color: var(--accent);
-    }
-    .btn-primary:hover {
-      transform: scale(1.03);
-    }
-    .btn-secondary {
-      background: transparent;
-      color: var(--fg);
-      border-color: var(--border);
-    }
-    .btn-secondary:hover {
-      background: var(--hover-bg);
-      border-color: var(--accent);
-      color: var(--accent);
-      transform: scale(1.03);
-    }
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border-color: transparent;
-      padding: 8px 12px;
-    }
-    .btn-ghost:hover {
-      background: var(--hover-bg);
-      color: var(--accent);
-    }
-    .btn-arrow::after { content: '\2192'; transition: transform 0.15s; }
-    .btn-arrow:hover::after { transform: translateX(2px); }
+    .intro .section-deco-num { z-index: 0; }
 
-    /* ═══ Full-screen sections ═══ */
-    .screen {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
+    /* ═══════════════════════════════════════════════════════════
+       Scroll Reveal
+       ═══════════════════════════════════════════════════════════ */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease-expo), transform 0.6s var(--ease-expo); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.06s; }
+    .reveal-delay-2 { transition-delay: 0.12s; }
+    .reveal-delay-3 { transition-delay: 0.18s; }
+    .reveal-delay-4 { transition-delay: 0.24s; }
+    .reveal-delay-5 { transition-delay: 0.3s; }
+    .reveal-delay-6 { transition-delay: 0.36s; }
+    .reveal-delay-7 { transition-delay: 0.42s; }
+    .reveal-delay-8 { transition-delay: 0.48s; }
 
-    /* ═══ Hero — Screen 1 ═══ */
-    .hero {
-      padding: 120px 48px 80px;
-      position: relative;
+    /* ═══════════════════════════════════════════════════════════
+       NAV
+       ═══════════════════════════════════════════════════════════ */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; height: 56px;
+      display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
+      background: rgba(250, 249, 245, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); z-index: 100;
+      opacity: 0; animation: navReveal 0.5s var(--ease-expo) forwards;
     }
-    .hero-inner {
-      max-width: 880px;
-      position: relative;
-      z-index: 2;
-    }
-    .hero-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 24px;
-    }
-    .hero h1 {
-      font-family: var(--font-display);
-      font-size: clamp(40px, 5.5vw, 72px);
-      font-weight: 700;
-      line-height: 1.08;
-      letter-spacing: -0.02em;
-      margin-bottom: 24px;
-      max-width: 14ch;
-    }
-    .hero-subtitle {
-      font-family: var(--font-display);
-      font-size: clamp(18px, 2vw, 22px);
-      color: var(--muted);
-      line-height: 1.5;
-      max-width: 52ch;
-      margin-bottom: 16px;
-    }
-    .hero-desc {
-      font-size: 15px;
-      color: var(--muted);
-      max-width: 56ch;
-      line-height: 1.7;
-      margin-bottom: 40px;
-    }
-    .hero-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
+    @keyframes navReveal { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: translateY(0); } }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo svg { width: 28px; height: 28px; }
+    .nav-logo-text { font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: 0.02em; color: var(--fg); }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-link { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.02em; color: var(--muted); text-decoration: none; transition: color 0.15s ease; }
+    .nav-link:hover { color: var(--fg); }
 
-    /* Hero geometric decoration */
-    .hero-deco {
-      position: absolute;
-      top: 80px; right: 48px;
-      width: 380px; height: 380px;
-      z-index: 1;
-      opacity: 0.06;
-    }
-    .hero-deco .ring {
-      position: absolute;
-      border: 1.5px solid var(--fg);
-      border-radius: 50%;
-    }
-    .hero-deco .ring-1 { width: 380px; height: 380px; top: 0; left: 0; }
-    .hero-deco .ring-2 { width: 280px; height: 280px; top: 50px; left: 50px; }
-    .hero-deco .ring-3 { width: 180px; height: 180px; top: 100px; left: 100px; }
-    .hero-deco .line-h {
-      position: absolute;
-      width: 380px; height: 1px;
-      background: var(--fg);
-      top: 190px; left: 0;
-    }
-    .hero-deco .line-v {
-      position: absolute;
-      width: 1px; height: 380px;
-      background: var(--fg);
-      top: 0; left: 190px;
-    }
-    .hero-deco .dot {
-      position: absolute;
-      width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      top: 187px; left: 187px;
-    }
+    /* ═══════════════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════════════ */
+    .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 80px; padding-bottom: 80px; overflow: hidden; position: relative; }
+    .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; padding: 6px 14px; background: var(--accent-soft); border-radius: 999px; width: fit-content; }
+    .hero-badge-dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; }
+    .hero h1 { margin-bottom: 16px; }
+    .hero-subtitle { font-family: var(--font-display); font-size: clamp(17px, 2vw, 20px); color: var(--muted); margin-bottom: 20px; line-height: 1.45; }
+    .hero-desc { color: var(--muted); line-height: 1.7; max-width: 48ch; margin-bottom: 32px; }
+    .hero-actions { display: flex; gap: 12px; margin-bottom: 48px; }
+    .btn { font-family: var(--font-body); font-size: 14px; font-weight: 500; padding: 9px 22px; border-radius: var(--radius); border: 1px solid transparent; cursor: pointer; transition: all 0.15s ease; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; line-height: 1.4; }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-primary:hover { background: color-mix(in oklch, var(--accent) 88%, black); transform: scale(1.03); }
+    .btn-secondary { background: transparent; color: var(--fg); border-color: var(--border); }
+    .btn-secondary:hover { background: var(--hover-bg); border-color: var(--accent); color: var(--accent); transform: scale(1.03); }
+    .hero-meta { display: flex; gap: 40px; }
+    .hero-meta-num { font-family: var(--font-display); font-size: 36px; font-weight: 700; color: var(--fg); letter-spacing: -0.02em; line-height: 1; }
+    .hero-meta-label { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.04em; margin-top: 4px; }
 
-    /* ═══ Intro — Screen 2 ═══ */
-    .intro {
-      padding: 0 48px;
-      border-top: 1px solid var(--border);
-    }
-    .intro-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-      padding: 80px 0;
-    }
-    .intro-left { padding-top: 8px; }
-    .intro-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-    .intro-left h2 {
-      font-family: var(--font-display);
-      font-size: clamp(28px, 3vw, 38px);
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.015em;
-      margin-bottom: 24px;
-    }
-    .intro-left p {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.75;
-      max-width: 48ch;
-    }
-    .intro-right {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .intro-block {
-      padding: 28px 0;
-      border-top: 1px solid var(--border);
-    }
-    .intro-block:first-child { border-top: none; }
-    .intro-block-label {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 10px;
-    }
-    .intro-block h3 {
-      font-family: var(--font-display);
-      font-size: 17px;
-      font-weight: 600;
-      line-height: 1.4;
-      margin-bottom: 8px;
-    }
-    .intro-block p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.65;
-    }
-    .tech-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .tech-tag {
-      display: inline-flex;
-      align-items: center;
-      padding: 4px 10px;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.03em;
-    }
+    /* Hero mockups */
+    .hero-mockups { position: relative; height: 420px; }
+    .mock-frame { position: absolute; border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--surface); box-shadow: 0 12px 40px rgba(0,0,0,0.06); overflow: hidden; transition: transform 0.4s var(--ease-expo); }
+    .mock-frame:hover { transform: translateY(-4px) !important; }
+    .mock-frame-1 { width: 360px; height: 260px; top: 0; left: 0; z-index: 3; }
+    .mock-frame-2 { width: 300px; height: 220px; top: 100px; right: 0; z-index: 2; }
+    .mock-frame-3 { width: 240px; height: 180px; bottom: 0; left: 60px; z-index: 1; }
+    .mock-header { height: 28px; display: flex; align-items: center; gap: 6px; padding: 0 10px; border-bottom: 1px solid var(--border); background: var(--bg); }
+    .mock-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); }
+    .mock-dot:first-child { background: var(--accent); opacity: 0.5; }
+    .mock-body { padding: 12px; }
+    .mock-card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .mock-card { height: 48px; border-radius: 6px; border: 1px solid var(--border); padding: 8px; }
+    .mock-card-num { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--fg); }
+    .mock-card-lbl { font-family: var(--font-mono); font-size: 6px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 2px; }
+    .mock-chart { height: 60px; border-radius: 6px; border: 1px solid var(--border); display: flex; align-items: flex-end; gap: 4px; padding: 8px; }
+    .mock-chart-bar { flex: 1; border-radius: 2px 2px 0 0; background: var(--accent-soft); }
+    .mock-table { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .mock-table-header { display: grid; grid-template-columns: 2fr 1fr 1fr; background: var(--bg); border-bottom: 1px solid var(--border); }
+    .mock-table-th { padding: 5px 8px; font-family: var(--font-mono); font-size: 6px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .mock-table-row { display: grid; grid-template-columns: 2fr 1fr 1fr; border-bottom: 1px solid var(--border); }
+    .mock-table-row:last-child { border-bottom: none; }
+    .mock-table-td { padding: 5px 8px; font-size: 7px; color: var(--fg); }
+    .mock-pill { display: inline-block; padding: 1px 5px; border-radius: 999px; font-family: var(--font-mono); font-size: 5px; letter-spacing: 0.02em; }
+    .mock-pill-ok { background: color-mix(in oklch, var(--status-ok) 14%, transparent); color: var(--status-ok); }
+    .mock-pill-wait { background: var(--accent-2-soft); color: var(--accent-2); }
+    .mock-form { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .mock-input { height: 22px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg); }
+    .mock-btn-sm { height: 22px; border-radius: 4px; background: var(--accent); width: 100%; }
+    .hero-scroll { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; animation: scrollBounce 2s ease-in-out infinite; }
+    @keyframes scrollBounce { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } }
+    .hero-scroll-text { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--muted); text-transform: uppercase; }
+    .hero-scroll svg { width: 16px; height: 16px; color: var(--muted); }
 
-    /* ═══ Highlights — Screen 3 ═══ */
-    .highlights {
-      padding: 0 48px;
-      border-top: 1px solid var(--border);
+    /* ═══════════════════════════════════════════════════════════
+       INTRO — Hover Expand (FIX: siblings collapse, flex-start)
+       ═══════════════════════════════════════════════════════════ */
+    .intro { background: transparent; min-height: 85vh; display: flex; align-items: center; }
+    .intro > .container { width: 100%; }
+    .intro-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 48px; margin: auto 0; }
+    .intro-left { align-self: start; }
+    .intro-left h2 { margin-bottom: var(--gap-md); }
+    .intro-left .section-body { margin-bottom: 0; }
+    .intro-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; min-height: 320px; align-items: start; }
+    .intro-card {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 24px; overflow: visible;
+      position: relative; cursor: default; z-index: 1;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
-    .highlights-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 80px 0;
-    }
-    .highlights-header {
-      margin-bottom: 56px;
-    }
-    .highlights-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-    .highlights-header h2 {
-      font-family: var(--font-display);
-      font-size: clamp(28px, 3vw, 38px);
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.015em;
-    }
-    .highlights-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-    .highlight-card {
-      background: var(--surface);
-      padding: 36px 32px;
-      position: relative;
-      transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
-    }
-    .highlight-card:hover {
-      background: var(--hover-bg);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-      z-index: 2;
-    }
-    .highlight-num {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.06em;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-    .highlight-icon {
-      width: 36px; height: 36px;
-      display: grid; place-items: center;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-    .highlight-icon svg {
-      width: 18px; height: 18px;
-    }
-    .highlight-card h3 {
-      font-family: var(--font-display);
-      font-size: 17px;
-      font-weight: 600;
-      line-height: 1.35;
-      margin-bottom: 10px;
-    }
-    .highlight-card p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.65;
-    }
+    .intro-card:hover { border-color: var(--fg); box-shadow: 0 4px 20px rgba(0,0,0,0.06); transform: translateY(-2px); z-index: 5; }
+    .intro-card-head { margin-bottom: 0; transition: margin-bottom 0.3s ease; }
+    .intro-card.expanded .intro-card-head { margin-bottom: 20px; }
+    .intro-card-num { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.5; }
+    .intro-card h3 { font-size: 15px; font-weight: 600; line-height: 1.4; margin: 6px 0 0; }
+    .intro-card-body { opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.35s ease 0.05s, max-height 0.4s var(--ease-expo); }
+    .intro-card.expanded .intro-card-body { opacity: 1; }
+    .intro-card-desc { font-size: 13px; line-height: 1.7; color: var(--muted); margin-bottom: 12px; }
+    .intro-card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 999px; font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.02em; background: var(--fg-soft); color: var(--muted); }
+    .tag-accent { background: var(--accent-soft); color: var(--accent); }
+    .intro-card-icon { position: absolute; bottom: 16px; right: 16px; width: 32px; height: 32px; color: var(--border); transition: color 0.2s ease; }
+    .intro-card.expanded .intro-card-icon { color: var(--accent); opacity: 0.3; }
 
-    /* ═══ Footer — Screen 4 ═══ */
-    .footer {
-      padding: 0 48px;
-      border-top: 1px solid var(--border);
-      min-height: auto;
-    }
-    .footer-inner {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 64px 0;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-    }
-    .footer-left h2 {
-      font-family: var(--font-display);
-      font-size: clamp(24px, 2.5vw, 32px);
-      font-weight: 700;
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-      margin-bottom: 12px;
-    }
-    .footer-left p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .footer-right {
-      text-align: right;
-    }
-    .footer-meta {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-      line-height: 2;
-    }
-    .footer-divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 0 48px;
-    }
-    .footer-bottom {
-      max-width: 1120px;
-      margin: 0 auto;
-      padding: 24px 0 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .footer-copy {
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .footer-copy span { color: var(--accent); }
-    .footer-links {
-      display: flex;
-      gap: 24px;
-    }
-    .footer-links a {
-      font-size: 13px;
-      color: var(--muted);
-      transition: color 0.12s;
-    }
-    .footer-links a:hover { color: var(--accent); }
+    /* ═══════════════════════════════════════════════════════════
+       SYSTEM DESIGN — Redesigned (3 vertical blocks)
+       ═══════════════════════════════════════════════════════════ */
+    .design-header { text-align: center; margin-bottom: 56px; }
+    .design-header h2 { margin-bottom: 8px; }
+    .design-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 36px; margin-bottom: 24px; }
+    .design-block h3 { margin-bottom: 20px; }
 
-    /* ═══ Scroll hint ═══ */
-    .scroll-hint {
-      position: absolute;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0.6;
-      animation: hintPulse 2s ease-in-out infinite;
+    /* ── Magazine Design System (auto-scroll marquee) ── */
+    .mag-outer { overflow-x: hidden; overflow-y: hidden; position: relative; margin: 0 -4px; cursor: grab; user-select: none; -webkit-user-select: none; }
+    .mag-outer::before, .mag-outer::after {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 60px; z-index: 2; pointer-events: none;
     }
-    .scroll-hint svg {
-      width: 16px; height: 16px;
-      animation: hintBounce 2s ease-in-out infinite;
+    .mag-outer::before { left: 0; background: linear-gradient(to right, var(--surface), transparent); }
+    .mag-outer::after { right: 0; background: linear-gradient(to left, var(--surface), transparent); }
+    .mag-track { display: flex; gap: 0; width: max-content; will-change: transform; }
+    .mag-track .mag-card { transition: opacity 0.3s ease; }
+    .mag-outer:hover .mag-track .mag-card { opacity: 0.3; }
+    .mag-outer:hover .mag-track .mag-card:hover { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) { .mag-track { animation: none; } }
+    .mag-card {
+      flex: 0 0 200px; padding: 0 24px; position: relative; display: flex; flex-direction: column; gap: 10px;
     }
-    @keyframes hintBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(4px); }
+    .mag-card + .mag-card { border-left: 1px solid var(--border); }
+    .mag-card-num { font-family: var(--font-mono); font-size: 28px; font-weight: 700; color: var(--muted); opacity: 0.12; line-height: 1; letter-spacing: -0.02em; }
+    .mag-card-title { font-size: 13px; font-weight: 600; color: var(--fg); line-height: 1.4; }
+    .mag-card-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .mag-scroll-label {
+      font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.06em;
+      text-transform: uppercase; margin-top: 12px; display: flex; align-items: center; gap: 6px; opacity: 0.5;
     }
-    @keyframes hintPulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 0.3; }
-    }
+    .mag-scroll-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-    /* ═══ Responsive ═══ */
+    /* ── Architecture Flow (2-col: layers + animated diagram) ── */
+    .arch-split { display: grid; grid-template-columns: 1fr 1.2fr; gap: 36px; align-items: start; }
+    .arch-layers { display: flex; flex-direction: column; }
+    .arch-layer { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); transition: border-color 0.2s ease, background 0.15s ease; }
+    .arch-layer:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .arch-layer + .arch-layer { margin-top: 4px; }
+    .arch-layer-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); min-width: 48px; }
+    .arch-layer-name { font-size: 12px; font-weight: 500; color: var(--fg); flex: 1; }
+    .arch-note { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--muted); line-height: 1.8; }
+
+    /* ── Data Flow Diagram (animated) ── */
+    .flow-diagram { width: 100%; }
+    .flow-diagram svg { width: 100%; height: auto; display: block; }
+    .flow-diagram .flow-node rect { transition: stroke 0.2s ease, fill 0.2s ease; }
+    .flow-diagram .flow-node:hover rect { stroke: var(--accent); fill: var(--accent-soft); }
+    .flow-diagram .flow-label { font-family: var(--font-body); font-size: 11px; fill: var(--fg); }
+    .flow-diagram .flow-sub { font-family: var(--font-mono); font-size: 8px; fill: var(--muted); letter-spacing: 0.02em; }
+    .flow-diagram .flow-note { font-family: var(--font-mono); font-size: 8px; fill: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    @keyframes flowForward { 0% { offset-distance: 0%; opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+    @keyframes flowReturn { 0% { offset-distance: 100%; opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { offset-distance: 0%; opacity: 0; } }
+    .flow-dot { offset-rotate: 0deg; animation: flowForward 2.8s ease-in-out infinite; }
+    .flow-dot-return { offset-rotate: 0deg; animation: flowReturn 3.2s ease-in-out 1.4s infinite; }
+    @media (prefers-reduced-motion: reduce) { .flow-dot, .flow-dot-return { animation: none; opacity: 0.5; } }
+
+    /* ── Git Collaboration (2-col: content + animated flow) ── */
+    .git-split { display: grid; grid-template-columns: 1fr 1.4fr; gap: 36px; align-items: center; }
+    .git-content h4 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    .git-list { list-style: none; }
+    .git-list li { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.6; color: var(--fg); }
+    .git-list li:last-child { border-bottom: none; }
+    .git-flow { width: 100%; }
+    .git-flow svg { width: 100%; height: auto; display: block; }
+    @keyframes gitPulse { 0%, 100% { opacity: 0.35; r: 3; } 50% { opacity: 1; r: 4; } }
+    @keyframes gitDash { to { stroke-dashoffset: -20; } }
+    @media (prefers-reduced-motion: reduce) { .git-flow .flow-dot { animation: none; opacity: 0.5; } }
+
+    /* ═══════════════════════════════════════════════════════════
+       CORE ADVANTAGES — Hover Expand Grid (FIX: siblings collapse)
+       ═══════════════════════════════════════════════════════════ */
+    .advantages { padding-bottom: 120px; }
+    .advantages-header { text-align: center; margin-bottom: 48px; }
+    .advantages-header h2 { margin-bottom: 8px; }
+    .adv-group { margin-bottom: 40px; }
+    .adv-group-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .adv-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items: start; }
+    .adv-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; overflow: visible; position: relative; cursor: default; z-index: 1; transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; }
+    .adv-card:hover { border-color: var(--fg); box-shadow: 0 4px 20px rgba(0,0,0,0.06); transform: translateY(-2px); z-index: 5; }
+    .adv-card-icon { width: 28px; height: 28px; color: var(--muted); margin-bottom: 10px; transition: color 0.2s ease; }
+    .adv-card.expanded .adv-card-icon { color: var(--accent); }
+    .adv-card-head { margin-bottom: 0; transition: margin-bottom 0.3s ease; }
+    .adv-card.expanded .adv-card-head { margin-bottom: 10px; }
+    .adv-card h4 { font-family: var(--font-body); font-size: 14px; font-weight: 600; line-height: 1.3; margin: 0; }
+    .adv-card-body { opacity: 0; max-height: 0; overflow: hidden; transition: opacity 0.35s ease 0.05s, max-height 0.4s var(--ease-expo); }
+    .adv-card.expanded .adv-card-body { opacity: 1; }
+    .adv-card-desc { font-size: 12px; line-height: 1.65; color: var(--muted); }
+
+    /* ═══════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════ */
+    .footer { border-top: 1px solid var(--border); padding: 56px 0 32px; background: var(--surface); }
+    .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; margin-bottom: 40px; }
+    .footer-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+    .footer-subtitle { font-size: 14px; color: var(--muted); }
+    .footer-meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: 0.02em; line-height: 2; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid var(--border); }
+    .footer-copy { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: 0.02em; }
+    .footer-actions { display: flex; gap: 20px; }
+    .footer-link { font-family: var(--font-mono); font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.15s ease; cursor: pointer; }
+    .footer-link:hover { color: var(--accent); }
+
+    /* ═══════════════════════════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════════════════════════ */
     @media (max-width: 1024px) {
-      .topnav { padding: 0 24px; }
-      .hero { padding: 100px 24px 60px; }
-      .hero-deco { width: 260px; height: 260px; top: 100px; right: 24px; }
-      .hero-deco .ring-1 { width: 260px; height: 260px; }
-      .hero-deco .ring-2 { width: 190px; height: 190px; top: 35px; left: 35px; }
-      .hero-deco .ring-3 { width: 120px; height: 120px; top: 70px; left: 70px; }
-      .hero-deco .line-h { width: 260px; top: 130px; }
-      .hero-deco .line-v { height: 260px; left: 130px; }
-      .hero-deco .dot { top: 127px; left: 127px; }
-      .intro { padding: 0 24px; }
-      .intro-inner { gap: 48px; padding: 60px 0; }
-      .highlights { padding: 0 24px; }
-      .highlights-inner { padding: 60px 0; }
-      .footer { padding: 0 24px; }
-      .footer-divider { margin: 0 24px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .hero-mockups { display: none; }
+      .intro-grid { grid-template-columns: 1fr; gap: 32px; }
+      .intro-cards { grid-template-columns: 1fr; }
+      .arch-split { grid-template-columns: 1fr; }
+      .git-split { grid-template-columns: 1fr; }
+      .adv-grid { grid-template-columns: repeat(2, 1fr); }
+      section { padding: 72px 0; }
     }
     @media (max-width: 768px) {
-      .topnav { padding: 0 20px; }
-      .nav-links a:not(.btn) { display: none; }
-      .hero { padding: 88px 20px 48px; }
-      .hero h1 { max-width: none; }
-      .hero-deco { display: none; }
-      .scroll-hint { display: none; }
-      .intro { padding: 0 20px; }
-      .intro-inner {
-        grid-template-columns: 1fr;
-        gap: 40px;
-        padding: 48px 0;
-      }
-      .highlights { padding: 0 20px; }
-      .highlights-inner { padding: 48px 0; }
-      .highlights-grid {
-        grid-template-columns: 1fr;
-      }
-      .footer { padding: 0 20px; }
-      .footer-inner {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 24px;
-        padding: 48px 0;
-      }
-      .footer-right { text-align: left; }
-      .footer-divider { margin: 0 20px; }
-      .footer-bottom {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        padding: 20px 0 40px;
-      }
+      .nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero-actions { flex-direction: column; }
+      .hero-meta { flex-wrap: wrap; gap: 24px; }
+      .adv-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; gap: 12px; }
+      .section-deco-num { font-size: 100px; }
+      .container { padding: 0 var(--gap-md); }
+      .design-block { padding: 24px; }
+      .mag-card { flex: 0 0 160px; padding: 0 16px; }
+    }
+    @media (max-width: 480px) {
+      .eyebrow { letter-spacing: 0.03em; font-size: 10px; }
+      h1 { font-size: 32px; }
+      h2 { font-size: 24px; }
+      section { padding: 56px 0; }
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       Prefers Reduced Motion
+       ═══════════════════════════════════════════════════════════ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+      .hero-scroll { animation: none; }
     }
   </style>
 </head>
 <body>
+  <!-- ═══ SVG Sprite ═══ -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="icon-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></symbol>
+    <symbol id="icon-shield-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></symbol>
+    <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol>
+    <symbol id="icon-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+    <symbol id="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="icon-bar-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+    <symbol id="icon-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+    <symbol id="icon-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></symbol>
+    <symbol id="icon-arrow-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></symbol>
+    <symbol id="icon-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></symbol>
+  </svg>
 
-  <!-- ═══ Navigation ═══ -->
-  <header class="topnav" id="topnav">
-    <a href="index.html" class="nav-brand">Dorm<span>MS</span></a>
+  <!-- ═══ Paper Grain ═══ -->
+  <svg class="paper-grain" xmlns="http://www.w3.org/2000/svg">
+    <filter id="paper-grain"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="5" seed="2" stitchTiles="stitch" result="noise"/><feColorMatrix type="saturate" values="0" in="noise" result="grey"/><feBlend in="SourceGraphic" in2="grey" mode="soft-light"/></filter>
+    <rect width="100%" height="100%" filter="url(#paper-grain)"/>
+  </svg>
+
+  <!-- ═══ NAV ═══ -->
+  <nav class="nav">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><rect width="128" height="128" rx="28" fill="#C4453A"/><text x="64" y="88" text-anchor="middle" font-family="Georgia,'Noto Serif SC',serif" font-size="80" font-weight="700" fill="#FAF9F5" letter-spacing="-3">D</text><line x1="40" y1="108" x2="88" y2="108" stroke="#FAF9F5" stroke-width="1.5" opacity="0.4"/></svg>
+      <span class="nav-logo-text">DormMS</span>
+    </a>
     <div class="nav-links">
-      <a href="#intro">项目介绍</a>
-      <a href="#highlights">项目亮点</a>
-      <a href="login.html" class="btn btn-primary" style="padding: 8px 18px; font-size: 14px;">进入系统</a>
+      <a href="#intro" class="nav-link">项目介绍</a>
+      <a href="#design" class="nav-link">系统设计</a>
+      <a href="#advantages" class="nav-link">核心优势</a>
+      <a href="/login" class="btn btn-primary" style="padding:6px 16px;font-size:12px;">进入系统</a>
     </div>
-  </header>
+  </nav>
 
-  <!-- ═══ Screen 1: Hero ═══ -->
-  <section class="screen hero" data-od-id="hero">
-    <div class="hero-inner">
-      <p class="hero-eyebrow">Enterprise-grade Campus Housing</p>
-      <h1>高校公寓管理系统</h1>
-      <p class="hero-subtitle">基于 SSM 架构的智慧公寓管理解决方案</p>
-      <p class="hero-desc">覆盖学生入住、日常运维、行政管控全流程，三角色权限隔离，从报修到晚归登记，一个系统管理整栋公寓。</p>
-      <div class="hero-actions">
-        <a href="login.html" class="btn btn-primary">进入系统</a>
-        <a href="#intro" class="btn btn-secondary btn-arrow">了解更多</a>
+  <!-- ═══════════════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="hero-badge reveal">
+            <span class="hero-badge-dot"></span>
+            Enterprise-grade Campus Housing Management
+          </div>
+          <h1 class="reveal reveal-delay-1">高校公寓<br>管理系统</h1>
+          <p class="hero-subtitle reveal reveal-delay-2">基于 SSM 架构的智慧公寓管理解决方案</p>
+          <p class="hero-desc reveal reveal-delay-3">覆盖学生入住、调宿审批、报修处理、晚归登记、访客管理等全业务流程。三角色权限隔离，从楼栋到床位三级数据联动，一个系统管理整栋公寓。</p>
+          <div class="hero-actions reveal reveal-delay-4">
+            <a href="/login" class="btn btn-primary">进入系统</a>
+            <a href="#intro" class="btn btn-secondary">了解更多</a>
+          </div>
+          <div class="hero-meta reveal reveal-delay-5">
+            <div class="hero-meta-item"><div class="hero-meta-num" data-count="6">6</div><div class="hero-meta-label">核心模块</div></div>
+            <div class="hero-meta-item"><div class="hero-meta-num" data-count="54">54</div><div class="hero-meta-label">JSP 页面</div></div>
+            <div class="hero-meta-item"><div class="hero-meta-num" data-count="25">25</div><div class="hero-meta-label">CSS 令牌</div></div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="hero-mockups">
+            <div class="mock-frame mock-frame-1 reveal reveal-delay-3">
+              <div class="mock-header"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span></div>
+              <div class="mock-body">
+                <div class="mock-card-row"><div class="mock-card"><div class="mock-card-num">1,284</div><div class="mock-card-lbl">学生总数</div></div><div class="mock-card"><div class="mock-card-num">12</div><div class="mock-card-lbl">楼栋总数</div></div></div>
+                <div class="mock-chart"><div class="mock-chart-bar" style="height:60%"></div><div class="mock-chart-bar" style="height:40%"></div><div class="mock-chart-bar" style="height:80%"></div><div class="mock-chart-bar" style="height:55%"></div><div class="mock-chart-bar" style="height:70%"></div><div class="mock-chart-bar" style="height:45%"></div><div class="mock-chart-bar" style="height:90%"></div><div class="mock-chart-bar" style="height:65%"></div></div>
+              </div>
+            </div>
+            <div class="mock-frame mock-frame-2 reveal reveal-delay-5">
+              <div class="mock-header"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span></div>
+              <div class="mock-body" style="padding:0">
+                <div class="mock-table">
+                  <div class="mock-table-header"><div class="mock-table-th">姓名</div><div class="mock-table-th">房间</div><div class="mock-table-th">状态</div></div>
+                  <div class="mock-table-row"><div class="mock-table-td">张同学</div><div class="mock-table-td">A-301</div><div class="mock-table-td"><span class="mock-pill mock-pill-ok">已入住</span></div></div>
+                  <div class="mock-table-row"><div class="mock-table-td">李同学</div><div class="mock-table-td">B-205</div><div class="mock-table-td"><span class="mock-pill mock-pill-wait">待审批</span></div></div>
+                  <div class="mock-table-row"><div class="mock-table-td">王同学</div><div class="mock-table-td">A-108</div><div class="mock-table-td"><span class="mock-pill mock-pill-ok">已入住</span></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="mock-frame mock-frame-3 reveal reveal-delay-7">
+              <div class="mock-header"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span></div>
+              <div class="mock-form"><div class="mock-input"></div><div class="mock-input"></div><div class="mock-btn-sm"></div></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-    <!-- Geometric decoration -->
-    <div class="hero-deco" aria-hidden="true">
-      <div class="ring ring-1"></div>
-      <div class="ring ring-2"></div>
-      <div class="ring ring-3"></div>
-      <div class="line-h"></div>
-      <div class="line-v"></div>
-      <div class="dot"></div>
-    </div>
-
-    <div class="scroll-hint" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-        <path d="M12 5v14M5 12l7 7 7-7"/>
-      </svg>
-      SCROLL
+    <div class="hero-scroll">
+      <span class="hero-scroll-text">Scroll</span>
+      <svg><use href="#icon-arrow-down"/></svg>
     </div>
   </section>
 
-  <!-- ═══ Screen 2: Project Introduction ═══ -->
-  <section class="screen intro" id="intro" data-od-id="intro" style="min-height: auto;">
-    <div class="intro-inner">
-      <div class="intro-left">
-        <p class="intro-eyebrow">About the Project</p>
-        <h2>为高校公寓日常管理场景设计</h2>
-        <p>覆盖入住登记、调宿审批、报修处理、晚归登记、访客管理等完整业务流程。系统采用 MVC 三层架构，WAR 包部署，面向系统管理员、宿管、学生三种角色提供差异化界面与权限控制。</p>
-      </div>
-      <div class="intro-right">
-        <div class="intro-block">
-          <p class="intro-block-label">01 — 项目背景</p>
-          <h3>解决传统纸质管理的低效与混乱</h3>
-          <p>传统公寓管理依赖纸质登记和人工传递信息，数据分散、查询困难、审批流程漫长。系统将全部流程线上化，实现数据集中管理与实时查询。</p>
+  <!-- ═══════════════════════════════════════════════════════════
+       INTRO
+       ═══════════════════════════════════════════════════════════ -->
+  <section class="intro" id="intro">
+    <span class="section-deco-num reveal">02</span>
+    <div class="container">
+      <div class="intro-grid">
+        <div class="intro-left">
+          <span class="eyebrow reveal">About the Project</span>
+          <h2 class="reveal reveal-delay-1">为高校公寓日常<br>管理场景设计</h2>
+          <p class="section-body reveal reveal-delay-2" style="color:var(--muted);margin-top:16px;">本项目为《企业级开发应用》课程设计落地项目，以高校学生公寓日常管理场景为业务载体。系统采用 MVC 三层架构，SSM 技术栈，WAR 包部署，面向系统管理员、宿管、学生三种角色提供差异化界面与权限控制。两周开发周期，3 人协作，Git 分支管理，全链路文档交付。</p>
         </div>
-        <div class="intro-block">
-          <p class="intro-block-label">02 — 技术架构</p>
-          <h3>Spring MVC + MyBatis + MySQL</h3>
-          <p>后端采用 Spring MVC 5.3 + MyBatis 3.5 + MySQL 8.0，前端 Bootstrap 5 + jQuery。MVC 三层架构，WAR 包部署。</p>
-          <div class="tech-tags">
-            <span class="tech-tag">Spring MVC 5.3</span>
-            <span class="tech-tag">MyBatis 3.5</span>
-            <span class="tech-tag">MySQL 8.0</span>
-            <span class="tech-tag">Bootstrap 5</span>
-            <span class="tech-tag">jQuery</span>
+        <div class="intro-cards">
+          <div class="intro-card reveal reveal-delay-3">
+            <div class="intro-card-head"><div class="intro-card-num">01</div><h3>解决传统纸质管理的低效与混乱</h3></div>
+            <div class="intro-card-body"><p class="intro-card-desc">传统公寓管理依赖纸质登记和人工传递信息，数据分散、查询困难、审批流程漫长。系统将入住、调宿、报修、晚归、访客全部流程线上化，实现数据集中管理与实时查询。</p></div>
+            <svg class="intro-card-icon"><use href="#icon-chevron-right"/></svg>
           </div>
-        </div>
-        <div class="intro-block">
-          <p class="intro-block-label">03 — 工程规范</p>
-          <h3>企业级开发标准</h3>
-          <p>统一返回格式、全局异常处理、AOP 操作日志、声明式事务、枚举替代魔法值、SQL 预编译防注入。</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══ Screen 3: Highlights ═══ -->
-  <section class="screen highlights" id="highlights" data-od-id="highlights" style="min-height: auto;">
-    <div class="highlights-inner">
-      <div class="highlights-header">
-        <p class="highlights-eyebrow">Highlights</p>
-        <h2>六大核心亮点</h2>
-      </div>
-      <div class="highlights-grid">
-        <div class="highlight-card">
-          <p class="highlight-num">01</p>
-          <div class="highlight-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
+          <div class="intro-card reveal reveal-delay-4">
+            <div class="intro-card-head"><div class="intro-card-num">02</div><h3>Spring MVC + MyBatis + MySQL</h3></div>
+            <div class="intro-card-body">
+              <p class="intro-card-desc">后端采用 SSM 框架，前端 Bootstrap 5 + jQuery + JSP，MVC 三层分层，WAR 包部署至 Tomcat 9。</p>
+              <div class="intro-card-tags"><span class="tag tag-accent">Spring MVC 5.3</span><span class="tag">MyBatis 3.5</span><span class="tag">MySQL 8.0</span><span class="tag">Bootstrap 5</span><span class="tag">jQuery 3.6</span><span class="tag">Tomcat 9</span></div>
+            </div>
+            <svg class="intro-card-icon"><use href="#icon-chevron-right"/></svg>
           </div>
-          <h3>三角色权限隔离</h3>
-          <p>管理员、宿管、学生三套独立界面，接口级拦截器 + 数据级楼栋隔离，确保各角色只能访问授权范围内的数据。</p>
-        </div>
-        <div class="highlight-card">
-          <p class="highlight-num">02</p>
-          <div class="highlight-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14 2 14 8 20 8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-            </svg>
+          <div class="intro-card reveal reveal-delay-5">
+            <div class="intro-card-head"><div class="intro-card-num">03</div><h3>企业级开发标准与文档体系</h3></div>
+            <div class="intro-card-body"><p class="intro-card-desc">统一返回格式、全局异常处理、AOP 操作日志、声明式事务、枚举替代魔法值、SQL 预编译防注入。需求 → 架构 → 接口 → 业务逻辑 → 测试验收全链路文档。</p></div>
+            <svg class="intro-card-icon"><use href="#icon-chevron-right"/></svg>
           </div>
-          <h3>Spring AOP 操作日志</h3>
-          <p>无侵入自动记录所有管理端增删改操作，支持审计追溯，每次操作精确到操作人、时间、内容与 IP。</p>
-        </div>
-        <div class="highlight-card">
-          <p class="highlight-num">03</p>
-          <div class="highlight-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-            </svg>
-          </div>
-          <h3>事务一致性保障</h3>
-          <p>入住、调宿、退宿等核心操作使用 @Transactional 原子执行，数据变更要么全部成功，要么全部回滚。</p>
-        </div>
-        <div class="highlight-card">
-          <p class="highlight-num">04</p>
-          <div class="highlight-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="17 8 12 3 7 8"/>
-              <line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-          </div>
-          <h3>批量导入用户</h3>
-          <p>CSV 文件一键导入，逐行校验 + 部分成功策略，导入结果精确反馈每行状态，支持大规模新生入住数据录入。</p>
-        </div>
-        <div class="highlight-card">
-          <p class="highlight-num">05</p>
-          <div class="highlight-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-              <line x1="3" y1="9" x2="21" y2="9"/>
-              <line x1="9" y1="21" x2="9" y2="9"/>
-            </svg>
-          </div>
-          <h3>数据看板</h3>
-          <p>ECharts 可视化统计，入住率趋势、报修分布、楼栋对比一目了然，辅助管理者快速决策。</p>
-        </div>
-        <div class="highlight-card">
-          <p class="highlight-num">06</p>
-          <div class="highlight-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-            </svg>
-          </div>
-          <h3>标准化文档体系</h3>
-          <p>需求、架构、接口、业务逻辑、页面逻辑、测试验收全链路文档，确保项目可维护、可交接。</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ Screen 4: Footer ═══ -->
-  <section class="screen footer" data-od-id="footer" style="min-height: auto;">
-    <div class="footer-inner">
-      <div class="footer-left">
-        <h2>企业级开发应用<br>课程设计</h2>
-        <p>高校公寓管理系统 — SSM 架构实践</p>
+  <!-- ═══════════════════════════════════════════════════════════
+       SYSTEM DESIGN — Redesigned: 3 vertical blocks
+       ═══════════════════════════════════════════════════════════ -->
+  <section class="design" id="design">
+    <span class="section-deco-num reveal">03</span>
+    <div class="container">
+      <div class="design-header">
+        <span class="eyebrow reveal">System Design</span>
+        <h2 class="reveal reveal-delay-1">架构、风格与协作</h2>
       </div>
-      <div class="footer-right">
-        <p class="footer-meta">
-          2026<br>
-          企业级开发应用 · 课程设计
-        </p>
+
+      <!-- ── Block 1: Magazine Design System (auto-scroll marquee) ── -->
+      <div class="design-block reveal reveal-delay-2">
+        <h3>杂志风设计系统</h3>
+        <div class="mag-outer">
+          <div class="mag-track">
+            <div class="mag-card"><div class="mag-card-num">01</div><div class="mag-card-title">暖白底色</div><div class="mag-card-desc">半调网点底纹 + SVG 纸张纹理叠加，模拟印刷质感</div></div>
+            <div class="mag-card"><div class="mag-card-num">02</div><div class="mag-card-title">锗红强调色</div><div class="mag-card-desc">每屏 ≤2 处 accent，暖橙辅色点缀状态与标签</div></div>
+            <div class="mag-card"><div class="mag-card-num">03</div><div class="mag-card-title">字体三重奏</div><div class="mag-card-desc">Georgia 衬线标题 × 系统无衬线正文 × SF Mono 数据</div></div>
+            <div class="mag-card"><div class="mag-card-num">04</div><div class="mag-card-title">8px 网格</div><div class="mag-card-desc">所有间距取 8px 枚举值，8px/12px 双圆角体系</div></div>
+            <div class="mag-card"><div class="mag-card-num">05</div><div class="mag-card-title">SVG 描线图标</div><div class="mag-card-desc">stroke-only 1.6px 统一线宽，禁止 emoji 替代</div></div>
+            <div class="mag-card"><div class="mag-card-num">06</div><div class="mag-card-title">动画降级</div><div class="mag-card-desc">prefers-reduced-motion 全局禁用非必要动效</div></div>
+            <div class="mag-card"><div class="mag-card-num">07</div><div class="mag-card-title">响应式断点</div><div class="mag-card-desc">≤768px 侧栏收起，网格回退单列布局</div></div>
+            <div class="mag-card"><div class="mag-card-num">08</div><div class="mag-card-title">四状态覆盖</div><div class="mag-card-desc">加载骨架屏 / 空数据 / 错误重试 / 正常数据</div></div>
+            <!-- Duplicate set for infinite scroll -->
+            <div class="mag-card"><div class="mag-card-num">01</div><div class="mag-card-title">暖白底色</div><div class="mag-card-desc">半调网点底纹 + SVG 纸张纹理叠加，模拟印刷质感</div></div>
+            <div class="mag-card"><div class="mag-card-num">02</div><div class="mag-card-title">锗红强调色</div><div class="mag-card-desc">每屏 ≤2 处 accent，暖橙辅色点缀状态与标签</div></div>
+            <div class="mag-card"><div class="mag-card-num">03</div><div class="mag-card-title">字体三重奏</div><div class="mag-card-desc">Georgia 衬线标题 × 系统无衬线正文 × SF Mono 数据</div></div>
+            <div class="mag-card"><div class="mag-card-num">04</div><div class="mag-card-title">8px 网格</div><div class="mag-card-desc">所有间距取 8px 枚举值，8px/12px 双圆角体系</div></div>
+            <div class="mag-card"><div class="mag-card-num">05</div><div class="mag-card-title">SVG 描线图标</div><div class="mag-card-desc">stroke-only 1.6px 统一线宽，禁止 emoji 替代</div></div>
+            <div class="mag-card"><div class="mag-card-num">06</div><div class="mag-card-title">动画降级</div><div class="mag-card-desc">prefers-reduced-motion 全局禁用非必要动效</div></div>
+            <div class="mag-card"><div class="mag-card-num">07</div><div class="mag-card-title">响应式断点</div><div class="mag-card-desc">≤768px 侧栏收起，网格回退单列布局</div></div>
+            <div class="mag-card"><div class="mag-card-num">08</div><div class="mag-card-title">四状态覆盖</div><div class="mag-card-desc">加载骨架屏 / 空数据 / 错误重试 / 正常数据</div></div>
+          </div>
+        </div>
+        <div class="mag-scroll-label"><span>自动滚动 · 悬浮暂停</span></div>
       </div>
-    </div>
-    <hr class="footer-divider">
-    <div class="footer-bottom">
-      <p class="footer-copy">Dorm<span>MS</span> &copy; 2026</p>
-      <div class="footer-links">
-        <a href="login.html">进入系统</a>
-        <a href="#topnav">返回顶部</a>
+
+      <!-- ── Block 2: Architecture + Animated Data Flow ── -->
+      <div class="design-block reveal reveal-delay-3">
+        <div class="arch-split">
+          <div>
+            <h3>架构分层</h3>
+            <div class="arch-layers">
+              <div class="arch-layer"><span class="arch-layer-label">视图层</span><span class="arch-layer-name">JSP + Bootstrap 5 + jQuery</span></div>
+              <div class="arch-layer"><span class="arch-layer-label">控制层</span><span class="arch-layer-name">Spring MVC：路由、校验、封装</span></div>
+              <div class="arch-layer"><span class="arch-layer-label">业务层</span><span class="arch-layer-name">Service：逻辑、事务、状态流转</span></div>
+              <div class="arch-layer"><span class="arch-layer-label">持久层</span><span class="arch-layer-name">MyBatis Mapper + XML</span></div>
+              <div class="arch-layer"><span class="arch-layer-label">数据层</span><span class="arch-layer-name">MySQL 8.0</span></div>
+            </div>
+            <p class="arch-note">横切：拦截器（登录/权限） · AOP 日志切面 · 全局异常处理<br>三层职责严格隔离 · Controller 不写业务 · DAO 不拼 SQL · 横切与业务解耦</p>
+          </div>
+          <div class="flow-diagram">
+            <svg viewBox="0 0 440 290" xmlns="http://www.w3.org/2000/svg">
+              <!-- Forward path (request) -->
+              <path id="fp" d="M 80,40 L 80,65 L 360,65 L 360,110" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+              <!-- Return path (response) — solid, symmetric mirror -->
+              <path id="rp" d="M 360,155 L 360,210 L 280,210 L 280,255 L 80,255 L 80,180" fill="none" stroke="var(--border)" stroke-width="1.5"/>
+              <!-- Animated dots -->
+              <circle r="3.5" fill="var(--accent)" class="flow-dot" style="offset-path:path('M 80,40 L 80,65 L 360,65 L 360,110');animation-delay:0s;"/>
+              <circle r="3.5" fill="var(--accent)" class="flow-dot" style="offset-path:path('M 80,40 L 80,65 L 360,65 L 360,110');animation-delay:0.9s;"/>
+              <circle r="3" fill="var(--accent-2)" class="flow-dot-return" style="offset-path:path('M 360,155 L 360,210 L 280,210 L 280,255 L 80,255 L 80,180');"/>
+              <circle r="3" fill="var(--accent-2)" class="flow-dot-return" style="offset-path:path('M 360,155 L 360,210 L 280,210 L 280,255 L 80,255 L 80,180');animation-delay:1.6s;"/>
+              <!-- Flow labels -->
+              <text x="220" y="58" text-anchor="middle" class="flow-note">HTTP Request ↓</text>
+              <text x="220" y="185" text-anchor="middle" class="flow-note">HTTP Response ↑</text>
+              <!-- Top row: View + Controller + Service -->
+              <g class="flow-node" transform="translate(0,100)"><rect x="20" y="0" width="120" height="44" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="80" y="19" text-anchor="middle" class="flow-label">视图层</text><text x="80" y="33" text-anchor="middle" class="flow-sub">JSP + jQuery</text></g>
+              <g class="flow-node" transform="translate(0,100)"><rect x="160" y="0" width="120" height="44" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="220" y="19" text-anchor="middle" class="flow-label">控制层</text><text x="220" y="33" text-anchor="middle" class="flow-sub">Spring MVC</text></g>
+              <g class="flow-node" transform="translate(0,100)"><rect x="300" y="0" width="120" height="44" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="360" y="19" text-anchor="middle" class="flow-label">业务层</text><text x="360" y="33" text-anchor="middle" class="flow-sub">Service</text></g>
+              <!-- Bottom row: Data (left) + Persist (right), same height -->
+              <g class="flow-node" transform="translate(0,210)"><rect x="140" y="0" width="120" height="44" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="200" y="19" text-anchor="middle" class="flow-label">数据层</text><text x="200" y="33" text-anchor="middle" class="flow-sub">MySQL 8.0</text></g>
+              <g class="flow-node" transform="translate(0,210)"><rect x="280" y="0" width="120" height="44" rx="8" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="340" y="19" text-anchor="middle" class="flow-label">持久层</text><text x="340" y="33" text-anchor="middle" class="flow-sub">MyBatis</text></g>
+              <!-- Cross-cutting note -->
+              <text x="80" y="280" text-anchor="middle" class="flow-note">横切：拦截器 · AOP 日志 · 全局异常</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Block 3: Git Collaboration (content + animated flow) ── -->
+      <div class="design-block reveal reveal-delay-4">
+        <div class="git-split">
+          <div class="git-content">
+            <h3>Git 多人协作</h3>
+            <ul class="git-list">
+              <li>提交规范：<code style="font-family:var(--font-mono);font-size:11px;background:var(--fg-soft);padding:2px 6px;border-radius:4px;">type: 中文描述</code></li>
+              <li>feat / fix / docs / style / refactor / chore / test</li>
+              <li>每阶段独立提交，粒度 ≤ 一个完整功能单元</li>
+            </ul>
+          </div>
+          <div class="git-flow">
+            <svg viewBox="0 0 560 60" xmlns="http://www.w3.org/2000/svg">
+              <!-- Connecting line -->
+              <line x1="40" y1="30" x2="520" y2="30" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="5 4">
+                <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="1.5s" repeatCount="indefinite"/>
+              </line>
+              <!-- Animated dots -->
+              <circle r="3.5" fill="var(--accent)"><animateMotion dur="3.5s" repeatCount="indefinite" path="M 40,30 L 520,30"/></circle>
+              <circle r="2.5" fill="var(--accent)"><animateMotion dur="3.5s" repeatCount="indefinite" path="M 40,30 L 520,30" begin="1.2s"/></circle>
+              <!-- Steps — all pills -->
+              <g><rect x="15" y="16" width="50" height="28" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="40" y="34" text-anchor="middle" class="flow-label" style="font-size:10px">Fork</text></g>
+              <g><rect x="100" y="16" width="55" height="28" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="127.5" y="34" text-anchor="middle" class="flow-label" style="font-size:10px">Clone</text></g>
+              <g><rect x="190" y="16" width="65" height="28" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="222.5" y="34" text-anchor="middle" class="flow-label" style="font-size:10px">Branch</text></g>
+              <g><rect x="290" y="16" width="45" height="28" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="312.5" y="34" text-anchor="middle" class="flow-label" style="font-size:10px">PR</text></g>
+              <g><rect x="370" y="16" width="55" height="28" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="397.5" y="34" text-anchor="middle" class="flow-label" style="font-size:10px">Review</text></g>
+              <g><rect x="460" y="16" width="80" height="28" rx="14" fill="var(--bg)" stroke="var(--border)" stroke-width="1.5"/><text x="500" y="34" text-anchor="middle" class="flow-label" style="font-size:10px">Squash Merge</text></g>
+            </svg>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══ Scroll behavior ═══ -->
+  <!-- ═══════════════════════════════════════════════════════════
+       CORE ADVANTAGES
+       ═══════════════════════════════════════════════════════════ -->
+  <section class="advantages" id="advantages">
+    <span class="section-deco-num reveal">04</span>
+    <div class="container">
+      <div class="advantages-header">
+        <span class="eyebrow reveal">Core Advantages</span>
+        <h2 class="reveal reveal-delay-1">三大维度 · 十二项亮点</h2>
+      </div>
+
+      <div class="adv-group reveal reveal-delay-2">
+        <div class="adv-group-title">A — 架构与工程</div>
+        <div class="adv-grid">
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-shield-check"/></svg><div class="adv-card-head"><h4>MVC 三层架构</h4></div><div class="adv-card-body"><p class="adv-card-desc">Controller → Service → DAO 严格分层<br>职责隔离，低耦合高内聚<br>禁止跨层调用</p></div></div>
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-book"/></svg><div class="adv-card-head"><h4>全链路文档体系</h4></div><div class="adv-card-body"><p class="adv-card-desc">需求分析、架构设计、接口文档<br>业务逻辑、页面逻辑、测试验收<br>6 份文档覆盖全生命周期</p></div></div>
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-activity"/></svg><div class="adv-card-head"><h4>Git 多人协作</h4></div><div class="adv-card-body"><p class="adv-card-desc">Fork → Clone → Feature Branch<br>PR Review → Squash Merge<br>提交信息规范化，历史可追溯</p></div></div>
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-bar-chart"/></svg><div class="adv-card-head"><h4>AOP 操作日志审计</h4></div><div class="adv-card-body"><p class="adv-card-desc"><code style="font-family:var(--font-mono);font-size:11px;background:var(--fg-soft);padding:1px 5px;border-radius:3px;">@OperLog</code> 注解无侵入自动记录<br>所有管理端增删改操作<br>含操作人、时间、IP、参数</p></div></div>
+        </div>
+      </div>
+
+      <div class="adv-group reveal reveal-delay-3">
+        <div class="adv-group-title">B — 页面与交互</div>
+        <div class="adv-grid">
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-search"/></svg><div class="adv-card-head"><h4>全部列表支持模糊查询</h4></div><div class="adv-card-body"><p class="adv-card-desc">用户、楼栋、房间、报修等所有列表页<br>均提供关键词模糊筛选<br>空值不传参</p></div></div>
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-grid"/></svg><div class="adv-card-head"><h4>统一的杂志风设计语言</h4></div><div class="adv-card-body"><p class="adv-card-desc">25 个 CSS 令牌集中管理<br>半调网点 + 纸张纹理 + 衬线标题<br>描线 SVG 图标，全系统视觉一致</p></div></div>
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-eye"/></svg><div class="adv-card-head"><h4>列表页四状态全覆盖</h4></div><div class="adv-card-body"><p class="adv-card-desc">加载中（骨架屏 shimmer）<br>空数据（双模式：无数据/无结果）<br>请求错误（可重试）、正常数据</p></div></div>
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-bar-chart"/></svg><div class="adv-card-head"><h4>数据可视化看板</h4></div><div class="adv-card-body"><p class="adv-card-desc">ECharts 5.x + 自定义杂志风主题<br>三端独立看板（管理员/宿管/学生）<br>count-up 数字滚动</p></div></div>
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-upload"/></svg><div class="adv-card-head"><h4>CSV 批量导入 + 图片上传</h4></div><div class="adv-card-body"><p class="adv-card-desc">用户数据 CSV 一键导入<br>逐行校验 + 失败明细反馈<br>公告轮播图支持 JPG/PNG 上传</p></div></div>
+        </div>
+      </div>
+
+      <div class="adv-group reveal reveal-delay-4">
+        <div class="adv-group-title">C — 安全防护</div>
+        <div class="adv-grid">
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-users"/></svg><div class="adv-card-head"><h4>三角色权限隔离</h4></div><div class="adv-card-body"><p class="adv-card-desc">管理员/宿管/学生三套独立界面<br>接口级 AntPathMatcher 拦截<br>数据级楼栋过滤，越权访问 403</p></div></div>
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-shield"/></svg><div class="adv-card-head"><h4>多层安全防护</h4></div><div class="adv-card-body"><p class="adv-card-desc">SQL 预编译防注入（MyBatis <code style="font-family:var(--font-mono);font-size:11px;background:var(--fg-soft);padding:1px 5px;border-radius:3px;">#{}</code>）<br>DOMPurify XSS 过滤<br>onclick/title HTML 转义<br>密码 MD5 加密存储</p></div></div>
+          <div class="adv-card"><svg class="adv-card-icon"><use href="#icon-key"/></svg><div class="adv-card-head"><h4>用户安全机制</h4></div><div class="adv-card-body"><p class="adv-card-desc">首次登录强制修改密码<br>（模态框不可关闭）<br>逻辑删除替代物理删除<br>级联删除预校验拒绝<br>忘记密码短信重置</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div><div class="footer-title">企业级开发应用</div><div class="footer-subtitle">高校公寓管理系统 · SSM 架构实践</div></div>
+        <div class="footer-meta">2026<br>企业级开发应用 · 课程设计项目</div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">DormMS © 2026</span>
+        <div class="footer-actions">
+          <a href="/login" class="footer-link">进入系统</a>
+          <a href="#hero" class="footer-link">返回顶部</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ SCRIPTS ═══ -->
   <script>
-    // Navbar frosted glass on scroll
-    var nav = document.getElementById('topnav');
-    var scrollThreshold = 60;
-    function onScroll() {
-      if (window.scrollY > scrollThreshold) {
-        nav.classList.add('scrolled');
+    (function () {
+      'use strict';
+
+      /* ── Scroll Reveal ── */
+      var reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(function (el) { io.observe(el); });
       } else {
-        nav.classList.remove('scrolled');
+        reveals.forEach(function (el) { el.classList.add('visible'); });
       }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+
+      /* ── Hover Expand Cards (FIX: siblings collapse, only hovered one expands) ── */
+      function initHoverCards(cardSelector, bodySelector) {
+        var cards = document.querySelectorAll(cardSelector);
+        var container = cards.length ? cards[0].parentElement : null;
+        if (!container) return;
+
+        cards.forEach(function (card) {
+          var body = card.querySelector(bodySelector);
+          if (!body) return;
+
+          card.addEventListener('mouseenter', function () {
+            // Collapse all siblings in same container
+            cards.forEach(function (c) {
+              if (c !== card) {
+                c.classList.remove('expanded');
+                var b = c.querySelector(bodySelector);
+                if (b) b.style.maxHeight = '0px';
+              }
+            });
+            // Expand this card
+            card.classList.add('expanded');
+            body.style.maxHeight = body.scrollHeight + 'px';
+          });
+
+          card.addEventListener('mouseleave', function () {
+            card.classList.remove('expanded');
+            body.style.maxHeight = '0px';
+          });
+        });
+      }
+      initHoverCards('.intro-card', '.intro-card-body');
+      initHoverCards('.adv-card', '.adv-card-body');
+
+      /* ── Stat Count-Up ── */
+      function countUp(el, target) {
+        if (!el || target <= 0) return;
+        var duration = 800, start = null;
+        function step(ts) {
+          if (!start) start = ts;
+          var p = Math.min((ts - start) / duration, 1);
+          var ease = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(target * ease);
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      var metaNums = document.querySelectorAll('.hero-meta-num[data-count]');
+      if ('IntersectionObserver' in window) {
+        var cio = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) { countUp(e.target, parseInt(e.target.getAttribute('data-count'), 10)); cio.unobserve(e.target); }
+          });
+        }, { threshold: 0.5 });
+        metaNums.forEach(function (el) { cio.observe(el); });
+      }
+
+      /* ── Smooth scroll (no scrollIntoView) ── */
+      document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          var id = a.getAttribute('href');
+          if (id === '#') return;
+          var target = document.querySelector(id);
+          if (target) { e.preventDefault(); window.scrollTo({ top: target.getBoundingClientRect().top + window.pageYOffset - 64, behavior: 'smooth' }); }
+        });
+      });
+
+      /* ── Nav scroll shadow ── */
+      var nav = document.querySelector('.nav');
+      var scrolled = false;
+      window.addEventListener('scroll', function () {
+        var s = window.pageYOffset > 20;
+        if (s !== scrolled) { scrolled = s; nav.style.boxShadow = s ? '0 1px 8px rgba(0,0,0,0.04)' : 'none'; }
+      });
+
+      /* ── Magazine auto-scroll + drag-to-scroll ── */
+      var magOuter = document.querySelector('.mag-outer');
+      if (magOuter && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        var magTrack = magOuter.querySelector('.mag-track');
+        var magOffset = 0, magSpeed = 0.5, magPaused = false;
+        var isDragging = false, dragStartX, dragOffsetStart;
+
+        // Auto-scroll loop
+        function magTick() {
+          if (!magPaused && !isDragging) {
+            magOffset -= magSpeed;
+            var half = magTrack.scrollWidth / 2;
+            if (Math.abs(magOffset) >= half) magOffset += half;
+          }
+          magTrack.style.transform = 'translateX(' + magOffset + 'px)';
+          requestAnimationFrame(magTick);
+        }
+        requestAnimationFrame(magTick);
+
+        // Pause on hover
+        magOuter.addEventListener('mouseenter', function () { magPaused = true; });
+        magOuter.addEventListener('mouseleave', function () { magPaused = false; isDragging = false; magOuter.style.cursor = 'grab'; });
+
+        // Drag
+        magOuter.addEventListener('mousedown', function (e) {
+          isDragging = true;
+          dragStartX = e.pageX;
+          dragOffsetStart = magOffset;
+          magOuter.style.cursor = 'grabbing';
+        });
+        window.addEventListener('mousemove', function (e) {
+          if (!isDragging) return;
+          e.preventDefault();
+          magOffset = dragOffsetStart + (e.pageX - dragStartX);
+        });
+        window.addEventListener('mouseup', function () {
+          if (isDragging) { isDragging = false; magOuter.style.cursor = 'grab'; }
+        });
+      }
+    })();
   </script>
 </body>
 </html>
