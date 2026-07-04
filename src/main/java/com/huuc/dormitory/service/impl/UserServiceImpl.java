@@ -373,6 +373,33 @@ public class UserServiceImpl implements UserService {
      * @param phone 手机号
      * @return 默认密码明文
      */
+    @Override
+    public SysUser getUserByPhone(String phone) {
+        SysUser user = sysUserMapper.selectByPhone(phone);
+        if (user == null) {
+            throw new BusinessException(BusinessException.CODE_NOT_FOUND, "该手机号未注册");
+        }
+        user.setPassword(null);
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public void resetPassword(String phone, String newPassword) {
+        if (newPassword == null || newPassword.length() < 6 || newPassword.length() > 20) {
+            throw new BusinessException(BusinessException.CODE_BAD_REQUEST, "密码长度6-20位");
+        }
+        SysUser user = sysUserMapper.selectByPhone(phone);
+        if (user == null) {
+            throw new BusinessException(BusinessException.CODE_NOT_FOUND, "该手机号未注册");
+        }
+        String encryptedPassword = Md5Util.encrypt(newPassword);
+        int rows = sysUserMapper.updatePassword(user.getUserId(), encryptedPassword);
+        if (rows == 0) {
+            throw new BusinessException(BusinessException.CODE_ERROR, "重置密码失败");
+        }
+    }
+
     private String generateDefaultPassword(String phone) {
         if (phone == null) {
             phone = "";

@@ -49,4 +49,9 @@ public interface SysUserMapper {
      * 根据角色类型查询用户列表
      */
     List<SysUser> selectByRoleType(Integer roleType);
+
+    /**
+     * 根据手机号查询用户
+     */
+    SysUser selectByPhone(String phone);
 }

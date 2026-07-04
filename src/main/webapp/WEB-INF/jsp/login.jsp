@@ -103,7 +103,7 @@
                 <input type="checkbox" id="rememberMe">
                 <span>记住账号</span>
             </label>
-            <a href="#" class="forgot-link">忘记密码？</a>
+            <a href="javascript:void(0)" class="forgot-link" onclick="showForgotPasswordModal()">忘记密码？</a>
         </div>
 
         <!-- Submit -->
@@ -124,6 +124,49 @@
         <a href="#">SSM 框架</a>
     </div>
 
+</div>
+
+<!-- 忘记密码弹窗 -->
+<div class="forgot-overlay" id="forgotOverlay">
+    <div class="forgot-modal">
+        <div class="forgot-header">
+            <h2>重置密码</h2>
+            <button class="forgot-close" onclick="closeForgotPasswordModal()">&times;</button>
+        </div>
+        <div class="forgot-body">
+            <div class="forgot-error" id="forgotError"></div>
+            <div class="forgot-success" id="forgotSuccess">密码重置成功，请重新登录</div>
+
+            <!-- Step 1: 输入手机号 -->
+            <div class="forgot-step" id="forgotStep1">
+                <div class="forgot-field-row">
+                    <div class="forgot-field">
+                        <label for="forgotPhone">手机号</label>
+                        <input type="text" id="forgotPhone" placeholder="请输入注册手机号" maxlength="11" inputmode="numeric">
+                    </div>
+                    <button type="button" class="forgot-send-btn" id="btnSendCode" onclick="sendVerificationCode()">获取验证码</button>
+                </div>
+            </div>
+
+            <!-- Step 2: 输入验证码 + 新密码 -->
+            <div class="forgot-step" id="forgotStep2" style="display:none;">
+                <a class="forgot-back" onclick="backToStep1()">&larr; 返回上一步</a>
+                <div class="forgot-field">
+                    <label for="forgotCode">验证码</label>
+                    <input type="text" id="forgotCode" placeholder="请输入6位验证码" maxlength="6" inputmode="numeric">
+                </div>
+                <div class="forgot-field">
+                    <label for="forgotNewPassword">新密码</label>
+                    <input type="password" id="forgotNewPassword" placeholder="6-20位" maxlength="20">
+                </div>
+                <div class="forgot-field">
+                    <label for="forgotConfirmPassword">确认密码</label>
+                    <input type="password" id="forgotConfirmPassword" placeholder="请再次输入新密码" maxlength="20">
+                </div>
+                <button type="button" class="forgot-submit" id="btnResetPassword" onclick="doResetPassword()">重置密码</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- jQuery -->
@@ -337,6 +380,173 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !submitBtn.disabled) {
                 form.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // ==================== 忘记密码 ====================
+
+        var countdownTimer = null;
+
+        window.showForgotPasswordModal = function() {
+            resetForgotForm();
+            $('#forgotStep1').show();
+            $('#forgotStep2').hide();
+            $('#forgotSuccess').removeClass('show');
+            hideForgotError();
+            $('#forgotOverlay').addClass('open');
+            setTimeout(function() { $('#forgotPhone').focus(); }, 300);
+        };
+
+        window.closeForgotPasswordModal = function() {
+            $('#forgotOverlay').removeClass('open');
+            resetForgotForm();
+        };
+
+        window.sendVerificationCode = function() {
+            hideForgotError();
+            var phone = $('#forgotPhone').val().trim();
+            if (!phone) {
+                showForgotError('请输入手机号');
+                return;
+            }
+            if (!/^\d{11}$/.test(phone)) {
+                showForgotError('手机号格式不正确');
+                return;
+            }
+
+            var $btn = $('#btnSendCode');
+            $btn.prop('disabled', true).text('发送中...');
+
+            $.ajax({
+                url: $.buildUrl('/send-code'),
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({phone: phone}),
+                dataType: 'json',
+                timeout: 15000,
+                success: function(result) {
+                    if (result.code === 200) {
+                        startCountdown();
+                        $('#forgotStep1').hide();
+                        $('#forgotStep2').show();
+                        $('#forgotCode').focus();
+                    } else {
+                        showForgotError(result.msg || '发送失败');
+                        $btn.prop('disabled', false).text('获取验证码');
+                    }
+                },
+                error: function() {
+                    showForgotError('网络错误，请稍后重试');
+                    $btn.prop('disabled', false).text('获取验证码');
+                }
+            });
+        };
+
+        window.doResetPassword = function() {
+            hideForgotError();
+            var phone = $('#forgotPhone').val().trim();
+            var code = $('#forgotCode').val().trim();
+            var newPwd = $('#forgotNewPassword').val();
+            var confirmPwd = $('#forgotConfirmPassword').val();
+
+            if (!code) { showForgotError('请输入验证码'); return; }
+            if (!newPwd) { showForgotError('请输入新密码'); return; }
+            if (newPwd.length < 6 || newPwd.length > 20) { showForgotError('密码长度6-20位'); return; }
+            if (newPwd !== confirmPwd) { showForgotError('两次密码输入不一致'); return; }
+
+            var $btn = $('#btnResetPassword');
+            $btn.prop('disabled', true).text('提交中...');
+
+            $.ajax({
+                url: $.buildUrl('/reset-password'),
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    phone: phone,
+                    code: code,
+                    newPassword: newPwd,
+                    confirmPassword: confirmPwd
+                }),
+                dataType: 'json',
+                timeout: 15000,
+                success: function(result) {
+                    if (result.code === 200) {
+                        $('#forgotStep2').hide();
+                        $('#forgotSuccess').addClass('show');
+                        $('#forgotError').removeClass('show');
+                        setTimeout(function() {
+                            closeForgotPasswordModal();
+                        }, 2000);
+                    } else {
+                        showForgotError(result.msg || '重置失败');
+                        $btn.prop('disabled', false).text('重置密码');
+                    }
+                },
+                error: function() {
+                    showForgotError('网络错误，请稍后重试');
+                    $btn.prop('disabled', false).text('重置密码');
+                }
+            });
+        };
+
+        window.backToStep1 = function() {
+            hideForgotError();
+            $('#forgotStep2').hide();
+            $('#forgotStep1').show();
+            stopCountdown();
+        };
+
+        function startCountdown() {
+            var seconds = 60;
+            var $btn = $('#btnSendCode');
+            $btn.prop('disabled', true);
+            updateCountdownText(seconds);
+            countdownTimer = setInterval(function() {
+                seconds--;
+                if (seconds <= 0) {
+                    stopCountdown();
+                    $btn.prop('disabled', false).text('获取验证码');
+                } else {
+                    updateCountdownText(seconds);
+                }
+            }, 1000);
+        }
+
+        function updateCountdownText(s) {
+            $('#btnSendCode').text(s + 's 后重发');
+        }
+
+        function stopCountdown() {
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+                countdownTimer = null;
+            }
+            $('#btnSendCode').prop('disabled', false).text('获取验证码');
+        }
+
+        function resetForgotForm() {
+            stopCountdown();
+            $('#forgotPhone').val('').removeClass('error');
+            $('#forgotCode').val('').removeClass('error');
+            $('#forgotNewPassword').val('').removeClass('error');
+            $('#forgotConfirmPassword').val('').removeClass('error');
+            hideForgotError();
+            $('#forgotSuccess').removeClass('show');
+            $('#forgotError').removeClass('show');
+        }
+
+        function showForgotError(msg) {
+            $('#forgotError').text(msg).addClass('show');
+        }
+
+        function hideForgotError() {
+            $('#forgotError').removeClass('show').text('');
+        }
+
+        // 点击遮罩关闭
+        $('#forgotOverlay').on('click', function(e) {
+            if (e.target === this) {
+                closeForgotPasswordModal();
             }
         });
     })();

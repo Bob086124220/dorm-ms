@@ -1,0 +1,9 @@
+# 短信平台配置（演示模式=console）
+sms.provider=console
+sms.api-key=
+sms.api-secret=
+sms.sign-name=高校公寓管理系统
+sms.template-id=
+sms.code-expire-seconds=300
+sms.resend-interval-seconds=60
+sms.max-per-hour-per-ip=5

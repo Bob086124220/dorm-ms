@@ -90,6 +90,12 @@
         ORDER BY create_time DESC
     </select>
 
+    <!-- 根据手机号查询用户 -->
+    <select id="selectByPhone" parameterType="String" resultMap="BaseResultMap">
+        SELECT * FROM sys_user
+        WHERE phone = #{phone} AND is_deleted = 0
+    </select>
+
     <!-- 根据角色类型查询用户列表 -->
     <select id="selectByRoleType" parameterType="Integer" resultMap="BaseResultMap">
         SELECT * FROM sys_user

@@ -42,3 +42,4 @@ docs/old-docs
 ### Config ###
 /src/main/resources/config/jdbc.properties
 /src/test/resources/config/jdbc-test.properties
+/src/main/resources/config/sms.properties

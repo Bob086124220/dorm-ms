@@ -95,4 +95,22 @@ public interface UserService {
      * @return 导入结果
      */
     ImportResultDTO importUsers(MultipartFile file);
+
+    /**
+     * 根据手机号获取用户
+     *
+     * @param phone 手机号
+     * @return 用户信息（密码字段已清空）
+     * @throws com.huuc.dormitory.common.exception.BusinessException 手机号未注册
+     */
+    SysUser getUserByPhone(String phone);
+
+    /**
+     * 通过手机号重置密码（忘记密码流程）
+     *
+     * @param phone       手机号
+     * @param newPassword 新密码明文
+     * @throws com.huuc.dormitory.common.exception.BusinessException 手机号未注册、操作失败
+     */
+    void resetPassword(String phone, String newPassword);
 }

@@ -307,3 +307,190 @@ body {
     .login-card { padding: 36px 24px 32px; }
     .login-logo h1 { font-size: 22px; }
 }
+
+/* ═══ Forgot Password Modal ═══ */
+.forgot-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.forgot-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.forgot-modal {
+    background: var(--surface-opaque);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    width: 400px;
+    max-width: 92vw;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+    transform: translateY(8px);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.forgot-overlay.open .forgot-modal {
+    transform: translateY(0);
+}
+
+.forgot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--gap-lg) var(--gap-lg) var(--gap-md);
+    border-bottom: 1px solid var(--border);
+}
+.forgot-header h2 {
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    margin: 0;
+    color: var(--fg);
+}
+.forgot-close {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 20px;
+    line-height: 1;
+    transition: background 0.12s;
+    padding: 0;
+}
+.forgot-close:hover {
+    background: var(--hover-bg);
+}
+
+.forgot-body {
+    padding: var(--gap-lg);
+}
+
+.forgot-field {
+    margin-bottom: var(--gap-md);
+}
+.forgot-field label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+.forgot-field input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    font-size: var(--fs-body);
+    color: var(--fg);
+    transition: border-color 0.15s;
+    outline: none;
+    box-sizing: border-box;
+}
+.forgot-field input:focus {
+    border-color: var(--accent);
+}
+.forgot-field input.error {
+    border-color: var(--accent);
+}
+
+.forgot-field-row {
+    display: flex;
+    gap: var(--gap-sm);
+    align-items: flex-end;
+}
+.forgot-field-row .forgot-field {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.forgot-send-btn {
+    flex-shrink: 0;
+    padding: 9px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--fg);
+    font-size: var(--fs-meta);
+    font-family: var(--font-mono);
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    white-space: nowrap;
+}
+.forgot-send-btn:hover:not(:disabled) {
+    background: var(--hover-bg);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.forgot-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.forgot-error {
+    font-size: var(--fs-meta);
+    color: var(--accent);
+    margin-bottom: var(--gap-sm);
+    display: none;
+}
+.forgot-error.show {
+    display: block;
+}
+
+.forgot-back {
+    font-size: var(--fs-meta);
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.12s;
+    margin-bottom: var(--gap-md);
+    display: inline-block;
+}
+.forgot-back:hover {
+    color: var(--accent);
+}
+
+.forgot-submit {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: var(--surface-opaque);
+    font-size: var(--fs-body);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.forgot-submit:hover {
+    background: color-mix(in oklch, var(--accent) 88%, black);
+}
+.forgot-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.forgot-success {
+    text-align: center;
+    padding: var(--gap-md) 0;
+    color: var(--status-ok);
+    font-size: var(--fs-body);
+    display: none;
+}
+.forgot-success.show {
+    display: block;
+}

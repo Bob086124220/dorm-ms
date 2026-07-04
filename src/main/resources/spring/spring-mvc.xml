@@ -54,6 +54,8 @@
             <mvc:exclude-mapping path="/logout"/>
             <mvc:exclude-mapping path="/static/**"/>
             <mvc:exclude-mapping path="/captcha"/>
+            <mvc:exclude-mapping path="/send-code"/>
+            <mvc:exclude-mapping path="/reset-password"/>
             <ref bean="loginInterceptor"/>
         </mvc:interceptor>
 
