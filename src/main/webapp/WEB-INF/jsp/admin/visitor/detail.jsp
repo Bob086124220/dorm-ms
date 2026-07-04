@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>访客详情 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
@@ -36,7 +37,7 @@
                             确认离开
                         </button>
                         <a href="${pageContext.request.contextPath}/admin/visitor/list" class="btn btn-secondary">
-                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                            <svg width="16" height="16"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-arrow-left"/></svg>
                             返回列表
                         </a>
                     </div>
@@ -45,7 +46,7 @@
                 <!-- 访客信息 -->
                 <div class="detail-panel" id="visitorInfo">
                     <div class="text-center py-4">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <svg width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-info"/></svg>
                         加载中...
                     </div>
                 </div>

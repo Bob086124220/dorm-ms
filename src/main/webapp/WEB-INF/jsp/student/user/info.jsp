@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>个人信息 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
@@ -45,7 +46,7 @@
                                 <tr><td>年级</td><td id="grade"></td></tr>
                                 <tr><td>专业</td><td id="major"></td></tr>
                                 <tr><td>班级</td><td id="className"></td></tr>
-                                <tr><td>联系电话</td><td><span id="phone"></span> <button type="button" class="btn btn-ghost btn-sm" onclick="showEditPhoneModal()">修改</button></td></tr>
+                                <tr><td>联系电话</td><td><span id="phone"></span> <button type="button" class="btn btn-secondary btn-sm" onclick="showEditPhoneModal()">修改</button></td></tr>
                                 <tr><td>账号状态</td><td id="status"></td></tr>
                                 <tr><td>注册时间</td><td id="createTime"></td></tr>
                             </table>

@@ -1,5 +1,6 @@
 package com.huuc.dormitory.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.huuc.dormitory.common.constant.CommonConstants;
 import com.huuc.dormitory.common.enums.RoomTypeEnum;
@@ -61,6 +62,19 @@ public class RoomServiceImpl implements RoomService {
     public List<RoomVO> getRoomsByBuildingId(Long buildingId) {
         List<DormRoom> rooms = dormRoomMapper.selectByBuildingId(buildingId);
         return convertToVOList(rooms);
+    }
+
+    @Override
+    public PageInfo<RoomVO> getRoomsByBuildingIdPage(Long buildingId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<DormRoom> rooms = dormRoomMapper.selectByBuildingId(buildingId);
+        PageInfo<DormRoom> pageInfo = new PageInfo<>(rooms);
+
+        PageInfo<RoomVO> voPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(pageInfo, voPageInfo);
+        voPageInfo.setList(convertToVOList(rooms));
+
+        return voPageInfo;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.huuc.dormitory.controller.dorm;
 
+import com.github.pagehelper.PageInfo;
 import com.huuc.dormitory.common.result.Result;
 import com.huuc.dormitory.common.utils.SessionUtil;
 import com.huuc.dormitory.service.BuildingService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -41,5 +43,19 @@ public class DormBuildingController {
         Long managerId = SessionUtil.getCurrentUserId(session);
         List<BuildingVO> list = buildingService.getBuildingsByManagerId(managerId);
         return Result.success(list);
+    }
+
+    /**
+     * 分页查询本人负责楼栋列表
+     */
+    @GetMapping("/page")
+    @ResponseBody
+    public Result<PageInfo<BuildingVO>> getMyBuildingsPage(
+            HttpSession session,
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        Long managerId = SessionUtil.getCurrentUserId(session);
+        PageInfo<BuildingVO> page = buildingService.getBuildingsByManagerIdPage(managerId, pageNum, pageSize);
+        return Result.success(page);
     }
 }

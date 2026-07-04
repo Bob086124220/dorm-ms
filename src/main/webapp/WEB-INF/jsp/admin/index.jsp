@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>系统总览 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
@@ -77,7 +78,7 @@
                     <h3>待处理事项</h3>
                     <a href="${pageContext.request.contextPath}/admin/repair/list" class="panel-link">
                         查看全部
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                        <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-right"/></svg>
                     </a>
                 </div>
                 <table class="pending-table">
@@ -87,7 +88,7 @@
                     <tbody id="pendingList"></tbody>
                 </table>
                 <div class="empty-state" id="pendingEmpty" style="display:none;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-activity"/></svg>
                     <div class="empty-state-title">暂无待处理事项</div>
                     <div class="empty-state-desc">所有事项已处理完毕</div>
                 </div>
@@ -99,12 +100,12 @@
                     <h3>近期操作日志</h3>
                     <a href="${pageContext.request.contextPath}/admin/log/list" class="panel-link">
                         全部日志
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                        <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-right"/></svg>
                     </a>
                 </div>
                 <div class="activity-log" id="recentLogs"></div>
                 <div class="empty-state" id="logEmpty" style="display:none;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-file-text"/></svg>
                     <div class="empty-state-title">暂无操作记录</div>
                     <div class="empty-state-desc">近期无管理操作</div>
                 </div>

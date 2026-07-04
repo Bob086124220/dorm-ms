@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>公告列表 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
@@ -30,7 +31,7 @@
 
             <div id="noticeCardList"></div>
             <div class="empty-state" id="noticeEmpty" style="display:none;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-bell"/></svg>
                 <div class="empty-state-title">暂无公告通知</div>
             </div>
             <div id="paginationContainer"></div>

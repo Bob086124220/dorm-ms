@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>床位管理 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
@@ -27,7 +28,7 @@
                         <p class="page-meta">管理公寓床位信息</p>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="showBatchModal()" id="btnBatch" disabled>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <svg width="16" height="16"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-plus"/></svg>
                         批量初始化
                     </button>
                 </div>
@@ -63,7 +64,7 @@
                     </div>
                     <div class="filter-actions">
                         <button type="button" class="btn btn-secondary btn-sm" onclick="loadBedList()" id="btnSearch" disabled>
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <svg width="14" height="14"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-search"/></svg>
                             查询床位
                         </button>
                     </div>

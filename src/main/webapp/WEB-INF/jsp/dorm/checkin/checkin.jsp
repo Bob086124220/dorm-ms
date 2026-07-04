@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>办理入住 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
@@ -32,7 +33,7 @@
                         <p class="page-meta">为学生分配床位，办理入住手续</p>
                     </div>
                     <a href="${pageContext.request.contextPath}/dorm/checkin/list" class="btn btn-secondary">
-                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        <svg width="16" height="16"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-arrow-left"/></svg>
                         返回列表
                     </a>
                 </div>
@@ -43,7 +44,7 @@
                     <div class="input-group">
                                 <input type="text" class="form-control" id="studentNo" placeholder="请输入学号" maxlength="20">
                                 <button type="button" class="btn btn-secondary" onclick="searchStudent()">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                    <svg width="14" height="14"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-search"/></svg>
                                     查询
                                 </button>
                             </div>

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的主页 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
@@ -41,19 +42,19 @@
             <section class="quick-actions" style="opacity:0;animation:fadeUp .5s .3s cubic-bezier(.22,1,.36,1) both;">
                 <a href="${pageContext.request.contextPath}/student/repair/submit" class="quick-action" id="btnRepair">
                     <div class="quick-action-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                        <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-wrench"/></svg>
                     </div>
                     <div class="quick-action-text"><h3>提交报修</h3><p>报告宿舍设施问题</p></div>
                 </a>
                 <a href="${pageContext.request.contextPath}/student/move/applyPage" class="quick-action">
                     <div class="quick-action-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-external-link"/></svg>
                     </div>
                     <div class="quick-action-text"><h3>申请调宿</h3><p>申请更换宿舍房间</p></div>
                 </a>
                 <a href="${pageContext.request.contextPath}/student/user/info" class="quick-action">
                     <div class="quick-action-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-user"/></svg>
                     </div>
                     <div class="quick-action-text"><h3>个人信息</h3><p>查看和修改个人资料</p></div>
                 </a>
@@ -83,22 +84,22 @@
                 <div class="content-panel">
                     <div class="content-panel-header">
                         <h3>最近报修</h3>
-                        <a href="${pageContext.request.contextPath}/student/repair/list" class="panel-link">全部 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
+                        <a href="${pageContext.request.contextPath}/student/repair/list" class="panel-link">全部 <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-right"/></svg></a>
                     </div>
                     <div class="activity-log" id="recentRepairs"></div>
                     <div class="empty-state" id="repairEmpty" style="display:none;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-activity"/></svg>
                         <div class="empty-state-title">暂无报修记录</div>
                     </div>
                 </div>
                 <div class="content-panel">
                     <div class="content-panel-header">
                         <h3>最近晚归</h3>
-                        <a href="${pageContext.request.contextPath}/student/late-return/list" class="panel-link">全部 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
+                        <a href="${pageContext.request.contextPath}/student/late-return/list" class="panel-link">全部 <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-right"/></svg></a>
                     </div>
                     <div class="activity-log" id="recentLateReturns"></div>
                     <div class="empty-state" id="lateEmpty" style="display:none;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-activity"/></svg>
                         <div class="empty-state-title">暂无晚归记录</div>
                     </div>
                 </div>
@@ -108,11 +109,11 @@
             <section class="content-panel" style="margin-bottom:var(--gap-xl);opacity:0;animation:fadeUp .5s .65s cubic-bezier(.22,1,.36,1) both;">
                 <div class="content-panel-header">
                     <h3>最新公告</h3>
-                    <a href="${pageContext.request.contextPath}/common/notice/listPage" class="panel-link">全部公告 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></a>
+                    <a href="${pageContext.request.contextPath}/common/notice/listPage" class="panel-link">全部公告 <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-right"/></svg></a>
                 </div>
                 <div class="activity-log" id="recentNotices"></div>
                 <div class="empty-state" id="noticeEmpty" style="display:none;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    <svg><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-bell"/></svg>
                     <div class="empty-state-title">暂无公告通知</div>
                 </div>
             </section>
@@ -165,7 +166,7 @@
                     for (var i = 0; i < mates.length; i++) names.push(mates[i].studentName || mates[i].realName || '同学');
                     if (names.length > 0) {
                         var btnHtml = ' <a href="${pageContext.request.contextPath}/student/checkin/infoPage" class="btn-ghost btn-sm" style="margin-left:6px;font-size:11px;">';
-                        btnHtml += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;margin-right:3px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>舍友</a>';
+                        btnHtml += '<svg style="width:12px;height:12px;margin-right:3px;"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-users"/></svg>舍友</a>';
                         $('#dormInfo').after(' <span class="info-chip">'+names.join('、')+btnHtml+'</span>');
                     }
                 });

@@ -28,6 +28,11 @@ public interface RoomService {
     List<RoomVO> getRoomsByBuildingId(Long buildingId);
 
     /**
+     * 根据楼栋ID分页查询房间列表
+     */
+    PageInfo<RoomVO> getRoomsByBuildingIdPage(Long buildingId, Integer pageNum, Integer pageSize);
+
+    /**
      * 新增房间
      *
      * @param dto        房间信息

@@ -1,5 +1,6 @@
 package com.huuc.dormitory.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.huuc.dormitory.common.constant.CommonConstants;
 import com.huuc.dormitory.common.exception.BusinessException;
@@ -63,6 +64,19 @@ public class BuildingServiceImpl implements BuildingService {
     public List<BuildingVO> getBuildingsByManagerId(Long managerId) {
         List<DormBuilding> buildings = dormBuildingMapper.selectByManagerId(managerId);
         return convertToVOList(buildings);
+    }
+
+    @Override
+    public PageInfo<BuildingVO> getBuildingsByManagerIdPage(Long managerId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<DormBuilding> buildings = dormBuildingMapper.selectByManagerId(managerId);
+        PageInfo<DormBuilding> pageInfo = new PageInfo<>(buildings);
+
+        PageInfo<BuildingVO> voPageInfo = new PageInfo<>();
+        BeanUtils.copyProperties(pageInfo, voPageInfo);
+        voPageInfo.setList(convertToVOList(buildings));
+
+        return voPageInfo;
     }
 
     /**

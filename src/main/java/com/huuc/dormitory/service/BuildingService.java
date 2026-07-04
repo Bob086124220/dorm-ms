@@ -33,6 +33,11 @@ public interface BuildingService {
     List<BuildingVO> getBuildingsByManagerId(Long managerId);
 
     /**
+     * 根据宿管ID分页查询楼栋列表
+     */
+    PageInfo<BuildingVO> getBuildingsByManagerIdPage(Long managerId, Integer pageNum, Integer pageSize);
+
+    /**
      * 新增楼栋
      *
      * @param dto        楼栋信息

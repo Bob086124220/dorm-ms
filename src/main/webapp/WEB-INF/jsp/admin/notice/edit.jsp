@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">新增公告 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/common.css">
@@ -42,7 +43,7 @@
                             <div class="cselect" id="noticeTypeCselect">
                                 <div class="cselect-trigger" tabindex="0">
                                     <span class="cselect-val cselect-placeholder">请选择类型</span>
-                                    <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                    <svg class="cselect-arrow"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-down"/></svg>
                                 </div>
                                 <div class="cselect-panel" role="listbox">
                                     <div class="cselect-option" data-value="1">通知</div>
@@ -58,7 +59,7 @@
                             <div class="cselect" id="scopeCselect">
                                 <div class="cselect-trigger" tabindex="0">
                                     <span class="cselect-val cselect-placeholder">请选择范围</span>
-                                    <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                    <svg class="cselect-arrow"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-down"/></svg>
                                 </div>
                                 <div class="cselect-panel" role="listbox">
                                     <div class="cselect-option" data-value="1">全部可见</div>
@@ -72,7 +73,7 @@
                             <div class="cselect" id="buildingCselect">
                                 <div class="cselect-trigger" tabindex="0">
                                     <span class="cselect-val cselect-placeholder">请选择楼栋</span>
-                                    <svg class="cselect-arrow" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                                    <svg class="cselect-arrow"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-down"/></svg>
                                 </div>
                                 <div class="cselect-panel" role="listbox" id="buildingOptions"></div>
                             </div>
@@ -86,17 +87,20 @@
                         <div class="form-field">
                             <label>轮播设置</label>
                             <div style="display:flex;align-items:center;gap:var(--gap-sm);padding-top:4px;">
-                                <input type="checkbox" id="isBanner" name="isBanner" value="1">
-                                <label for="isBanner" style="margin:0;font-size:var(--fs-body);">上轮播展示</label>
+                                <label class="toggle">
+                                    <input type="checkbox" id="isBanner" name="isBanner" value="1">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span style="font-size:var(--fs-body);">上轮播展示</span>
                             </div>
                         </div>
 
-                        <div class="form-field" id="bannerImageField" style="display:none;">
+                        <div class="form-field" id="bannerImageField">
                             <label>轮播图片（JPG/PNG，≤1MB）</label>
                             <div style="display:flex;align-items:center;gap:var(--gap-sm);padding-top:4px;">
                                 <input type="file" id="bannerImage" name="bannerImage" accept=".jpg,.jpeg,.png" style="display:none;">
                                 <label for="bannerImage" class="btn btn-ghost btn-sm" style="cursor:pointer;margin:0;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="margin-right:4px;"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                    <svg width="14" height="14" style="margin-right:4px;"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-upload"/></svg>
                                     <span id="bannerFileName">选择图片</span>
                                 </label>
                             </div>
@@ -174,7 +178,6 @@
 
     function updateBannerFields() {
         var checked = $('#isBanner').is(':checked');
-        $('#bannerImageField').toggle(checked);
         $('#bannerDaysField').toggle(checked);
     }
 

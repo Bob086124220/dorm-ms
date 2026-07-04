@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>楼栋信息 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/vendor/bootstrap/css/bootstrap.min.css">
     <!-- 公共CSS -->
@@ -34,28 +35,27 @@
                 </div>
 
                 <!-- 楼栋列表 -->
-                <div class="form-container">
-                    <div class="data-panel">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>楼栋编号</th>
-                                    <th>楼栋名称</th>
-                                    <th>楼层总数</th>
-                                    <th>所属区域</th>
-                                    <th>备注</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody">
-                                <tr>
-                                    <td colspan="5" class="text-center py-4">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                        加载中...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="data-panel">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>楼栋编号</th>
+                                <th>楼栋名称</th>
+                                <th>楼层总数</th>
+                                <th>所属区域</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="5" class="text-center" style="padding: 40px 0; color: var(--muted);">
+                                    <svg width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-info"/></svg>
+                                    加载中...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div id="paginationContainer"></div>
                 </div>
             </div>
 
@@ -75,23 +75,35 @@
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
 
     <script>
+        var pageQueryParams = { pageNum: 1, pageSize: 10 };
+
         $(function() {
-            loadData();
+            loadData(1);
         });
 
         /**
-         * 加载负责楼栋列表
+         * 分页加载负责楼栋列表
+         * @param {number} pageNum - 页码
          */
-        function loadData() {
-            $.ajaxRequest('/dorm/building/list', 'GET', null, function(result) {
+        function loadData(pageNum) {
+            pageQueryParams.pageNum = pageNum;
+            var queryParams = {
+                pageNum: pageNum,
+                pageSize: pageQueryParams.pageSize
+            };
+
+            $.ajaxRequest('/dorm/building/page', 'GET', queryParams, function(result) {
                 if (result.data) {
-                    renderTable(result.data);
+                    renderTable(result.data.list);
+                    $.renderPagination(result.data, 'paginationContainer', function(page) {
+                        loadData(page);
+                    });
                 }
             }, function(result) {
                 if (result.msg && result.msg.indexOf('未负责任何楼栋') !== -1) {
-                    $('#tableBody').html('<tr><td colspan="5" class="text-center py-4" style="color: var(--accent-2);">您暂未负责任何楼栋，请联系管理员</td></tr>');
+                    $('#tableBody').html('<tr><td colspan="5" class="text-center" style="padding: 40px 0; color: var(--accent-2);">您暂未负责任何楼栋，请联系管理员</td></tr>');
                 } else {
-                    $('#tableBody').html('<tr><td colspan="5" class="text-center py-4"><a href="javascript:void(0)" onclick="loadData()" class="error-retry-link">加载失败，点击重试</a></td></tr>');
+                    $('#tableBody').html('<tr><td colspan="5" class="text-center" style="padding: 40px 0;"><a href="javascript:void(0)" onclick="loadData(pageQueryParams.pageNum)" class="error-retry-link">加载失败，点击重试</a></td></tr>');
                 }
             });
         }
@@ -105,7 +117,7 @@
             $tbody.empty();
 
             if (!list || list.length === 0) {
-                $tbody.html('<tr><td colspan="5" class="text-center py-4 text-muted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>暂无数据</td></tr>');
+                $tbody.html('<tr><td colspan="5" class="text-center" style="padding: 40px 0; color: var(--muted);"><svg width="32" height="32" style="color: var(--border); margin: 0 auto 8px; display: block;"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-inbox"/></svg>暂无数据</td></tr>');
                 return;
             }
 

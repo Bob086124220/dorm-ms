@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>公告详情 - 高校公寓管理系统</title>
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/static/images/favicon.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/tokens.css">
     <style>
         :root {
@@ -126,7 +127,7 @@
 <header class="topbar">
     <div class="topbar-left">
         <a href="${pageContext.request.contextPath}/common/notice/listPage" class="topbar-back">
-            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <svg viewBox="0 0 24 24"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-arrow-left"/></svg>
             返回列表
         </a>
         <span class="topbar-title">公告通知</span>
@@ -144,17 +145,17 @@
     <h1 class="notice-title" id="noticeTitle">--</h1>
     <div class="notice-meta">
         <div class="meta-item">
-            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg viewBox="0 0 24 24"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-user"/></svg>
             <span class="meta-item-label">发布者</span>
             <span class="meta-item-value" id="publisher">--</span>
         </div>
         <div class="meta-item">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <svg viewBox="0 0 24 24"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-clock"/></svg>
             <span class="meta-item-label">发布时间</span>
             <span class="meta-item-value" id="publishTime">--</span>
         </div>
         <div class="meta-item">
-            <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <svg viewBox="0 0 24 24"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-map-pin"/></svg>
             <span class="meta-item-label">适用楼栋</span>
             <span class="meta-item-value" id="buildingScope">--</span>
         </div>
@@ -177,7 +178,7 @@
 </footer>
 
 <button class="scroll-top-btn" id="scrollTopBtn" aria-label="返回顶部">
-    <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+    <svg viewBox="0 0 24 24"><use href="${pageContext.request.contextPath}/static/images/icons.svg#icon-chevron-up"/></svg>
 </button>
 
 <script src="${pageContext.request.contextPath}/static/js/jquery.min.js"></script>
@@ -260,7 +261,7 @@
                 + '<div class="related-item-title">' + escapeHtml(n.title || '') + '</div>'
                 + '<div class="related-item-date">' + (n.publishTime || '').substring(0, 10) + '</div>'
                 + '</div>'
-                + '<div class="related-item-arrow"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></div>'
+                + '<div class="related-item-arrow"><svg><use href="' + ctx + '/static/images/icons.svg#icon-chevron-right"/></svg></div>'
                 + '</a>';
         }
         $list.html(html);

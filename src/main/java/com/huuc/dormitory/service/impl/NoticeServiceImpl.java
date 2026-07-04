@@ -83,10 +83,12 @@ public class NoticeServiceImpl implements NoticeService {
         notice.setPublisherId(publisherId);
         notice.setPublishTime(LocalDateTime.now());
 
-        // 处理轮播图片
-        if (dto.getIsBanner() != null && dto.getIsBanner() == 1 && dto.getBannerImagePath() != null) {
+        // 处理轮播设置
+        if (dto.getIsBanner() != null && dto.getIsBanner() == 1) {
             notice.setIsBanner(1);
-            notice.setBannerImage(dto.getBannerImagePath());
+            if (dto.getBannerImagePath() != null) {
+                notice.setBannerImage(dto.getBannerImagePath());
+            }
             int days = dto.getBannerDays() != null ? dto.getBannerDays() : 7;
             notice.setBannerExpire(LocalDateTime.now().plusDays(days));
         }
@@ -116,11 +118,13 @@ public class NoticeServiceImpl implements NoticeService {
         notice.setVisibleScope(dto.getVisibleScope());
         notice.setBuildingId(dto.getBuildingId());
 
-        // 处理轮播图片
+        // 处理轮播设置
         if (dto.getIsBanner() != null) {
-            if (dto.getIsBanner() == 1 && dto.getBannerImagePath() != null) {
+            if (dto.getIsBanner() == 1) {
                 notice.setIsBanner(1);
-                notice.setBannerImage(dto.getBannerImagePath());
+                if (dto.getBannerImagePath() != null) {
+                    notice.setBannerImage(dto.getBannerImagePath());
+                }
                 int days = dto.getBannerDays() != null ? dto.getBannerDays() : 7;
                 notice.setBannerExpire(LocalDateTime.now().plusDays(days));
             } else if (dto.getIsBanner() == 0) {

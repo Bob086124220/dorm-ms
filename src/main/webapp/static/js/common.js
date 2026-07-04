@@ -5,6 +5,11 @@
  */
 
 /**
+ * SVG 图标 Sprite 路径前缀
+ */
+$.ICON_SPRITE = '/dorm-ms/static/images/icons.svg#';
+
+/**
  * 杂志风 ECharts 主暖白主题
  * 基于项目 design tokens，供所有 Dashboard 页面共用
  */
@@ -787,10 +792,10 @@ var MAGAZINE_THEME = {
 
             if (banners.length >= 2) {
                 html += '<button class="carousel-arrow carousel-arrow--left" aria-label="上一张">'
-                    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>'
+                    + '<svg><use href="' + $.ICON_SPRITE + 'icon-arrow-left"/></svg>'
                     + '</button>'
                     + '<button class="carousel-arrow carousel-arrow--right" aria-label="下一张">'
-                    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
+                    + '<svg><use href="' + $.ICON_SPRITE + 'icon-arrow-right"/></svg>'
                     + '</button>'
                     + '<div class="carousel-indicators">';
                 for (var j = 0; j < banners.length; j++) {
