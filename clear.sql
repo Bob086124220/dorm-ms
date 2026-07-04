@@ -47,6 +47,10 @@ ALTER TABLE sys_oper_log AUTO_INCREMENT = 1;
 DELETE FROM sys_user;
 ALTER TABLE sys_user AUTO_INCREMENT = 1;
 
+-- 11. 删除通知表
+DELETE FROM sys_notice;
+ALTER TABLE sys_notice AUTO_INCREMENT = 1;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- 验证是否全部清空

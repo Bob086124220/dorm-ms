@@ -20,7 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -92,6 +94,13 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updatePhone(String phone, Long userId) {
+        // 校验手机号唯一性（排除自身）
+        if (phone != null && !phone.isEmpty()) {
+            SysUser existPhone = sysUserMapper.selectByPhone(phone);
+            if (existPhone != null && !existPhone.getUserId().equals(userId)) {
+                throw new BusinessException(BusinessException.CODE_CONFLICT, "该手机号已被其他用户使用");
+            }
+        }
         SysUser user = new SysUser();
         user.setUserId(userId);
         user.setPhone(phone);
@@ -114,6 +123,14 @@ public class UserServiceImpl implements UserService {
         SysUser existUser = sysUserMapper.selectByUsername(dto.getUsername());
         if (existUser != null) {
             throw new BusinessException(BusinessException.CODE_CONFLICT, "用户名已存在");
+        }
+
+        // 验证手机号唯一性
+        if (dto.getPhone() != null && !dto.getPhone().isEmpty()) {
+            SysUser existPhone = sysUserMapper.selectByPhone(dto.getPhone());
+            if (existPhone != null) {
+                throw new BusinessException(BusinessException.CODE_CONFLICT, "该手机号已被其他用户使用");
+            }
         }
 
         // 构建用户对象
@@ -147,6 +164,14 @@ public class UserServiceImpl implements UserService {
         SysUser existUser = sysUserMapper.selectById(dto.getUserId());
         if (existUser == null) {
             throw new BusinessException(BusinessException.CODE_NOT_FOUND, "用户不存在");
+        }
+
+        // 验证手机号唯一性（排除自身）
+        if (dto.getPhone() != null && !dto.getPhone().isEmpty()) {
+            SysUser existPhone = sysUserMapper.selectByPhone(dto.getPhone());
+            if (existPhone != null && !existPhone.getUserId().equals(dto.getUserId())) {
+                throw new BusinessException(BusinessException.CODE_CONFLICT, "该手机号已被其他用户使用");
+            }
         }
 
         // 构建更新对象
@@ -234,6 +259,7 @@ public class UserServiceImpl implements UserService {
 
             String line;
             int rowNum = 1; // 行号（从1开始，第0行是表头）
+            Set<String> batchPhones = new HashSet<>();
 
             while ((line = reader.readLine()) != null) {
                 rowNum++;
@@ -246,7 +272,7 @@ public class UserServiceImpl implements UserService {
 
                 try {
                     // 解析并导入单行
-                    importSingleUser(line, rowNum, result);
+                    importSingleUser(line, rowNum, result, batchPhones);
                 } catch (Exception e) {
                     logger.warn("导入第{}行失败：{}", rowNum, e.getMessage());
                     result.addFail(rowNum, e.getMessage());
@@ -263,11 +289,12 @@ public class UserServiceImpl implements UserService {
     /**
      * 导入单个用户
      *
-     * @param line   CSV行内容
-     * @param rowNum 行号
-     * @param result 导入结果
+     * @param line        CSV行内容
+     * @param rowNum      行号
+     * @param result      导入结果
+     * @param batchPhones 本批次已处理手机号集合
      */
-    private void importSingleUser(String line, int rowNum, ImportResultDTO result) {
+    private void importSingleUser(String line, int rowNum, ImportResultDTO result, Set<String> batchPhones) {
         // 按逗号分割
         String[] fields = line.split(",");
 
@@ -330,6 +357,17 @@ public class UserServiceImpl implements UserService {
         }
         if (!PHONE_PATTERN.matcher(phone).matches()) {
             throw new RuntimeException("手机号格式错误");
+        }
+
+        // 校验手机号唯一性（本批次内去重）
+        if (!batchPhones.add(phone)) {
+            throw new RuntimeException("本批次内手机号重复");
+        }
+
+        // 校验手机号唯一性（库内已存在）
+        SysUser existPhone = sysUserMapper.selectByPhone(phone);
+        if (existPhone != null) {
+            throw new RuntimeException("手机号已被使用");
         }
 
         // 校验学生专属字段

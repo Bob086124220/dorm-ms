@@ -49,6 +49,7 @@ CREATE TABLE sys_user (
                           is_deleted  TINYINT     NOT NULL DEFAULT 0 COMMENT '逻辑删除标记：0-未删除 1-已删除',
                           PRIMARY KEY (user_id),
                           UNIQUE KEY uk_username (username) COMMENT '账号唯一索引',
+                          UNIQUE KEY uk_phone (phone) COMMENT '手机号唯一索引',
                           KEY idx_role_type (role_type) COMMENT '角色类型查询索引'
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
