@@ -54,4 +54,9 @@ public interface SysUserMapper {
      * 根据手机号查询用户
      */
     SysUser selectByPhone(String phone);
+
+    /**
+     * 逻辑删除用户（is_deleted=1）
+     */
+    int deleteById(Long userId);
 }

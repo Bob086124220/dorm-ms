@@ -6,6 +6,7 @@ import com.huuc.dormitory.common.aop.OperLog;
 import com.huuc.dormitory.common.enums.OperTypeEnum;
 import com.huuc.dormitory.common.exception.BusinessException;
 import com.huuc.dormitory.common.result.Result;
+import com.huuc.dormitory.common.utils.SessionUtil;
 import com.huuc.dormitory.dto.ImportResultDTO;
 import com.huuc.dormitory.dto.UserDTO;
 import com.huuc.dormitory.entity.SysUser;
@@ -122,6 +123,21 @@ public class AdminUserController {
     @OperLog(module = "用户管理", type = OperTypeEnum.UPDATE, desc = "切换用户状态")
     public Result<Void> toggleUserStatus(@PathVariable Long userId, HttpSession session) {
         userService.toggleUserStatus(userId);
+        return Result.success();
+    }
+
+    /**
+     * 删除用户（逻辑删除）
+     */
+    @PostMapping("/delete/{userId}")
+    @ResponseBody
+    @OperLog(module = "用户管理", type = OperTypeEnum.DELETE, desc = "删除用户")
+    public Result<Void> deleteUser(@PathVariable Long userId, HttpSession session) {
+        Long currentUserId = SessionUtil.getCurrentUserId(session);
+        if (currentUserId != null && currentUserId.equals(userId)) {
+            return Result.fail(BusinessException.CODE_BAD_REQUEST, "不能删除自己的账号");
+        }
+        userService.deleteUser(userId);
         return Result.success();
     }
 

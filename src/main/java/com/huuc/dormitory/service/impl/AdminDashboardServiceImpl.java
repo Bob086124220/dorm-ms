@@ -6,25 +6,17 @@ import com.huuc.dormitory.service.AdminDashboardService;
 import com.huuc.dormitory.service.BuildingService;
 import com.huuc.dormitory.service.RoomService;
 import com.huuc.dormitory.vo.AdminDashboardVO;
-import com.huuc.dormitory.vo.AdminDashboardVO.BuildingOccupancyItem;
-import com.huuc.dormitory.vo.AdminDashboardVO.MonthlyTrendItem;
-import com.huuc.dormitory.vo.AdminDashboardVO.PendingItem;
-import com.huuc.dormitory.vo.AdminDashboardVO.RecentLogItem;
+import com.huuc.dormitory.vo.AdminDashboardVO.*;
 import com.huuc.dormitory.vo.BuildingVO;
 import com.huuc.dormitory.vo.RoomVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -85,6 +77,9 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
 
         // 近期操作日志（当前管理员最近5条）
         computeRecentLogs(vo, adminUserId);
+
+        // 近30天业务构成
+        computeRecentThirtyDays(vo, buildingIds);
 
         return vo;
     }
@@ -250,6 +245,35 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
             logItems.add(item);
         }
         vo.setRecentLogs(logItems);
+    }
+
+    private void computeRecentThirtyDays(AdminDashboardVO vo, List<Long> buildingIds) {
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
+        RecentThirtyDays rtd = new RecentThirtyDays();
+
+        List<DormRepair> allRepairs = loadAllRepairs(buildingIds);
+        List<DormLateReturn> allLateReturns = loadAllLateReturns(buildingIds);
+        List<DormVisitor> allVisitors = loadAllVisitors(buildingIds);
+        List<DormCheckinRecord> allCheckins = loadAllCheckins(buildingIds);
+
+        rtd.setRepair(countAfter(allRepairs, DormRepair::getSubmitTime, thirtyDaysAgo));
+        rtd.setLateReturn(countAfter(allLateReturns, DormLateReturn::getLateTime, thirtyDaysAgo));
+        rtd.setVisitor(countAfter(allVisitors, DormVisitor::getVisitTime, thirtyDaysAgo));
+        rtd.setCheckin(countAfter(allCheckins, DormCheckinRecord::getCheckinTime, thirtyDaysAgo));
+
+        vo.setRecentThirtyDays(rtd);
+    }
+
+    private <T> int countAfter(List<T> records, java.util.function.Function<T, LocalDateTime> timeExtractor,
+                                LocalDateTime threshold) {
+        int count = 0;
+        for (T record : records) {
+            LocalDateTime time = timeExtractor.apply(record);
+            if (time != null && !time.isBefore(threshold)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     // ==================== 数据加载辅助 ====================

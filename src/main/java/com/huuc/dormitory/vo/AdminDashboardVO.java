@@ -45,6 +45,9 @@ public class AdminDashboardVO {
     /** 近期操作日志（当前管理员最近5条） */
     private List<RecentLogItem> recentLogs;
 
+    /** 近30天业务构成 */
+    private RecentThirtyDays recentThirtyDays;
+
     // ==================== 内部类 ====================
 
     @Getter
@@ -86,5 +89,14 @@ public class AdminDashboardVO {
         private String operType;
         private String module;
         private String operTime;
+    }
+
+    @Getter
+    @Setter
+    public static class RecentThirtyDays {
+        private int repair;
+        private int lateReturn;
+        private int visitor;
+        private int checkin;
     }
 }

@@ -438,6 +438,19 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    @Transactional
+    public void deleteUser(Long userId) {
+        SysUser user = sysUserMapper.selectById(userId);
+        if (user == null) {
+            throw new BusinessException(BusinessException.CODE_NOT_FOUND, "用户不存在");
+        }
+        int rows = sysUserMapper.deleteById(userId);
+        if (rows == 0) {
+            throw new BusinessException(BusinessException.CODE_ERROR, "删除用户失败");
+        }
+    }
+
     private String generateDefaultPassword(String phone) {
         if (phone == null) {
             phone = "";

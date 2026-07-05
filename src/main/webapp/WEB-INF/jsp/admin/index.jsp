@@ -60,7 +60,7 @@
             <section class="charts-row">
                 <div class="chart-panel">
                     <div class="chart-panel-title">
-                        <h2>当月业务构成</h2>
+                        <h2>近一个月业务构成</h2>
                     </div>
                     <div class="chart-box" id="chartRing"></div>
                 </div>
@@ -230,7 +230,7 @@
         $('#timeoutRepair').text(data.timeoutRepairCount || 0);
 
         // 图表
-        renderRingChart(data.monthlyTrend, prefersReducedMotion);
+        renderRingChart(data.recentThirtyDays, data.monthlyTrend, prefersReducedMotion);
         renderBuildingChart(data.buildingOccupancy, prefersReducedMotion);
         renderTrendChart(data.monthlyTrend, prefersReducedMotion);
 
@@ -331,19 +331,17 @@
 
     // ==================== 环形图：当月业务构成 ====================
 
-    function renderRingChart(monthlyTrend, prefersReducedMotion) {
+    function renderRingChart(recentThirtyDays, monthlyTrend, prefersReducedMotion) {
         var el = document.getElementById('chartRing');
         if (!el) return;
 
         var chart = echarts.init(el, MAGAZINE_THEME);
 
-        if (!monthlyTrend || monthlyTrend.length === 0) {
-            showChartEmpty(chart);
-            return;
-        }
-
-        var latest = monthlyTrend[monthlyTrend.length - 1];
-        var total = (latest.repair || 0) + (latest.lateReturn || 0) + (latest.visitor || 0) + (latest.checkin || 0);
+        var repair = recentThirtyDays ? (recentThirtyDays.repair || 0) : 0;
+        var lateReturn = recentThirtyDays ? (recentThirtyDays.lateReturn || 0) : 0;
+        var visitor = recentThirtyDays ? (recentThirtyDays.visitor || 0) : 0;
+        var checkin = recentThirtyDays ? (recentThirtyDays.checkin || 0) : 0;
+        var total = repair + lateReturn + visitor + checkin;
 
         if (total === 0) {
             showChartEmpty(chart);
@@ -365,7 +363,7 @@
                 left: 'center',
                 top: '40%',
                 style: {
-                    text: latest.month + '月',
+                    text: '近30天',
                     textAlign: 'center',
                     fontFamily: 'Georgia, "Noto Serif SC", "Source Han Serif SC", SimSun, serif',
                     fontSize: 16,
@@ -378,10 +376,10 @@
                 radius: ['45%', '70%'],
                 center: ['50%', '46%'],
                 data: [
-                    { value: latest.repair, name: '报修', itemStyle: { color: 'rgb(196, 69, 58)' } },
-                    { value: latest.lateReturn, name: '晚归', itemStyle: { color: 'rgb(212, 132, 90)' } },
-                    { value: latest.visitor, name: '访客', itemStyle: { color: 'rgb(46, 125, 111)' } },
-                    { value: latest.checkin, name: '入住', itemStyle: { color: 'rgb(122, 112, 103)' } }
+                    { value: repair, name: '报修', itemStyle: { color: 'rgb(196, 69, 58)' } },
+                    { value: lateReturn, name: '晚归', itemStyle: { color: 'rgb(212, 132, 90)' } },
+                    { value: visitor, name: '访客', itemStyle: { color: 'rgb(46, 125, 111)' } },
+                    { value: checkin, name: '入住', itemStyle: { color: 'rgb(122, 112, 103)' } }
                 ],
                 label: { show: false },
                 emphasis: { label: { show: true, fontSize: 13, fontWeight: 'bold' } }
@@ -406,12 +404,12 @@
 
         function setSeg(id, val, label) {
             var $seg = $('#' + id);
-            $seg.css('flex', val || '0.001').find('span').text(val + ' ' + label);
+            $seg.css('flex', val || '0.001').find('span').text(label + ' ' + val + ' 条');
         }
 
-        setSeg('segRepair', pendingRepair, '条');
-        setSeg('segTimeout', timeoutRepair, '条');
-        setSeg('segMove', pendingMove, '条');
+        setSeg('segRepair', pendingRepair, '待处理报修');
+        setSeg('segTimeout', timeoutRepair, '已超时');
+        setSeg('segMove', pendingMove, '待审批调宿');
     }
 
     // ==================== 待处理表格 ====================

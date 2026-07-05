@@ -113,4 +113,12 @@ public interface UserService {
      * @throws com.huuc.dormitory.common.exception.BusinessException 手机号未注册、操作失败
      */
     void resetPassword(String phone, String newPassword);
+
+    /**
+     * 逻辑删除用户
+     *
+     * @param userId 用户ID
+     * @throws com.huuc.dormitory.common.exception.BusinessException 用户不存在、删除失败
+     */
+    void deleteUser(Long userId);
 }

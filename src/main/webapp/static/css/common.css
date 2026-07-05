@@ -702,7 +702,7 @@ img { max-width: 100%; height: auto; }
 }
 
 .form-group label .required { color: var(--accent); margin-left: 2px; }
-.timeout-row { background: var(--timeout-bg); }
+.data-panel tbody tr.timeout-row { background: var(--timeout-bg); }
 
 .form-control {
     width: 100%;
@@ -2107,8 +2107,6 @@ textarea:hover:not(:focus):not(:disabled) {
 
 .pending-bar-segment span {
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 /* ============================================= */

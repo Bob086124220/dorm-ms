@@ -216,6 +216,7 @@
                 row += '<td class="num text-muted">' + $.formatDate(user.createTime, 'yyyy-MM-dd') + '</td>';
                 row += '<td class="actions">';
                 row += '<a href="${pageContext.request.contextPath}/admin/user/editPage?userId=' + user.userId + '" class="btn btn-ghost btn-sm">编辑</a>';
+                row += '<button class="btn btn-ghost btn-sm" onclick="deleteUser(' + user.userId + ', \'' + ($('<span>').text(user.username || '').html()) + '\')">删除</button>';
                 row += '</td>';
                 row += '</tr>';
                 $tbody.append(row);
@@ -255,6 +256,17 @@
             }, function() {
                 // 取消时恢复 checkbox 状态
                 loadData(pageQueryParams);
+            });
+        }
+
+        function deleteUser(userId, username) {
+            $.confirm('确认删除用户「' + username + '」？删除后数据不可恢复。', function() {
+                $.ajaxRequest('/admin/user/delete/' + userId, 'POST', null, function() {
+                    $.toast('success', '删除成功');
+                    loadData(pageQueryParams);
+                }, function(result) {
+                    $.toast('error', result.msg || '删除失败');
+                });
             });
         }
 
